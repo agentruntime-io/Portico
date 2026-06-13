@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { localeFromPathname } from "@/lib/locale-routing";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const locale = localeFromPathname(request.nextUrl.pathname);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-doc-locale", locale);
