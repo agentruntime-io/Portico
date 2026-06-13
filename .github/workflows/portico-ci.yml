@@ -32,7 +32,7 @@ jobs:
       - name: License compliance (production dependencies)
         run: >
           npx --yes license-checker@25 --production --summary
-          --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;BlueOak-1.0.0;Unlicense;Python-2.0;CC-BY-4.0;MPL-2.0"
+          --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;BlueOak-1.0.0;Unlicense;Python-2.0;CC-BY-4.0;MPL-2.0;LGPL-3.0-or-later;LGPL-2.1-or-later"
           --excludePackages "portico@0.1.0"
 
       - name: Validate bundled demo content
