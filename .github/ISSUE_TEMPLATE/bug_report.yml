@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a problem with Portico (renderer, build, or self-hosting)
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Security issues should **not** be filed here — see [SECURITY.md](../SECURITY.md).
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug and what you expected instead.
+      placeholder: Build fails when CONTENT_GIT_REPO points at a private repo…
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Commands, env vars, and content layout if relevant.
+      placeholder: |
+        1. npm install
+        2. CONTENT_ROOT=… npm run dev
+        3. Open /guide/quickstart
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Portico version or commit
+      placeholder: v0.1.0 or abc1234
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Local dev (npm run dev)
+        - Production build (npm run build && npm run start)
+        - Vercel
+        - Docker
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste relevant terminal output or attach screenshots.
+    validations:
+      required: false

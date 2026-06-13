@@ -1,0 +1,27 @@
+# Copy this file to YOUR DOCS REPOSITORY as:
+#   .github/workflows/deploy-docs-portal.yml
+#
+# Prerequisites (GitHub repository secrets):
+#   VERCEL_DEPLOY_HOOK  — from Vercel → Project → Settings → Deploy Hooks
+#
+# Vercel project env (portal connected to this deploy hook):
+#   CONTENT_GIT_REPO    — https://github.com/your-org/your-docs.git
+#   CONTENT_GIT_BRANCH  — main
+#   SITE_URL            — https://docs.yourcompany.com
+#   CONTENT_REPO_URL    — same as CONTENT_GIT_REPO (for Edit links)
+
+name: Deploy documentation site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  trigger-portal-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel rebuild
+        run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}

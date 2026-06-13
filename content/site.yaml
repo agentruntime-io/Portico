@@ -1,0 +1,24 @@
+# Portico — site metadata overrides (renderer config).
+# Prose/MDX and navigation come from CONTENT_ROOT (docs.json + *.mdx).
+# OpenAPI bundles for /reference/* stay here unless moved to the content repo.
+
+name: AgentRuntime Docs
+description: Documentation powered by Portico from AgentRuntime.
+url: https://docs.agentruntime.io
+githubEditBase: https://github.com/agentruntime-io/agentruntime-docs/blob/main
+# Default social preview image (absolute URL or site-relative path)
+# ogImage: /og-default.png
+
+# Search engine verification (Next.js metadata verification)
+# verification:
+#   google: your-google-site-verification-token
+#   yandex: your-yandex-verification-token
+#   other:
+#     - name: me
+#       content: your-custom-verification-token
+
+openapi:
+  specs:
+    - id: agentruntime
+      title: AgentRuntime API
+      file: openapi/agentruntime.yaml

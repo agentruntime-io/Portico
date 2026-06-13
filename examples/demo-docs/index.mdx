@@ -1,0 +1,26 @@
+---
+title: Demo documentation
+description: A minimal docs site to try the portal without cloning a separate content repository.
+mode: frame
+---
+
+<div data-product-guide-index className="flex w-full flex-col gap-8 max-w-5xl mx-auto px-4 py-10">
+  <div className="flex max-w-[540px] flex-col gap-2 self-center text-center">
+    <h1 className="text-[30px] font-medium leading-9 tracking-tight text-[var(--text-main)]">
+      Demo documentation
+    </h1>
+    <p className="text-balance text-base leading-relaxed text-[var(--text-muted)]">
+      This sample ships inside the Portico repository. Point <code>CONTENT_ROOT</code> at your own
+      docs repo when you are ready to go live.
+    </p>
+  </div>
+
+  <CardGroup cols={2}>
+    <Card title="Welcome" icon="rocket" href="/guide/welcome">
+      What this demo includes and how content is wired to the portal.
+    </Card>
+    <Card title="Quickstart" icon="workflow" href="/guide/quickstart">
+      Steps, callouts, code highlighting, and a Mermaid diagram.
+    </Card>
+  </CardGroup>
+</div>

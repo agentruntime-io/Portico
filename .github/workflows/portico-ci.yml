@@ -1,0 +1,55 @@
+name: Portico CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Dependency audit (high severity and above)
+        run: npm audit --audit-level=high
+
+      - name: License compliance (production dependencies)
+        run: >
+          npx --yes license-checker@25 --production --summary
+          --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;BlueOak-1.0.0;Unlicense;Python-2.0;CC-BY-4.0;MPL-2.0"
+          --excludePackages "portico@0.1.0"
+
+      - name: Validate bundled demo content
+        run: npm run validate
+        env:
+          CONTENT_ROOT: examples/demo-docs
+
+      - name: Production build (demo content)
+        run: npm run build
+        env:
+          CONTENT_ROOT: examples/demo-docs
+          SITE_URL: https://example.com
+
+      - name: Validate external clone path (optional smoke)
+        if: vars.CONTENT_GIT_REPO != ''
+        run: npm run build
+        env:
+          CONTENT_GIT_REPO: ${{ vars.CONTENT_GIT_REPO }}
+          CONTENT_GIT_BRANCH: ${{ vars.CONTENT_GIT_BRANCH || 'main' }}
+          SITE_URL: https://example.com

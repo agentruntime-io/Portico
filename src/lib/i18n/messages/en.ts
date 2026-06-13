@@ -1,0 +1,134 @@
+export const en = {
+  nav: {
+    home: "Home",
+    changelog: "Changelog",
+    help: "Help",
+    utilityNav: "Utility navigation",
+    browseDocs: "Browse docs",
+    closeMenu: "Close menu",
+    docsBadge: "Docs",
+    sectionNav: "Documentation sections",
+    apiEndpoints: "API endpoints",
+    guideSections: "Guide",
+    operations: "Operations",
+    previous: "Previous",
+    next: "Next",
+    pageNav: "Page navigation",
+    externalLinks: "External links",
+    editPage: "Edit this page",
+  },
+  search: {
+    label: "Search documentation",
+    placeholder: "Search pages and API endpoints…",
+    placeholderShort: "Search…",
+    close: "Close search",
+    noResults: 'No results for "{query}"',
+    shortcut: "Ctrl K",
+    sectionApiReference: "API reference",
+    sectionChangelog: "Changelog",
+    sectionHome: "Home",
+  },
+  theme: {
+    toggle: "Toggle color theme",
+    switchToLight: "Switch to light theme",
+    switchToDark: "Switch to dark theme",
+  },
+  language: {
+    label: "Documentation language",
+    uiOnlyHint:
+      "Switch language to read translated documentation where available.",
+    fallbackBanner:
+      "This page is not available in {requested}. Showing the {available} version.",
+  },
+  fontScale: {
+    group: "Text size",
+    decrease: "Decrease text size",
+    increase: "Increase text size",
+  },
+  assistant: {
+    open: "Open AI assistant",
+    close: "Close assistant",
+    title: "Assistant",
+    comingSoon: "Coming soon",
+    body: "AI answers will use the documentation search index once an LLM provider is connected.",
+    placeholder: "Ask a question… (not connected yet)",
+    send: "Send assistant question",
+  },
+  copy: {
+    copyLink: "Copy link",
+    copiedLink: "Copied link",
+    copyCode: "Copy code",
+    copiedCode: "Copied code",
+    copy: "Copy",
+    copied: "Copied",
+  },
+  toc: {
+    title: "On this page",
+    empty: "No sections",
+  },
+  callout: {
+    note: "Note",
+    warning: "Warning",
+    info: "Info",
+  },
+  api: {
+    sectionOverview: "Section overview",
+    openApiClient: "Open API Client",
+    poweredBy: "API reference rendered by Portico",
+    proprietary: "Proprietary",
+    email: "Email AgentRuntime",
+    server: "Server",
+    sections: {
+      overview: "Overview",
+      authentication: "Authentication",
+      baseUrl: "Base URL",
+      requestResponse: "Request / Response format",
+      asyncModel: "Async execution model",
+      stepTypes: "Step types",
+      templateVars: "Template variables",
+      errorHandling: "Error handling",
+      rateLimits: "Rate limits",
+    },
+    operation: {
+      sampleRequest: "Sample request",
+      parameters: "Parameters",
+      requestBody: "Request body",
+      responses: "Responses",
+      example: "Example",
+      exampleResponse: "Example response",
+      name: "Name",
+      in: "In",
+      type: "Type",
+      description: "Description",
+    },
+    auth: {
+      title: "Authentication",
+      required: "Required",
+      bearerToken: "Bearer Token",
+      showToken: "Show token",
+      hideToken: "Hide token",
+      clearToken: "Clear token",
+      sessionHint:
+        "Stored only in this page session. It is not saved to local storage.",
+      clientLibraries: "Client Libraries",
+      testRequest: "Test Request",
+      send: "Send",
+      sending: "Sending…",
+    },
+  },
+  a11y: {
+    skipToContent: "Skip to main content",
+    mainContent: "Main content",
+  },
+  attribution: {
+    portico: "Portico",
+    openSourceFrom: "— open source from",
+    agentRuntime: "AgentRuntime",
+  },
+};
+
+type DeepStringRecord<T> = T extends object
+  ? { [K in keyof T]: DeepStringRecord<T[K]> }
+  : string;
+
+export type Messages = DeepStringRecord<typeof en>;

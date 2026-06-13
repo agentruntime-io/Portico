@@ -1,0 +1,32 @@
+{
+  "name": "Demo Docs",
+  "description": "Example docs.json + MDX content bundled with Portico for local dev and CI.",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get started",
+        "icon": "rocket",
+        "expanded": true,
+        "pages": ["guide/welcome", "guide/quickstart"]
+      },
+      {
+        "group": "Reference",
+        "icon": "book",
+        "pages": ["reference/content-format"]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Portico",
+        "href": "https://www.agentruntime.io"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "AgentRuntime",
+      "href": "https://www.agentruntime.io"
+    }
+  }
+}

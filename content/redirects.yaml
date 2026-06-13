@@ -1,0 +1,16 @@
+# Legacy portal paths → content routes
+- from: /docs
+  to: /introduction/what-is-agentruntime
+  permanent: true
+- from: /docs/getting-started
+  to: /platform/quickstart
+  permanent: true
+- from: /docs/architecture
+  to: /introduction/what-is-agentruntime
+  permanent: true
+- from: /guides
+  to: /integrations/quickstart
+  permanent: true
+- from: /guides/writing-docs
+  to: /platform/quickstart
+  permanent: true

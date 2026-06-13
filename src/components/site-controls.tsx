@@ -1,0 +1,185 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import {
+  Bot,
+  Globe2,
+  Moon,
+  Send,
+  Sun,
+  X,
+} from "lucide-react";
+import { useI18n } from "@/components/i18n-provider";
+import { useDialog } from "@/lib/a11y/use-dialog";
+import { locales, type Locale } from "@/lib/i18n";
+
+const themeVars = {
+  light: {
+    "--background": "#f3f6f4",
+    "--foreground": "#171717",
+    "--app-bg": "#eef3f0",
+    "--panel-bg": "#fbfcfb",
+    "--sidebar-bg": "#f5f8f6",
+    "--panel-border": "#cfd8d3",
+    "--text-main": "#18181b",
+    "--text-muted": "#4b5563",
+  },
+  dark: {
+    "--background": "#0a0a0a",
+    "--foreground": "#ededed",
+    "--app-bg": "#080b0a",
+    "--panel-bg": "#0b100e",
+    "--sidebar-bg": "#080b0a",
+    "--panel-border": "#27272a",
+    "--text-main": "#f4f4f5",
+    "--text-muted": "#a1a1aa",
+  },
+} as const;
+
+export function ThemeToggle() {
+  const { t } = useI18n();
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem("doc-theme");
+      setTheme(stored === "light" ? "light" : "dark");
+      setReady(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    document.documentElement.dataset.theme = theme;
+    for (const [name, value] of Object.entries(themeVars[theme])) {
+      document.documentElement.style.setProperty(name, value);
+    }
+    window.localStorage.setItem("doc-theme", theme);
+  }, [ready, theme]);
+
+  return (
+    <button
+      type="button"
+      aria-label={theme === "dark" ? t("theme.switchToLight") : t("theme.switchToDark")}
+      onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+      className="ds-control inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+    >
+      {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+    </button>
+  );
+}
+
+export function LanguageSelector() {
+  const { locale, setLocale, t } = useI18n();
+
+  return (
+    <label className="ds-control hidden h-9 shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-medium md:inline-flex">
+      <Globe2 className="h-4 w-4" aria-hidden />
+      <select
+        aria-label={t("language.label")}
+        title={t("language.uiOnlyHint")}
+        value={locale}
+        onChange={(event) => setLocale(event.target.value as Locale)}
+        className="bg-transparent outline-none"
+      >
+        {locales.map((item) => (
+          <option key={item.code} value={item.code} className="bg-[var(--panel-bg)]">
+            {item.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+export function AssistantLauncher() {
+  const { t } = useI18n();
+  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const dialogRef = useRef<HTMLElement>(null);
+
+  useDialog(open, () => setOpen(false), dialogRef);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const panel =
+    open && mounted
+      ? createPortal(
+          <>
+            <button
+              type="button"
+              aria-label={t("assistant.close")}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 z-[100] bg-black/40"
+            />
+            <aside
+              ref={dialogRef}
+              className="ds-shadow-panel fixed inset-x-3 bottom-3 z-[101] flex max-h-[min(32rem,85vh)] flex-col overflow-hidden rounded-2xl border border-[var(--panel-border)] bg-[var(--panel-bg)] sm:inset-x-auto sm:bottom-4 sm:right-4 sm:top-[4.5rem] sm:max-h-none sm:h-[min(32rem,calc(100vh-5.5rem))] sm:w-[min(420px,calc(100vw-2rem))]"
+              role="dialog"
+              aria-modal="true"
+              aria-label={t("assistant.title")}
+            >
+              <div className="flex shrink-0 items-center gap-3 border-b border-[var(--panel-border)] px-4 py-3">
+                <Bot className="h-5 w-5 text-emerald-400" aria-hidden />
+                <p className="font-semibold text-[var(--text-main)]">{t("assistant.title")}</p>
+                <button
+                  type="button"
+                  aria-label={t("assistant.close")}
+                  onClick={() => setOpen(false)}
+                  className="ml-auto rounded-md p-1 text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-8 text-center text-sm leading-relaxed text-[var(--text-muted)]">
+                <Bot className="mb-3 h-8 w-8 text-emerald-500/60" aria-hidden />
+                <p className="font-medium text-[var(--text-main)]">{t("assistant.comingSoon")}</p>
+                <p className="mt-2 max-w-xs">{t("assistant.body")}</p>
+              </div>
+              <form
+                onSubmit={(event) => event.preventDefault()}
+                className="shrink-0 border-t border-[var(--panel-border)] p-4"
+              >
+                <textarea
+                  disabled
+                  placeholder={t("assistant.placeholder")}
+                  rows={3}
+                  className="w-full resize-none rounded-lg border border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-3 py-2 text-sm text-[var(--text-muted)] outline-none placeholder:text-[var(--text-muted)]"
+                />
+                <div className="mt-2 flex justify-end">
+                  <button
+                    type="submit"
+                    disabled
+                    aria-label={t("assistant.send")}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700/40 text-white"
+                  >
+                    <Send className="h-4 w-4" />
+                  </button>
+                </div>
+              </form>
+            </aside>
+          </>,
+          document.body,
+        )
+      : null;
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-label={t("assistant.open")}
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+        className="ds-control ds-accent-text inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+      >
+        <Bot className="h-4 w-4" />
+      </button>
+      {panel}
+    </>
+  );
+}

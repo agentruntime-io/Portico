@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "npm run validate && npm run build",
+  "installCommand": "npm ci",
+  "env": {
+    "CONTENT_ROOT": "examples/demo-docs",
+    "SITE_URL": "https://your-project.vercel.app"
+  }
+}

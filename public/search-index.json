@@ -1,0 +1,167 @@
+[
+  {
+    "url": "/",
+    "title": "Demo documentation",
+    "excerpt": "Demo documentation This sample ships inside the Portico repository. Point CONTENT_ROOT at your own docs repo when you are ready to go live. What this demo includes and how content is wired to the port"
+  },
+  {
+    "url": "/guide/welcome",
+    "title": "Welcome",
+    "excerpt": "This page lives in `examples/demo-docs/` inside the Portico repository. The renderer reads `docs.json` and `*.mdx` from whatever directory `CONTENT_ROOT` points to. ## Resolution order 1. `CONTENT_ROO"
+  },
+  {
+    "url": "/es/guide/welcome",
+    "title": "Bienvenida",
+    "excerpt": "Esta página traducida vive en `i18n/es/guide/welcome.mdx`. Visita `/es/guide/welcome` para verla. Si falta una traducción, el portal muestra la versión en inglés con un aviso en la parte superior."
+  },
+  {
+    "url": "/guide/quickstart",
+    "title": "Quickstart",
+    "excerpt": "From the repository root: `npm install` then `npm run dev`. No extra clone is required — the demo content is used automatically. Set `CONTENT_ROOT` to your own docs repository path, or use `CONTENT_GI"
+  },
+  {
+    "url": "/reference/content-format",
+    "title": "Content format",
+    "excerpt": "Portico expects a content repository with this layout: | File | Purpose | |------|---------| | `docs.json` | Site name, navigation groups, navbar | | `index.mdx` | Home page | | `{path}.mdx` | One pag"
+  },
+  {
+    "url": "/reference",
+    "title": "API reference",
+    "excerpt": "OpenAPI reference overview"
+  },
+  {
+    "url": "/reference/agentruntime",
+    "title": "AgentRuntime API - overview",
+    "excerpt": "## Overview\n\nThe AgentRuntime API lets you **register, execute, monitor, and manage AI agent workflows**\nprogrammatically. Workflows are defined as directed acyclic graphs (DAGs) whose steps can call\nMCP tool servers, invoke LLMs, pause for human review, or run sandboxed Lua transforms.\n\n\n## Authentication\n\nAll endpoints require a Bearer token passed in the `Authorization` header:\n\n```\nAuthorization: Bearer <your-api-key>\n```\n\nObtain your API key from the AgentRuntime dashboard or waitlist onboarding email.\n\n\n## Base URL\n\n```\nhttps://api.agentruntime.io\n```\n\n\n## Request / Response format\n\nAll request and response bodies are `application/json`. Dates are ISO 8601 strings.\n\n\n## Async execution model\n\nWorkflow execution is **asynchronous**. `POST /workflows/{id}/command` with `\"start\"` returns\nthe initial run state immediately — the workflow continues running in the background. Use the\nWebSocket stream (`GET /workflows/{id}/stream`) or poll `GET /workflows/{id}/runs` to track\nprogress.\n\n\n## Step types\n\n| Type | What it does |\n|------|-------------|\n| `mcp_call` | Calls a tool on a remote MCP server |\n| `llm_call` | Sends a prompt to an LLM and captures the response |\n| `human_task` | Pauses the workflow until a human submits a decision |\n| `lua_script` | Runs a sandboxed Lua script inline — no external round-trip |\n\n\n## Template variables\n\nStep arguments can reference upstream results and the workflow's input payload:\n\n```\n{{steps.<step-id>.result.<field>}}   — result of a completed upstream step\n{{input.<field>}}                    — value from the workflow start payload\n```\n\nParallel execution emerges automatically: steps whose `depends_on` are all satisfied run\nconcurrently without any extra configuration.\n\n\n## Error handling\n\nAll errors return a JSON body with `error` (human-readable) and optional `code` (machine-readable).\nHTTP status codes follow REST conventions: 400 Bad Request, 401 Unauthorized, 404 Not Found,\n409 Conflict, 422 Unprocessable Entity, 500 Internal Server Error.\n\n\n## Rate limits\n\nRate limits are applied per API key. The `X-RateLimit-Remaining` and `X-RateLimit-Reset`\nheaders are included in every response.\n"
+  },
+  {
+    "url": "/reference/agentruntime/workflows",
+    "title": "AgentRuntime API - Workflows",
+    "excerpt": "Create, update, and delete workflow definitions. A workflow is a named, versioned JSON graph\nof steps. Definitions are immutable once a run is active — update the definition to create a\nnew version.\n"
+  },
+  {
+    "url": "/reference/agentruntime/workflows#get-apiv1workflows",
+    "title": "GET /api/v1/workflows",
+    "excerpt": "List workflows"
+  },
+  {
+    "url": "/reference/agentruntime/workflows#post-apiv1workflows",
+    "title": "POST /api/v1/workflows",
+    "excerpt": "Create a workflow"
+  },
+  {
+    "url": "/reference/agentruntime/workflows#get-apiv1workflowsid",
+    "title": "GET /api/v1/workflows/{id}",
+    "excerpt": "Get a workflow"
+  },
+  {
+    "url": "/reference/agentruntime/workflows#put-apiv1workflowsid",
+    "title": "PUT /api/v1/workflows/{id}",
+    "excerpt": "Replace a workflow definition"
+  },
+  {
+    "url": "/reference/agentruntime/workflows#patch-apiv1workflowsid",
+    "title": "PATCH /api/v1/workflows/{id}",
+    "excerpt": "Partially update a workflow"
+  },
+  {
+    "url": "/reference/agentruntime/workflows#delete-apiv1workflowsid",
+    "title": "DELETE /api/v1/workflows/{id}",
+    "excerpt": "Delete a workflow"
+  },
+  {
+    "url": "/reference/agentruntime/execution",
+    "title": "AgentRuntime API - Execution",
+    "excerpt": "Trigger and control workflow runs. Use `POST /command` to start, pause, resume, or cancel.\nUse `GET /stream` for a WebSocket connection that pushes real-time events as the workflow executes.\n"
+  },
+  {
+    "url": "/reference/agentruntime/execution#post-apiv1workflowsidcommand",
+    "title": "POST /api/v1/workflows/{id}/command",
+    "excerpt": "Execute a workflow command"
+  },
+  {
+    "url": "/reference/agentruntime/execution#get-apiv1workflowsidstream",
+    "title": "GET /api/v1/workflows/{id}/stream",
+    "excerpt": "Real-time event stream (WebSocket)"
+  },
+  {
+    "url": "/reference/agentruntime/runs",
+    "title": "AgentRuntime API - Runs",
+    "excerpt": "Query run history, event logs, and context snapshots. Every action in a run produces an\nimmutable event — use the event log for debugging and audit.\n"
+  },
+  {
+    "url": "/reference/agentruntime/runs#get-apiv1workflowsidruns",
+    "title": "GET /api/v1/workflows/{id}/runs",
+    "excerpt": "List runs for a workflow"
+  },
+  {
+    "url": "/reference/agentruntime/runs#get-apiv1workflowsidrunsrun_idevents",
+    "title": "GET /api/v1/workflows/{id}/runs/{run_id}/events",
+    "excerpt": "List events for a run"
+  },
+  {
+    "url": "/reference/agentruntime/runs#get-apiv1workflowsidrunsrun_idcontext",
+    "title": "GET /api/v1/workflows/{id}/runs/{run_id}/context",
+    "excerpt": "Get run context snapshot"
+  },
+  {
+    "url": "/reference/agentruntime/tasks",
+    "title": "AgentRuntime API - Tasks",
+    "excerpt": "Human-in-the-loop (HITL) task management. When a workflow reaches a `human_task` step it\npauses and creates a pending task. Submit a decision to resume execution.\n"
+  },
+  {
+    "url": "/reference/agentruntime/tasks#get-apiv1workflowsidrunsrun_idtaskspending",
+    "title": "GET /api/v1/workflows/{id}/runs/{run_id}/tasks/pending",
+    "excerpt": "List pending human tasks"
+  },
+  {
+    "url": "/reference/agentruntime/tasks#post-apiv1workflowsidrunsrun_idtaskstask_idcomplete",
+    "title": "POST /api/v1/workflows/{id}/runs/{run_id}/tasks/{task_id}/complete",
+    "excerpt": "Complete a human task"
+  },
+  {
+    "url": "/reference/agentruntime/mcp-tools",
+    "title": "AgentRuntime API - MCP Tools",
+    "excerpt": "List tool definitions discovered from registered MCP servers."
+  },
+  {
+    "url": "/reference/agentruntime/mcp-tools#get-apiv1mcptools",
+    "title": "GET /api/v1/mcp/tools",
+    "excerpt": "List available MCP tools"
+  },
+  {
+    "url": "/reference/agentruntime/credentials",
+    "title": "AgentRuntime API - Credentials",
+    "excerpt": "Manage per-MCP OAuth tokens and API keys. Credentials are stored in HashiCorp Vault and\ncached in Redis. Updating a credential invalidates the cache automatically.\n"
+  },
+  {
+    "url": "/reference/agentruntime/credentials#get-apiv1credentialsmcp",
+    "title": "GET /api/v1/credentials/mcp",
+    "excerpt": "List MCP credentials"
+  },
+  {
+    "url": "/reference/agentruntime/credentials#post-apiv1credentialsmcp",
+    "title": "POST /api/v1/credentials/mcp",
+    "excerpt": "Create an MCP credential"
+  },
+  {
+    "url": "/reference/agentruntime/credentials#put-apiv1credentialsmcpsecret_id",
+    "title": "PUT /api/v1/credentials/mcp/{secret_id}",
+    "excerpt": "Rotate a credential"
+  },
+  {
+    "url": "/reference/agentruntime/credentials#delete-apiv1credentialsmcpsecret_id",
+    "title": "DELETE /api/v1/credentials/mcp/{secret_id}",
+    "excerpt": "Delete a credential"
+  },
+  {
+    "url": "/reference/agentruntime/builtin-tools",
+    "title": "AgentRuntime API - Builtin Tools",
+    "excerpt": "Query metadata about built-in tool capabilities provided by the runtime itself\n(LLM invocation, human_task, etc.).\n"
+  },
+  {
+    "url": "/reference/agentruntime/builtin-tools#get-apiv1builtin-tools",
+    "title": "GET /api/v1/builtin-tools",
+    "excerpt": "List built-in tool capabilities"
+  }
+]

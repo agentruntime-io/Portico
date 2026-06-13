@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: AgentRuntime
+    url: https://www.agentruntime.io
+    about: Learn about the team behind Portico
+  - name: Security report
+    url: https://github.com/agentruntime-io/Portico/blob/main/SECURITY.md
+    about: Report a vulnerability privately (do not open a public issue)
