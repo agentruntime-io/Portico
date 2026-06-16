@@ -57,3 +57,5 @@ AGENTS.md
 CLAUDE.md
 *.swp
 *~
+
+.vercel

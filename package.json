@@ -29,7 +29,7 @@
     "agentruntime"
   ],
   "scripts": {
-    "prebuild": "node scripts/prepare-content.mjs && node scripts/generate-search.mjs",
+    "prebuild": "node scripts/generate-search.mjs",
     "dev": "next dev -p 3004",
     "build": "next build",
     "start": "next start -p 3004",
