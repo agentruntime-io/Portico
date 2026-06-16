@@ -29,7 +29,14 @@ Or in `.env.local`:
 ```env
 CONTENT_ROOT=/absolute/path/to/your-docs
 SITE_URL=http://localhost:3004
-CONTENT_REPO_URL=https://github.com/your-org/your-docs
+```
+
+Or clone at build time (same as Vercel):
+
+```env
+CONTENT_GIT_REPO=https://github.com/your-org/your-docs.git
+SITE_URL=http://localhost:3004
+# CONTENT_GIT_BRANCH=main   # optional, defaults to main
 ```
 
 ## Production build
@@ -57,14 +64,15 @@ Build **reads MDX from disk** and emits static pages. Visitors never hit GitHub 
 
 **Vercel project** = Portico repository.
 
-**Environment variables** (Vercel → Settings → Environment Variables):
+**Environment variables** (Vercel → Settings → Environment Variables, or **Import .env**):
 
-| Variable | Example |
-|----------|---------|
-| `CONTENT_GIT_REPO` | `https://github.com/your-org/your-docs.git` |
-| `CONTENT_GIT_BRANCH` | `main` |
-| `SITE_URL` | `https://docs.yourcompany.com` |
-| `CONTENT_REPO_URL` | `https://github.com/your-org/your-docs` |
+| Variable | Required | Example |
+|----------|----------|---------|
+| `CONTENT_GIT_REPO` | Yes | `https://github.com/your-org/your-docs.git` |
+| `SITE_URL` | Yes | `https://docs.yourcompany.com` |
+| `CONTENT_GIT_BRANCH` | No (default `main`) | `main` |
+
+You do **not** need `CONTENT_REPO_URL` unless the edit-link repo differs from the clone repo. Portico strips `.git` from `CONTENT_GIT_REPO` and builds edit URLs as `{repo}/blob/{branch}`.
 
 Do **not** set `CONTENT_ROOT` when using `CONTENT_GIT_REPO` — the install step clones into
 `.content/checkout` and writes `.content-root`.
@@ -165,4 +173,4 @@ See [`examples/demo-docs/`](./examples/demo-docs/) for a working minimal site.
 | `Content root not found` | Set `CONTENT_ROOT` or ensure `examples/demo-docs` exists |
 | Vercel build OK but stale content | Trigger deploy hook after docs push |
 | Private docs repo on Vercel | Use HTTPS URL with token or Vercel’s git integration + submodule |
-| Edit link 404 | Set `CONTENT_REPO_URL` / `githubEditBase` in `content/site.yaml` |
+| Edit link 404 or wrong branch | Set `CONTENT_GIT_BRANCH`, or override `githubEditBase` in `content/site.yaml` |

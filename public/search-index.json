@@ -1,28 +1,428 @@
 [
   {
     "url": "/",
-    "title": "Demo documentation",
-    "excerpt": "Demo documentation This sample ships inside the Portico repository. Point CONTENT_ROOT at your own docs repo when you are ready to go live. What this demo includes and how content is wired to the port"
+    "title": "AgentRuntime Docs",
+    "excerpt": "AgentRuntime Docs Stop experimenting. Put your agents to work. Learn how to design workflows, connect tools via MCP, run agents reliably, and govern access across your workspace. What is AgentRuntime?"
   },
   {
-    "url": "/guide/welcome",
-    "title": "Welcome",
-    "excerpt": "This page lives in `examples/demo-docs/` inside the Portico repository. The renderer reads `docs.json` and `*.mdx` from whatever directory `CONTENT_ROOT` points to. ## Resolution order 1. `CONTENT_ROO"
+    "url": "/es",
+    "title": "Documentación de AgentRuntime",
+    "excerpt": "Documentación de AgentRuntime Deja de experimentar. Pon tus agentes a trabajar. Aprende a diseñar flujos de trabajo, conectar herramientas vía MCP, ejecutar agentes de forma fiable y gobernar el acces"
   },
   {
-    "url": "/es/guide/welcome",
-    "title": "Bienvenida",
-    "excerpt": "Esta página traducida vive en `i18n/es/guide/welcome.mdx`. Visita `/es/guide/welcome` para verla. Si falta una traducción, el portal muestra la versión en inglés con un aviso en la parte superior."
+    "url": "/introduction/what-is-agentruntime",
+    "title": "What is AgentRuntime?",
+    "excerpt": "AgentRuntime is an orchestration platform for **production AI agents**. You design multi-step workflows in the Console, connect third-party tools through MCP (Model Context Protocol), run workloads wi"
   },
   {
-    "url": "/guide/quickstart",
+    "url": "/es/introduction/what-is-agentruntime",
+    "title": "¿Qué es AgentRuntime?",
+    "excerpt": "AgentRuntime es una plataforma de orquestación para **agentes de IA en producción**. Diseñas flujos de trabajo de varios pasos en la Consola, conectas herramientas de terceros mediante MCP (Model Cont"
+  },
+  {
+    "url": "/platform/quickstart",
     "title": "Quickstart",
-    "excerpt": "From the repository root: `npm install` then `npm run dev`. No extra clone is required — the demo content is used automatically. Set `CONTENT_ROOT` to your own docs repository path, or use `CONTENT_GI"
+    "excerpt": "This guide walks you through the essential setup in the [AgentRuntime Console](https://console.agentruntime.io): create a workspace, invite a teammate, connect an integration, and run your first workf"
   },
   {
-    "url": "/reference/content-format",
-    "title": "Content format",
-    "excerpt": "Portico expects a content repository with this layout: | File | Purpose | |------|---------| | `docs.json` | Site name, navigation groups, navbar | | `index.mdx` | Home page | | `{path}.mdx` | One pag"
+    "url": "/platform/key-concepts",
+    "title": "Key concepts",
+    "excerpt": "Understanding the core model makes every other guide easier to follow. This page explains the foundational concepts you will encounter throughout AgentRuntime. ## Workspaces (tenants) A **workspace** "
+  },
+  {
+    "url": "/platform/settings",
+    "title": "Workspace settings",
+    "excerpt": "Workspace settings control how your organization is identified, how members authenticate, and how billing is managed. Navigate to **Settings** in the [Console](https://console.agentruntime.io) to acce"
+  },
+  {
+    "url": "/platform/user-management",
+    "title": "User management",
+    "excerpt": "Workspace admins manage the member lifecycle from **Settings → Members** in the [Console](https://console.agentruntime.io): invite new users, adjust roles, and deactivate accounts. ## Invite by email "
+  },
+  {
+    "url": "/platform/roles-permissions",
+    "title": "Roles and permissions",
+    "excerpt": "AgentRuntime uses role-based access control (RBAC). Roles are assigned at the **tenant** (workspace) level and at the **project** level. Project roles govern most day-to-day Console and API access. ##"
+  },
+  {
+    "url": "/platform/billing-and-credits",
+    "title": "Billing and credits",
+    "excerpt": "AgentRuntime meters usage in **credits**. Workflows, memory indexing, and other billable actions debit your workspace balance. Manage billing from **Settings** (`/settings`) in the [Console](https://c"
+  },
+  {
+    "url": "/platform/analytics",
+    "title": "Analytics",
+    "excerpt": "**Analytics** (`/analytics`) summarizes how your workflows perform and what they cost. Open it from the Console sidebar when **Analytics** is enabled for your deployment. Analytics nav is feature-flag"
+  },
+  {
+    "url": "/platform/security-and-compliance",
+    "title": "Security and compliance",
+    "excerpt": "AgentRuntime is a multi-tenant platform for running AI agent workflows. This page summarizes security practices for builders and enterprise evaluators. It is an overview — not a contractual commitment"
+  },
+  {
+    "url": "/platform/referrals-and-affiliates",
+    "title": "Referrals and affiliates",
+    "excerpt": "AgentRuntime runs **two related programs**: 1. **Referrals** (`/referrals`) — Self-service for promoters who share codes with friends 2. **Friend referral credits** — Bonus workspace credits when a ne"
+  },
+  {
+    "url": "/platform/feature-availability",
+    "title": "Feature availability",
+    "excerpt": "Some capabilities are fully supported in the Console; others are API-only, feature-flagged, or catalog placeholders. This page is the single reference — individual guides link here instead of repeatin"
+  },
+  {
+    "url": "/platform/troubleshooting",
+    "title": "Troubleshooting",
+    "excerpt": "This guide covers the most common operator issues in AgentRuntime. Start from [Command Center](/workflows/command-center) for run-level triage, then use the sections below by symptom. ## Failed runs #"
+  },
+  {
+    "url": "/workflows/studio",
+    "title": "Workflow Studio",
+    "excerpt": "**Workflow Studio** is the visual editor for designing agent workflows. Open it from the Console sidebar at **Workflow Studio** (`/workflow`). ## The authoring loop Click **New workflow** and give it "
+  },
+  {
+    "url": "/workflows/step-types",
+    "title": "Step types",
+    "excerpt": "Workflow graphs are made of typed **steps**. Each step has an `id`, `type`, `name`, optional `depends_on`, and type-specific fields. The JSON schema is published at [agentruntime.io/schemas/workflow-g"
+  },
+  {
+    "url": "/workflows/command-center",
+    "title": "Command Center",
+    "excerpt": "**Command Center** is your workspace-wide run inbox. Open it from the Console sidebar at **Command Center** (`/command-center`). Use it when you need to approve human tasks, pause or stop runs, or tri"
+  },
+  {
+    "url": "/workflows/runs-and-command-center",
+    "title": "Runs and Command Center",
+    "excerpt": "A **run** is one execution of a published workflow version. This guide covers run lifecycle, controls, observability, and the Command Center inbox. ## Starting a run Start runs from: - **Workflow Stud"
+  },
+  {
+    "url": "/workflows/human-tasks",
+    "title": "Human tasks",
+    "excerpt": "**Human tasks** let you pause a workflow until a person reviews, approves, rejects, or edits data. They are essential for production agents that take real-world actions — sending emails, updating CRM "
+  },
+  {
+    "url": "/workflows/patterns",
+    "title": "Workflow patterns",
+    "excerpt": "These patterns combine step types, Command Center, and integrations into workflows you can adapt for production. See the [JSON cookbook](/workflows/json-schema-cookbook) for full graph examples. ## Ap"
+  },
+  {
+    "url": "/workflows/json-schema-cookbook",
+    "title": "Workflow JSON cookbook",
+    "excerpt": "Workflow graphs are JSON documents describing a directed acyclic graph of steps. Author them in **Workflow Studio** or submit them via `POST /v1/workflows`. **JSON Schema:** [agentruntime.io/schemas/w"
+  },
+  {
+    "url": "/guides/overview",
+    "title": "End-to-end guides",
+    "excerpt": "These guides walk through **complete workflows** you can build in the Console. Each one connects multiple MCP adapters, shows per-step JSON, includes a **full workflow graph** for copy-paste, and link"
+  },
+  {
+    "url": "/guides/form-webhook-postgres-resend-digest",
+    "title": "Form webhook → Postgres → Resend digest",
+    "excerpt": "Build a pipeline that **ingests form data**, **persists it in Postgres**, and **emails a digest** to your team. Runs are triggered by an [inbound webhook](/integrations/inbound-webhooks); a separate s"
+  },
+  {
+    "url": "/guides/shopify-order-whatsapp",
+    "title": "Shopify order → WhatsApp template",
+    "excerpt": "Notify customers on WhatsApp when their **Shopify order ships**. The workflow is triggered by a Shopify webhook (or manual test), fetches order details, and sends an approved **template message** — re"
+  },
+  {
+    "url": "/guides/github-pr-review",
+    "title": "GitHub PR → LLM review → comment",
+    "excerpt": "Automate first-pass **pull request reviews** without posting unreviewed AI text to your repo. The workflow fetches PR metadata and diffs, drafts a review with an LLM, pauses for **human approval** in "
+  },
+  {
+    "url": "/guides/scheduled-postgres-gmail-report",
+    "title": "Scheduled Postgres → Gmail report",
+    "excerpt": "Send a **weekly operational report** pulled from Postgres, narrated by an LLM, and delivered by Gmail. AgentRuntime does not run cron internally — an external scheduler fires an [inbound webhook](/int"
+  },
+  {
+    "url": "/guides/lead-sync-activecampaign-notion",
+    "title": "Lead webhook → ActiveCampaign + Notion",
+    "excerpt": "When a lead form submits, **create or update a CRM contact** in ActiveCampaign and **append a row** to a Notion database for your team to track. One webhook trigger drives both MCP calls in parallel a"
+  },
+  {
+    "url": "/integrations/quickstart",
+    "title": "Quickstart",
+    "excerpt": "This guide walks through the three-layer integration model in AgentRuntime: **connections** (credentials), **MCP instances** (deployed tool servers), and **workflow steps** (runtime tool calls). **Doc"
+  },
+  {
+    "url": "/integrations/connections",
+    "title": "Connections",
+    "excerpt": "**Connections** store Vault-backed credentials MCP tools use at runtime. Manage them from **Connections** (`/connections`) in the [Console](https://console.agentruntime.io). Connections are separate f"
+  },
+  {
+    "url": "/integrations/mcp-instances",
+    "title": "MCP instances",
+    "excerpt": "An **MCP instance** is your project's deployment of an MCP server from the platform catalog (or a custom server you register). Instances make tools available to workflow **mcp_call** steps. Manage the"
+  },
+  {
+    "url": "/integrations/custom-mcp-servers",
+    "title": "Custom MCP servers",
+    "excerpt": "Most teams install connectors from the **platform catalog** (Gmail, Postgres, GitHub, and 40+ Go adapters). When you operate your own **Model Context Protocol** server — internal tools, a partner API "
+  },
+  {
+    "url": "/integrations/google-workspace",
+    "title": "Google Workspace",
+    "excerpt": "AgentRuntime connects to Google Workspace through a single **Google connection** (OAuth 2.0). One authorized account can power multiple MCP adapters — you do not repeat OAuth for each service. ## Supp"
+  },
+  {
+    "url": "/integrations/authentication",
+    "title": "Integration authentication",
+    "excerpt": "Connectors use different authentication methods. AgentRuntime stores credentials in **connections** and injects them at runtime through **MCP instance bindings** — never embed secrets in workflow grap"
+  },
+  {
+    "url": "/integrations/inbound-webhooks",
+    "title": "Inbound webhooks",
+    "excerpt": "**Inbound webhooks** let external systems start workflow runs by POSTing to a signed URL. Each subscription is linked to one workflow in your project. **Generally available** when `inbound_webhooks` i"
+  },
+  {
+    "url": "/integrations/inbound-webhook-wizard",
+    "title": "Inbound webhook wizard",
+    "excerpt": "This page walks through the **Console UI** for inbound webhooks. For the security model, signature algorithm, and API reference, see [Inbound webhooks](/integrations/inbound-webhooks). ## Before you s"
+  },
+  {
+    "url": "/integrations/connector-catalog",
+    "title": "Connector catalog",
+    "excerpt": "AgentRuntime ships **40 Go MCP adapters**. Each connector has a dedicated page in the **Connectors** section (`/connectors/{slug}`) with authentication, tools, and configuration. **Integration setup**"
+  },
+  {
+    "url": "/connectors/activecampaign",
+    "title": "ActiveCampaign connector",
+    "excerpt": "The **activecampaign** MCP adapter wraps [ActiveCampaign API v3](https://developers.activecampaign.com/reference/overview). Use it to sync contacts, manage list subscriptions, and update CRM records f"
+  },
+  {
+    "url": "/connectors/brave",
+    "title": "Brave Search connector",
+    "excerpt": "The **brave** MCP adapter connects to the [Brave Search API](https://brave.com/search/api/). Run privacy-focused web searches, fetch news and media results, look up local businesses, and generate AI s"
+  },
+  {
+    "url": "/connectors/browserless",
+    "title": "Browserless connector",
+    "excerpt": "The **browserless** MCP adapter connects to [Browserless](https://www.browserless.io/) for headless browser automation. Render pages to images or PDFs, extract structured data with CSS selectors, run "
+  },
+  {
+    "url": "/connectors/clickup",
+    "title": "ClickUp connector",
+    "excerpt": "The **clickup** MCP adapter connects to the [ClickUp API](https://clickup.com/api). List workspaces and spaces, create and update tasks, read comments, and keep project management in sync with automat"
+  },
+  {
+    "url": "/connectors/cursor",
+    "title": "Cursor connector",
+    "excerpt": "The **cursor** MCP adapter connects to the [Cursor Cloud Agents API](https://docs.cursor.com/). Launch coding agents against GitHub repos, monitor progress, send follow-up instructions, and optionally"
+  },
+  {
+    "url": "/connectors/elevenlabs",
+    "title": "ElevenLabs connector",
+    "excerpt": "The **elevenlabs** MCP adapter connects to the [ElevenLabs API](https://elevenlabs.io/docs). List available voices and convert text to MP3 audio — ideal for podcast snippets, IVR prompts, accessibilit"
+  },
+  {
+    "url": "/connectors/exa",
+    "title": "Exa connector",
+    "excerpt": "The **exa** MCP adapter connects to [Exa](https://exa.ai/) for neural and keyword web search. Find relevant pages, discover content similar to a URL, and get AI-generated answers with citations — idea"
+  },
+  {
+    "url": "/connectors/firestore",
+    "title": "Firestore connector",
+    "excerpt": "The **firestore** MCP adapter connects to Google Cloud Firestore with a project ID, optional database ID, and Google service account credentials. It provides document reads, writes, collection queries"
+  },
+  {
+    "url": "/connectors/geminiimage",
+    "title": "Gemini Images connector",
+    "excerpt": "The **geminiimage** MCP adapter connects to [Google AI Studio](https://aistudio.google.com/) image APIs. Generate images from prompts, edit existing images with instructions, and compose multiple inpu"
+  },
+  {
+    "url": "/connectors/github",
+    "title": "GitHub connector",
+    "excerpt": "The **github** MCP adapter wraps the [GitHub REST API](https://docs.github.com/en/rest). Use it to triage issues, review pull requests, sync repo metadata, and post updates when workflows complete — w"
+  },
+  {
+    "url": "/connectors/gitlab",
+    "title": "GitLab connector",
+    "excerpt": "The **gitlab** MCP adapter connects to the [GitLab REST API v4](https://docs.gitlab.com/ee/api/rest/). Use it to triage issues, create bug reports from workflow failures, and explore project metadata "
+  },
+  {
+    "url": "/connectors/gmail",
+    "title": "Gmail connector",
+    "excerpt": "The **gmail** MCP adapter wraps the [Gmail REST API v1](https://developers.google.com/gmail/api/reference/rest). Use it in workflow **mcp_call** steps to send notifications, search inboxes, and reply "
+  },
+  {
+    "url": "/connectors/google-calendar",
+    "title": "Google Calendar connector",
+    "excerpt": "The **google-calendar** MCP adapter wraps the [Google Calendar API](https://developers.google.com/calendar/api/v3/reference). Use it in workflow **mcp_call** steps to read upcoming events, find free t"
+  },
+  {
+    "url": "/connectors/google-docs",
+    "title": "Google Docs connector",
+    "excerpt": "The **google-docs** MCP adapter wraps the [Google Docs API](https://developers.google.com/docs/api/reference/rest) and Drive search. Use it in workflow **mcp_call** steps to read document text, append"
+  },
+  {
+    "url": "/connectors/google-drive",
+    "title": "Google Drive connector",
+    "excerpt": "The **google-drive** MCP adapter wraps the [Google Drive API](https://developers.google.com/drive/api/reference/rest/v3). Use it in workflow **mcp_call** steps to search and list files, upload attachm"
+  },
+  {
+    "url": "/connectors/google-form",
+    "title": "Google Form connector",
+    "excerpt": "The **google-form** MCP adapter wraps the [Google Forms API](https://developers.google.com/forms/api/reference/rest) and Drive file operations for form lifecycle. Use it in workflow **mcp_call** steps"
+  },
+  {
+    "url": "/connectors/google-search",
+    "title": "Google Search connector",
+    "excerpt": "The **google-search** MCP adapter calls [Vertex AI Search](https://cloud.google.com/generative-ai-app-builder/docs/enterprise-search-introduction) (Discovery Engine) via `searchLite`. Use it in workfl"
+  },
+  {
+    "url": "/connectors/google-search-console",
+    "title": "Google Search Console connector",
+    "excerpt": "The **google-search-console** MCP adapter wraps the [Search Console APIs](https://developers.google.com/webmaster-tools/v1/api_reference_index) for analytics, URL inspection, and sitemap management. U"
+  },
+  {
+    "url": "/connectors/google-sheets",
+    "title": "Google Sheets connector",
+    "excerpt": "The **google-sheets** MCP adapter wraps the [Google Sheets API](https://developers.google.com/sheets/api/reference/rest) and Drive search APIs. Use it in workflow **mcp_call** steps to sync CRM rows, "
+  },
+  {
+    "url": "/connectors/google-slides",
+    "title": "Google Slides connector",
+    "excerpt": "The **google-slides** MCP adapter wraps the [Google Slides API](https://developers.google.com/slides/api/reference/rest) and Drive search. Use it in workflow **mcp_call** steps to create decks, fill t"
+  },
+  {
+    "url": "/connectors/google-tasks",
+    "title": "Google Tasks connector",
+    "excerpt": "The **google-tasks** MCP adapter wraps the [Google Tasks API](https://developers.google.com/tasks/reference/rest). Use it in workflow **mcp_call** steps to create follow-ups from form submissions, lis"
+  },
+  {
+    "url": "/connectors/healthcare",
+    "title": "Healthcare connector",
+    "excerpt": "The **healthcare** MCP adapter provides **mock, demo-only** tools that simulate FHIR-style clinical workflows: patient lookup, diagnosis analysis, medication checks, scheduling, and notifications. Use"
+  },
+  {
+    "url": "/connectors/linkedin",
+    "title": "LinkedIn connector",
+    "excerpt": "The **linkedin** MCP adapter connects to the [LinkedIn Marketing / Community Management APIs](https://learn.microsoft.com/en-us/linkedin/). Use it to draft and publish posts, upload images, and list o"
+  },
+  {
+    "url": "/connectors/mongodb",
+    "title": "MongoDB connector",
+    "excerpt": "The **mongodb** MCP adapter connects with a MongoDB URI (`mongodb://` or `mongodb+srv://`) and a default database name. It provides document reads, writes, counts, and aggregation pipelines using Exte"
+  },
+  {
+    "url": "/connectors/mysql",
+    "title": "MySQL connector",
+    "excerpt": "The **mysql** MCP adapter connects to MySQL over TCP with host, port, database, and credential-based authentication. It provides SQL execution, schema introspection, query-plan analysis, and operation"
+  },
+  {
+    "url": "/connectors/neo4j",
+    "title": "Neo4j connector",
+    "excerpt": "The **neo4j** MCP adapter connects over Bolt with a URI, username, password, and optional target database name. It provides read-only and write Cypher execution, schema introspection (`labels`, relati"
+  },
+  {
+    "url": "/connectors/notion",
+    "title": "Notion connector",
+    "excerpt": "The **notion** MCP adapter uses the [Notion API](https://developers.notion.com) to search workspaces, update database rows, append page content, and manage comments. Ideal for run logs, CRM-style data"
+  },
+  {
+    "url": "/connectors/openaiimage",
+    "title": "OpenAI Images connector",
+    "excerpt": "The **openaiimage** MCP adapter connects to the [OpenAI Images API](https://platform.openai.com/docs/guides/images). Generate images from text prompts, edit existing images with instructions, and crea"
+  },
+  {
+    "url": "/connectors/postgres",
+    "title": "Postgres connector",
+    "excerpt": "The **postgres** MCP adapter connects with a PostgreSQL DSN (connection string) and provides read/write SQL access, schema introspection, and query planning. Use it for operational reporting, data enr"
+  },
+  {
+    "url": "/connectors/reddit",
+    "title": "Reddit connector",
+    "excerpt": "The **reddit** MCP adapter connects to the [Reddit OAuth API](https://www.reddit.com/dev/api/). Fetch post details and comment threads, create self or link posts, comment, edit, and delete content — u"
+  },
+  {
+    "url": "/connectors/redis",
+    "title": "Redis connector",
+    "excerpt": "The **redis** MCP adapter connects to Redis with an address (`host:port`), optional ACL username/password, and a logical database index. It provides key-value helpers (`GET`, `SET`, `INCR`, TTL manage"
+  },
+  {
+    "url": "/connectors/resend",
+    "title": "Resend connector",
+    "excerpt": "The **resend** MCP adapter integrates [Resend](https://resend.com) for reliable transactional email. Use it to notify users when workflows finish, send reports, and drive onboarding sequences — with a"
+  },
+  {
+    "url": "/connectors/rss",
+    "title": "RSS connector",
+    "excerpt": "The **rss** MCP adapter fetches and parses **RSS 2.0** and **Atom** feeds from public URLs. No OAuth or API keys are required for typical public feeds — pass feed URLs directly in workflow steps for n"
+  },
+  {
+    "url": "/connectors/shopify",
+    "title": "Shopify connector",
+    "excerpt": "The **shopify** MCP adapter connects to your store's [Admin REST API](https://shopify.dev/docs/api/admin-rest). Automate catalog updates, order lookups, customer sync, and inventory adjustments when a"
+  },
+  {
+    "url": "/connectors/slack",
+    "title": "Slack connector",
+    "excerpt": "The **slack** MCP adapter is listed in the AgentRuntime connector catalog to reserve Slack messaging integration. The adapter shell accepts a bot token connection, but **no tools are registered in the"
+  },
+  {
+    "url": "/connectors/sqlite",
+    "title": "SQLite connector",
+    "excerpt": "The **sqlite** MCP adapter reads and writes local `.db` files on the connector host. It provides read-only queries, optional mutating SQL (when `allow_write` is enabled), schema introspection, and row"
+  },
+  {
+    "url": "/connectors/vapi",
+    "title": "Vapi connector",
+    "excerpt": "The **vapi** MCP adapter connects to the [Vapi API](https://docs.vapi.ai/). Discover voice assistants configured in your Vapi account and retrieve full assistant configurations — useful for auditing p"
+  },
+  {
+    "url": "/connectors/whatsapp",
+    "title": "WhatsApp connector",
+    "excerpt": "The **whatsapp** MCP adapter sends messages through Meta's WhatsApp Cloud API — text, media, and pre-approved templates. ## Prerequisites - A Meta developer account and Business app with the **WhatsAp"
+  },
+  {
+    "url": "/connectors/wrike",
+    "title": "Wrike connector",
+    "excerpt": "The **wrike** MCP adapter connects to the [Wrike API v4](https://developers.wrike.com/). Create projects and tasks, search folders, upload attachments, post comments, and call raw API endpoints — suit"
+  },
+  {
+    "url": "/connectors/youtube",
+    "title": "YouTube connector",
+    "excerpt": "The **youtube** MCP adapter connects to the [YouTube Data API v3](https://developers.google.com/youtube/v3). Search and list videos, resolve channel IDs, read RSS feeds without quota, manage comments "
+  },
+  {
+    "url": "/ai/llm-providers",
+    "title": "LLM providers",
+    "excerpt": "Workflow **llm_call** steps and platform agents resolve models through the **Providers** catalog. Add your vendor API keys so runs use your accounts and billing. Open **Providers** in the [Console](ht"
+  },
+  {
+    "url": "/ai/autopilot-and-chat",
+    "title": "Autopilot and chat",
+    "excerpt": "AgentRuntime provides two chat surfaces: - **Console Chat** (`/chat`) — Autopilot copilot with thread list and streaming responses - **Workspace chat** ([space.agentruntime.io](https://space.agentrunt"
+  },
+  {
+    "url": "/ai/memory",
+    "title": "Memory",
+    "excerpt": "**Preview** — See [Feature availability](/platform/feature-availability). Memory APIs and workflow hooks are implemented. The dedicated Memory nav in the Console is **off in production** (`enableMemor"
+  },
+  {
+    "url": "/api/overview",
+    "title": "API overview",
+    "excerpt": "The AgentRuntime **BFF API** is the public integration surface for all programmatic access. Base URL: | Environment | URL | |-------------|-----| | Production | `https://api.agentruntime.io` | | Devel"
+  },
+  {
+    "url": "/api/authentication",
+    "title": "API authentication",
+    "excerpt": "AgentRuntime supports multiple authentication methods depending on whether you use the Console, call the REST API, or connect an IDE through Platform MCP. ## Console session (browser) Sign in at [cons"
+  },
+  {
+    "url": "/api/examples",
+    "title": "API examples",
+    "excerpt": "These examples use the public BFF at **`https://api.agentruntime.io`**. Replace tenant slug, project ID, workflow UUIDs, and tokens with your values. All authenticated examples require: ```bash export"
+  },
+  {
+    "url": "/api/reference",
+    "title": "API reference",
+    "excerpt": "The AgentRuntime public API is served by the BFF at **`https://api.agentruntime.io`**. All customer integrations should use this base URL. For request/response samples, see [API examples](/api/example"
+  },
+  {
+    "url": "/api/platform-mcp",
+    "title": "Platform MCP",
+    "excerpt": "**Platform MCP** exposes the AgentRuntime BFF as MCP tools so IDEs and AI assistants can list workflows, start runs, check analytics, and manage integrations — without crafting raw HTTP requests. | | "
   },
   {
     "url": "/reference",

@@ -34,6 +34,33 @@ export type SiteConfig = {
 
 let cached: SiteConfig | null = null;
 
+const DEFAULT_CONTENT_REPO_URL =
+  "https://github.com/agentruntime-io/agentruntime-docs";
+
+/** GitHub repo URL for edit links — explicit override, or derived from CONTENT_GIT_REPO (no .git). */
+export function resolveContentRepoUrl(): string {
+  const explicit = process.env.CONTENT_REPO_URL?.trim();
+  if (explicit) return explicit.replace(/\/$/, "");
+
+  const gitRepo = process.env.CONTENT_GIT_REPO?.trim();
+  if (gitRepo) {
+    return gitRepo.replace(/\.git\/?$/i, "").replace(/\/$/, "");
+  }
+
+  return DEFAULT_CONTENT_REPO_URL;
+}
+
+/** Docs content branch — used for clone (prepare-content) and GitHub edit links. */
+export function resolveContentGitBranch(): string {
+  return process.env.CONTENT_GIT_BRANCH?.trim() || "main";
+}
+
+export function buildGithubEditBase(repoUrl: string, branch: string): string {
+  const base = repoUrl.replace(/\/$/, "");
+  const cleanBranch = branch.replace(/^\/+|\/+$/g, "");
+  return `${base}/blob/${cleanBranch}`;
+}
+
 async function loadPortalOverrides(): Promise<Partial<SiteConfig>> {
   try {
     const raw = await fs.readFile(
@@ -54,9 +81,8 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     loadPortalOverrides(),
   ]);
 
-  const contentRepo =
-    process.env.CONTENT_REPO_URL ??
-    "https://github.com/agentruntime-io/agentruntime-docs";
+  const contentRepo = resolveContentRepoUrl();
+  const contentBranch = resolveContentGitBranch();
 
   cached = {
     name: docsJson.name,
@@ -66,7 +92,8 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     url: overrides.url ?? process.env.SITE_URL ?? "https://docs.agentruntime.io",
     ogImage: overrides.ogImage ?? process.env.SITE_OG_IMAGE,
     githubEditBase:
-      overrides.githubEditBase ?? `${contentRepo.replace(/\/$/, "")}/blob/main`,
+      overrides.githubEditBase ??
+      buildGithubEditBase(contentRepo, contentBranch),
     verification: overrides.verification,
     openapi: overrides.openapi ?? { specs: [] },
     navbar: docsJson.navbar

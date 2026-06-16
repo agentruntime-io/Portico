@@ -69,12 +69,22 @@ npm run start
 
 ## Configuration
 
-| Variable | Purpose |
-|----------|---------|
-| `CONTENT_ROOT` | Local path to your docs checkout |
-| `CONTENT_GIT_REPO` | Clone docs at build time (Vercel / CI) |
-| `SITE_URL` | Canonical URL for sitemap and metadata |
-| `CONTENT_REPO_URL` | “Edit this page” GitHub base URL |
+Most deployments need **two** environment variables:
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `CONTENT_GIT_REPO` | Yes (production) | Git clone URL for your docs repo (`.git` suffix is fine) |
+| `SITE_URL` | Yes (production) | Canonical URL for sitemap and metadata |
+
+Optional:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `CONTENT_GIT_BRANCH` | `main` | Branch to clone and for “Edit this page” links |
+| `CONTENT_ROOT` | — | Local docs path (dev only; don’t use with `CONTENT_GIT_REPO` on Vercel) |
+| `CONTENT_REPO_URL` | derived from `CONTENT_GIT_REPO` | Override edit-link repo URL (without `.git`) |
+
+“Edit this page” uses `CONTENT_GIT_REPO` with `.git` stripped and the same branch as `CONTENT_GIT_BRANCH`. Override with `CONTENT_REPO_URL` or `githubEditBase` in `content/site.yaml` if needed.
 
 Renderer overrides: `content/site.yaml` (public URL, OpenAPI specs, verification tokens).
 
