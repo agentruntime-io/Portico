@@ -6,9 +6,8 @@
 #
 # Vercel project env (portal connected to this deploy hook):
 #   CONTENT_GIT_REPO    — https://github.com/your-org/your-docs.git
-#   CONTENT_GIT_BRANCH  — main
 #   SITE_URL            — https://docs.yourcompany.com
-#   CONTENT_REPO_URL    — same as CONTENT_GIT_REPO (for Edit links)
+#   CONTENT_GIT_BRANCH  — optional (default main)
 
 name: Deploy documentation site
 

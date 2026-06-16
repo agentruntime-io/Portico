@@ -340,7 +340,7 @@ Markdown and MDX fences are highlighted at build time via **Shiki** + `rehype-pr
 
 ### 5.5c Page actions
 
-`PageActions` groups **Copy link** + **Edit this page** (when `githubEditBase` is set in `site.yaml` / `CONTENT_REPO_URL`).
+`PageActions` groups **Copy link** + **Edit this page** (when `githubEditBase` is set — derived from `CONTENT_GIT_REPO` + `CONTENT_GIT_BRANCH`, or overridden in `site.yaml`).
 
 - Edit URL: `githubEditBase` + `i18n/{locale}/path.mdx` via `githubEditUrl()` in `src/lib/edit-url.ts`
 - Shown in `ProsePageLayout` and marketing-style MDX home pages

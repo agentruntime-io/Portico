@@ -5,7 +5,8 @@
 name: AgentRuntime Docs
 description: Documentation powered by Portico from AgentRuntime.
 url: https://docs.agentruntime.io
-githubEditBase: https://github.com/agentruntime-io/agentruntime-docs/blob/main
+# Optional: override "Edit this page" base (defaults from CONTENT_GIT_REPO + CONTENT_GIT_BRANCH)
+# githubEditBase: https://github.com/your-org/your-docs/blob/main
 # Default social preview image (absolute URL or site-relative path)
 # ogImage: /og-default.png
 
