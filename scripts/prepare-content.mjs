@@ -41,3 +41,15 @@ if (!fs.existsSync(path.join(target, "docs.json"))) {
 
 fs.writeFileSync(path.join(portalRoot, ".content-root"), target, "utf8");
 console.log(`Content ready at ${target}`);
+
+// Serverless bundles always trace examples/demo-docs. Mirror the clone there so
+// runtime fallback (when .content/ is unavailable) still serves real docs.
+const demoDocs = path.join(portalRoot, "examples", "demo-docs");
+const isGitMetadata = (entry) => /[/\\]\.git(?:[/\\]|$)/.test(entry);
+
+fs.rmSync(demoDocs, { recursive: true, force: true });
+fs.cpSync(target, demoDocs, {
+  recursive: true,
+  filter: (src) => !isGitMetadata(src),
+});
+console.log(`Synced cloned docs to ${demoDocs}`);

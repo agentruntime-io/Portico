@@ -25,6 +25,20 @@ function loadRedirects(): { source: string; destination: string; permanent: bool
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@apidevtools/swagger-parser"],
+  // Cloned docs live under .content/ (gitignored). Dynamic routes read MDX at
+  // request time, so include the checkout in serverless traces on Vercel.
+  outputFileTracingIncludes: {
+    "/*": [".content/**/*", ".content-root", "content/**/*"],
+    "/[...slug]": [".content/**/*", ".content-root", "content/**/*"],
+    "/changelog": [".content/**/*", ".content-root", "content/**/*"],
+    "/reference": [".content/**/*", ".content-root", "content/**/*"],
+    "/reference/[specId]": [".content/**/*", ".content-root", "content/**/*"],
+    "/reference/[specId]/[opSlug]": [
+      ".content/**/*",
+      ".content-root",
+      "content/**/*",
+    ],
+  },
   async redirects() {
     return loadRedirects();
   },
