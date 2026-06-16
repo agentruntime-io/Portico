@@ -1,0 +1,96 @@
+---
+title: Key concepts
+description: Workspaces, projects, roles, workflows, runs, MCP, and connections — the AgentRuntime platform model.
+---
+
+Understanding the core model makes every other guide easier to follow. This page explains the foundational concepts you will encounter throughout AgentRuntime.
+
+## Workspaces (tenants)
+
+A **workspace** is the top-level container for your organization. It holds all projects, members, billing, MCP resources, and connections. Every user belongs to at least one workspace, and each workspace operates independently with its own configuration and data.
+
+Workspaces are identified by a unique **slug** used in URLs and API calls (`X-Tenant-Id` header). Each workspace is also stamped with a **`product_code`** (for example `agentruntime` on this Console) that scopes its plan catalog and billing policies. See [Multi-product billing](/platform/multi-product-billing).
+
+<Note>
+  You do not choose `product_code` in the UI — it is set from the Console deployment when the workspace is created.
+</Note>
+
+## Projects
+
+**Projects** are the primary unit of work inside a workspace. Workflows, runs, MCP instances, analytics, and billing context are scoped to a project. You can create multiple projects per workspace, and the same user can belong to multiple projects with different roles in each.
+
+<Info>
+  Project-level roles take precedence within that project. A user who is a **project viewer** in one project can be a **project contributor** in another.
+</Info>
+
+## Members and roles
+
+AgentRuntime uses role-based access control (RBAC) at both the tenant and project level.
+
+### Project roles
+
+| Role | Typical access |
+|------|----------------|
+| **project_viewer** | Read workflows, runs, analytics, and chat. Cannot edit graphs or manage integrations. |
+| **project_contributor** | Create and edit workflows, run workflows, manage connections and MCP instances, view billing usage. |
+| **project_admin** | Full project control including member management within the project. |
+
+### Tenant roles
+
+| Role | Typical access |
+|------|----------------|
+| **tenant_admin** | Workspace settings, billing, member invites, vault secrets, and all projects. |
+
+See [Roles and permissions](/platform/roles-permissions) for the full matrix.
+
+## Workflows
+
+A **workflow** is a directed acyclic graph (DAG) of **steps**. You author workflows in **Workflow Studio**, validate them with a server-side dry-run, publish immutable versions, and execute them as **runs**.
+
+Common step types:
+
+- **mcp_call** — Invoke a tool on an MCP server
+- **llm_call** — Call an LLM with a prompt and model
+- **human_task** — Pause for human approval or input
+- **lua_script** — Transform data with inline Lua
+- **for_each** — Fan out over a list with controlled parallelism
+
+Steps reference upstream results with template variables like `{{steps.fetch-contacts.result.items}}`.
+
+**Run-start input** (`{{input.topic}}`, etc.) comes from `trigger_payload` at run start. Workflow Studio **Run setup** lets you save default values on the version; API and webhooks supply their own unless you opt in with `use_run_setup_defaults`. See [Run setup](/workflows/run-setup).
+
+## Runs
+
+A **run** is a single execution of a published workflow version. Runs are event-driven and stream step lifecycle events (started, completed, failed, paused) to the Console over WebSocket. You can **pause**, **resume**, or **stop** runs from Workflow Studio or the API.
+
+Pending human tasks across all runs appear in **Command Center**.
+
+## MCP servers and instances
+
+An **MCP server** is a catalog entry describing a tool server (platform-provided or custom). An **MCP instance** is your project's deployment of that server — with config profiles, environment variables, and **connection bindings** that supply credentials at runtime.
+
+Workflow **mcp_call** steps target a tool on an MCP instance (`instance_id` + `server_url` in Studio). Shared graphs can use **`server_url` only** — import remaps to your workspace instances.
+
+## Connections
+
+A **connection** stores integration credentials: Google OAuth tokens, WhatsApp business credentials, or API keys. Connections are created in **Connections** and bound to MCP instances so tools authenticate correctly without embedding secrets in workflow graphs.
+
+## Agents and Autopilot
+
+**Platform agents** are reusable agent definitions installed in your project. They participate in chat rooms via the agent service.
+
+**Autopilot** is the Console copilot — a streaming assistant in the **Chat** panel that can help you navigate Workflow Studio, scaffold workflows, and start runs. Autopilot and chat threads are separate from workflow execution but can trigger workflow actions.
+
+## API access
+
+Programmatic access uses:
+
+- **Session cookies** — Browser login through the Console
+- **Personal access tokens (PATs)** — Bearer tokens with scopes like `workflow:read`, `workflow:run`, and `mcp:execute`
+- **Platform MCP** — PAT-authenticated MCP tools at `mcp.agentruntime.io` for IDE integrations
+
+See [API authentication](/api/authentication).
+
+## Billing and credits
+
+Usage is metered per action (LLM tokens, MCP tool calls, workflow steps). The **Analytics** page and billing APIs show credits consumed, run counts, and plan status. Trials and subscriptions are managed under **Settings → Billing**.

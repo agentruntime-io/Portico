@@ -1,0 +1,96 @@
+---
+title: Runs and Command Center
+description: Start, control, and observe workflow runs. Manage approvals from Command Center.
+---
+
+A **run** is one execution of a published workflow version. This guide covers run lifecycle, controls, observability, and the Command Center inbox.
+
+## Starting a run
+
+Start runs from:
+
+- **Workflow Studio** — Run button on a published workflow
+- **REST API** — `POST /v1/workflows/{id}/command` with command `start`
+- **Inbound webhooks** — Signed external triggers (see [Inbound webhooks](/integrations/inbound-webhooks))
+- **Autopilot** — Chat command to run a workflow by name
+
+Runs inherit the workflow's published graph, connection overrides, and input `params`.
+
+## Run controls
+
+Send commands via the API or Studio run panel:
+
+| Command | Effect |
+|---------|--------|
+| `start` | Begin a new run |
+| `pause` | Pause scheduling; in-flight steps may complete |
+| `resume` | Continue a paused run |
+| `stop` | Halt the run. Use `params.mode`: `immediate` (default) or `graceful` (drain in-flight work) |
+
+Stopping immediately cancels in-flight MCP tool calls. LLM calls are best-effort cancelled.
+
+## Observing runs
+
+### Workflow Studio
+
+The run panel shows a live event log: step started, tool result, LLM output, failures, and pauses. Subscribe via WebSocket for sub-second updates.
+
+### Analytics
+
+The **Analytics** page (`/analytics`) shows workspace-level metrics:
+
+- Live and recent runs
+- Success rate
+- Steps executed
+- Credits consumed
+- Usage timeseries
+
+Project contributors can access analytics APIs at `/v1/analytics/*`.
+
+### Run APIs
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /v1/runs` | Tenant-wide run feed |
+| `GET /v1/workflows/{id}/runs` | Runs for one workflow |
+| `GET /v1/workflows/{id}/runs/{runID}/events` | Step event log |
+| `GET /v1/workflows/{id}/runs/{runID}/context` | Step state and variables |
+
+## Command Center
+
+**Command Center** (`/command-center`) is your workspace-wide run inbox for approvals, active runs, and recent failures.
+
+See the dedicated [Command Center guide](/workflows/command-center) for daily operator workflows, run controls, and what to do when a run looks stuck.
+
+## Failure handling
+
+When a step fails, the run becomes **`failed`** (terminal). The canvas and event log show distinct step outcomes — not stale “Processing” or “Pending” on branches that cannot complete.
+
+### Step status badges
+
+| Badge | When |
+|-------|------|
+| **Failed** | The step that caused the run failure (read the error in Events) |
+| **Cancelled** | Was **in flight** (e.g. parallel LLM call) when another step failed the run |
+| **Skipped (Blocked)** | Never started — blocked because an upstream or parallel dependency failed |
+| **Success** | Completed before the failure (outputs may still be in run context) |
+
+Parallel example: branch A fails on missing credential; branch B (still calling the LLM) shows **Cancelled**; join step C shows **Skipped (Blocked)**.
+
+<Note>
+  **Cancelled** on a step is not the same as run status `stopped`. Operator **Stop** marks in-flight steps differently (`RUN_STOPPED`). Step failure uses fail-fast cancellation.
+</Note>
+
+Failed runs do **not** resume today. Fix the root cause (model, credential, tool args), publish if the graph changed, and **start a new run**. Planned checkpoint/retry flows are described in [Run recovery (roadmap)](/workflows/run-recovery).
+
+Review the event log for error messages and tool responses. Persisted event types include `step_failed`, `step_cancelled`, and `step_completed` with `skipped: true` and `reason: "blocked"` — see [Run event types](/api/reference#run-event-types).
+
+## Related
+
+- [Run recovery (roadmap)](/workflows/run-recovery) — planned checkpoint retry
+- [Command Center](/workflows/command-center)
+- [Troubleshooting](/platform/troubleshooting)
+
+## Credits and metering
+
+Each action (LLM tokens, MCP tool calls, workflow steps) consumes credits according to your plan's action pricing. Usage appears in Analytics and on the billing usage page.
