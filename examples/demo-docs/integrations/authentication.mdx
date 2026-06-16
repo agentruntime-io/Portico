@@ -1,0 +1,75 @@
+---
+title: Integration authentication
+description: OAuth, API keys, and connection strings for AgentRuntime MCP connectors.
+---
+
+Connectors use different authentication methods. AgentRuntime stores credentials in **connections** and injects them at runtime through **MCP instance bindings** — never embed secrets in workflow graphs.
+
+## OAuth 2.0 (Google, LinkedIn)
+
+OAuth lets users authorize AgentRuntime without sharing passwords. The platform stores access and refresh tokens and refreshes them automatically.
+
+**Supported in Console today:**
+
+- **Google Workspace** — Gmail, Drive, Sheets, Calendar, and related adapters
+- **LinkedIn** — Marketing APIs (via API key connection in most setups)
+
+<Steps>
+  <Step title="Connect">
+    Go to **Connections**, start the OAuth flow, and sign in to the external service.
+  </Step>
+  <Step title="Grant scopes">
+    Approve the requested permissions. Scopes determine which MCP tools work.
+  </Step>
+  <Step title="Bind">
+    Select the connection when installing or editing an MCP instance.
+  </Step>
+</Steps>
+
+If refresh fails (user revoked access), the connection shows **Reconnect**. Re-authorize before running workflows that depend on it.
+
+## API keys and personal access tokens
+
+API keys are the most common method for developer tools, email providers, and search APIs.
+
+**Examples:** Resend, Exa, GitHub (PAT), Shopify, ActiveCampaign, ClickUp, Notion
+
+<Steps>
+  <Step title="Generate a key">
+    Create an API key or PAT in the external service with the minimum required scopes.
+  </Step>
+  <Step title="Save in Connections">
+    Create a connection in the Console and paste the key. Keys are encrypted at rest.
+  </Step>
+  <Step title="Rotate safely">
+    Save a new key, validate bound MCP instances, verify a test run, then revoke the old key in the external service.
+  </Step>
+</Steps>
+
+<Warning>
+  Rotating a key before updating the connection causes failed tool calls in active runs. Always update the connection first.
+</Warning>
+
+## Database connection strings
+
+Database adapters (`postgres`, `mysql`, `mongodb`, `redis`, `neo4j`, `sqlite`, `firestore`) use connection strings or service account JSON stored as connections.
+
+- Use read-only credentials where possible
+- Restrict network access to AgentRuntime egress IPs if your database requires allowlisting
+- Prefer separate connections per environment (sandbox vs production)
+
+## WhatsApp
+
+WhatsApp uses Meta business credentials — either through embedded signup (recommended) or manual entry of phone number ID, business account ID, and access token.
+
+## Workflow and API authentication
+
+Connector auth is separate from **how you authenticate to AgentRuntime**:
+
+| Method | Use for |
+|--------|---------|
+| Console session | Browser UI |
+| Personal access token | Scripts, CI, Platform MCP |
+| Inbound webhook signature | External triggers into workflows |
+
+See [API authentication](/api/authentication).

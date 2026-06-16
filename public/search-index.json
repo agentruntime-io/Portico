@@ -50,6 +50,11 @@
     "excerpt": "AgentRuntime meters usage in **credits**. Workflows, memory indexing, and other billable actions debit your workspace balance. Manage billing from **Settings** (`/settings`) in the [Console](https://c"
   },
   {
+    "url": "/platform/multi-product-billing",
+    "title": "Multi-product billing",
+    "excerpt": "AgentRuntime's billing kernel (**Wheelhouse**) can host **multiple commercial products** on one database. Each product has its own plan catalog, trial policies, and workspace lineage — keyed by **`pro"
+  },
+  {
     "url": "/platform/analytics",
     "title": "Analytics",
     "excerpt": "**Analytics** (`/analytics`) summarizes how your workflows perform and what they cost. Open it from the Console sidebar when **Analytics** is enabled for your deployment. Analytics nav is feature-flag"
@@ -80,6 +85,21 @@
     "excerpt": "**Workflow Studio** is the visual editor for designing agent workflows. Open it from the Console sidebar at **Workflow Studio** (`/workflow`). ## The authoring loop Click **New workflow** and give it "
   },
   {
+    "url": "/workflows/template-intellisense",
+    "title": "Template intellisense",
+    "excerpt": "Workflow Studio helps you connect steps with **template variables** — placeholders like `{{input.topic}}` or `{{steps. .result.message}}` that fill in at run time from start input or upstream step out"
+  },
+  {
+    "url": "/workflows/run-setup",
+    "title": "Run setup and start input",
+    "excerpt": "**Run setup** is how you choose **what input a workflow run starts with** — before any step executes. In Workflow Studio, open **Workflow configuration → Trigger**. Run setup is separate from the canv"
+  },
+  {
+    "url": "/workflows/external-triggers",
+    "title": "External triggers and Run setup",
+    "excerpt": "External systems start workflows **without** Workflow Studio. Saved **Run setup** defaults apply only when explicitly enabled — the default is **off** so callers are not surprised by Studio-saved valu"
+  },
+  {
     "url": "/workflows/step-types",
     "title": "Step types",
     "excerpt": "Workflow graphs are made of typed **steps**. Each step has an `id`, `type`, `name`, optional `depends_on`, and type-specific fields. The JSON schema is published at [agentruntime.io/schemas/workflow-g"
@@ -93,6 +113,11 @@
     "url": "/workflows/runs-and-command-center",
     "title": "Runs and Command Center",
     "excerpt": "A **run** is one execution of a published workflow version. This guide covers run lifecycle, controls, observability, and the Command Center inbox. ## Starting a run Start runs from: - **Workflow Stud"
+  },
+  {
+    "url": "/workflows/run-recovery",
+    "title": "Run recovery (roadmap)",
+    "excerpt": "**Status:** Failed runs are **terminal** today. This page describes current operator workflow and **planned** recovery features. When a step fails, see [Runs and Command Center — Failure handling](/wo"
   },
   {
     "url": "/workflows/human-tasks",

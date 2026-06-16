@@ -1,32 +1,226 @@
 {
-  "name": "Demo Docs",
-  "description": "Example docs.json + MDX content bundled with Portico for local dev and CI.",
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "almond",
+  "name": "AgentRuntime",
+  "description": "User guides for designing, running, and observing production AI agent workflows.",
+  "colors": {
+    "primary": "#5BA8FC",
+    "light": "#93C5FD",
+    "dark": "#3B82F6"
+  },
+  "favicon": "/favicon.ico",
+  "icons": {
+    "library": "lucide"
+  },
+  "styling": {
+    "eyebrows": "breadcrumbs"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "assistant",
+      "mcp",
+      "add-mcp"
+    ]
+  },
   "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Home",
+          "icon": "house",
+          "href": "/"
+        },
+        {
+          "anchor": "Console",
+          "icon": "layout-dashboard",
+          "href": "https://console.agentruntime.io"
+        },
+        {
+          "anchor": "API",
+          "icon": "code",
+          "href": "https://api.agentruntime.io"
+        },
+        {
+          "anchor": "Support",
+          "icon": "life-buoy",
+          "href": "mailto:support@agentruntime.io"
+        }
+      ]
+    },
+    "directory": "card",
     "groups": [
       {
         "group": "Get started",
         "icon": "rocket",
         "expanded": true,
-        "pages": ["guide/welcome", "guide/quickstart"]
+        "pages": [
+          "introduction/what-is-agentruntime",
+          "platform/quickstart",
+          "platform/key-concepts"
+        ]
       },
       {
-        "group": "Reference",
-        "icon": "book",
-        "pages": ["reference/content-format"]
+        "group": "Platform",
+        "icon": "layers",
+        "expanded": true,
+        "pages": [
+          "platform/settings",
+          "platform/user-management",
+          "platform/roles-permissions",
+          "platform/billing-and-credits",
+          "platform/multi-product-billing",
+          "platform/analytics",
+          "platform/security-and-compliance",
+          "platform/referrals-and-affiliates",
+          "platform/feature-availability",
+          "platform/troubleshooting"
+        ]
+      },
+      {
+        "group": "Workflows",
+        "icon": "workflow",
+        "expanded": true,
+        "pages": [
+          "workflows/studio",
+          "workflows/template-intellisense",
+          "workflows/run-setup",
+          "workflows/external-triggers",
+          "workflows/step-types",
+          "workflows/command-center",
+          "workflows/runs-and-command-center",
+          "workflows/run-recovery",
+          "workflows/human-tasks",
+          "workflows/patterns",
+          "workflows/json-schema-cookbook"
+        ]
+      },
+      {
+        "group": "Guides",
+        "icon": "book-open",
+        "expanded": true,
+        "pages": [
+          "guides/overview",
+          "guides/form-webhook-postgres-resend-digest",
+          "guides/shopify-order-whatsapp",
+          "guides/github-pr-review",
+          "guides/scheduled-postgres-gmail-report",
+          "guides/lead-sync-activecampaign-notion"
+        ]
+      },
+      {
+        "group": "Integration setup",
+        "icon": "plug",
+        "expanded": true,
+        "pages": [
+          "integrations/quickstart",
+          "integrations/connections",
+          "integrations/mcp-instances",
+          "integrations/custom-mcp-servers",
+          "integrations/google-workspace",
+          "integrations/authentication",
+          "integrations/inbound-webhooks",
+          "integrations/inbound-webhook-wizard",
+          "integrations/connector-catalog"
+        ]
+      },
+      {
+        "group": "Connectors",
+        "icon": "unplug",
+        "expanded": false,
+        "pages": [
+          "connectors/activecampaign",
+          "connectors/brave",
+          "connectors/browserless",
+          "connectors/clickup",
+          "connectors/cursor",
+          "connectors/elevenlabs",
+          "connectors/exa",
+          "connectors/firestore",
+          "connectors/geminiimage",
+          "connectors/github",
+          "connectors/gitlab",
+          "connectors/gmail",
+          "connectors/google-calendar",
+          "connectors/google-docs",
+          "connectors/google-drive",
+          "connectors/google-form",
+          "connectors/google-search",
+          "connectors/google-search-console",
+          "connectors/google-sheets",
+          "connectors/google-slides",
+          "connectors/google-tasks",
+          "connectors/healthcare",
+          "connectors/linkedin",
+          "connectors/mongodb",
+          "connectors/mysql",
+          "connectors/neo4j",
+          "connectors/notion",
+          "connectors/openaiimage",
+          "connectors/postgres",
+          "connectors/reddit",
+          "connectors/redis",
+          "connectors/resend",
+          "connectors/rss",
+          "connectors/shopify",
+          "connectors/slack",
+          "connectors/sqlite",
+          "connectors/vapi",
+          "connectors/whatsapp",
+          "connectors/wrike",
+          "connectors/youtube"
+        ]
+      },
+      {
+        "group": "AI & chat",
+        "icon": "bot",
+        "expanded": true,
+        "pages": [
+          "ai/llm-providers",
+          "ai/autopilot-and-chat",
+          "ai/memory"
+        ]
+      },
+      {
+        "group": "API",
+        "icon": "terminal",
+        "expanded": false,
+        "pages": [
+          "api/overview",
+          "api/authentication",
+          "api/examples",
+          "api/reference",
+          "api/platform-mcp"
+        ]
       }
     ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
   },
   "navbar": {
     "links": [
       {
-        "label": "Portico",
-        "href": "https://www.agentruntime.io"
+        "label": "Pricing",
+        "href": "https://agentruntime.io/pricing"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/agentruntime-io"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "AgentRuntime",
-      "href": "https://www.agentruntime.io"
+      "label": "Open Console",
+      "href": "https://console.agentruntime.io"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/agentruntime",
+      "github": "https://github.com/agentruntime-io"
     }
   }
 }

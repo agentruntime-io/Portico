@@ -8,11 +8,9 @@ import { compileMDX } from "next-mdx-remote/rsc";
 
 import remarkGfm from "remark-gfm";
 
-import { mdxComponents } from "@/components/mdx-components";
+import { createRscMdxComponents } from "@/lib/mdx-rsc-components";
 
 import { markdownToHtml } from "@/lib/markdown";
-import { rehypePlugins } from "@/lib/rehype-pipeline";
-import type { PluggableList } from "unified";
 
 import { slugSegmentsToPagePath } from "@/lib/docs-config";
 
@@ -292,7 +290,7 @@ export async function compileMdxPage(
 
       source: page.rawBody,
 
-      components: mdxComponents,
+      components: createRscMdxComponents(page.locale),
 
       options: {
 
@@ -302,7 +300,8 @@ export async function compileMdxPage(
 
           remarkPlugins: [remarkGfm],
 
-          rehypePlugins: rehypePlugins as PluggableList,
+          // Skip rehype sanitize/pretty-code here — marketing-style pages mix raw
+          // HTML/JSX with <Card>; sanitize strips unknown attrs like data-product-guide-index.
 
         },
 

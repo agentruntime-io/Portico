@@ -1,8 +1,7 @@
-"use client";
-
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
+  BookOpen,
   Brain,
   Cable,
   CalendarClock,
@@ -23,7 +22,8 @@ import {
   Wrench,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useI18n } from "@/components/i18n-provider";
+import type { Locale } from "@/lib/i18n";
+import { defaultLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/locale-routing";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -44,6 +44,7 @@ const iconMap: Record<string, LucideIcon> = {
   "git-pull-request": GitPullRequest,
   "calendar-clock": CalendarClock,
   "user-plus": UserPlus,
+  "book-open": BookOpen,
 };
 
 export function Card({
@@ -52,6 +53,7 @@ export function Card({
   icon,
   children,
   className,
+  locale = defaultLocale,
 }: {
   title?: ReactNode;
   href?: string;
@@ -59,12 +61,14 @@ export function Card({
   children?: ReactNode;
   className?: string;
   size?: number;
+  locale?: Locale;
 }) {
-  const { locale } = useI18n();
   const Icon = icon ? iconMap[icon] : undefined;
   const inner = (
     <>
-      {Icon ? <Icon className="h-5 w-5 shrink-0 text-emerald-600" aria-hidden /> : null}
+      {Icon ? (
+        <Icon className="h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
+      ) : null}
       <div className="flex flex-col gap-1">
         {title ? (
           <span className="font-medium text-[var(--text-main)]">{title}</span>

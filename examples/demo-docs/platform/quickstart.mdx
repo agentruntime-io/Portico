@@ -1,0 +1,59 @@
+---
+title: Quickstart
+sidebarTitle: Quickstart
+description: Create a workspace, connect a tool, and run your first workflow in under 30 minutes.
+---
+
+This guide walks you through the essential setup in the [AgentRuntime Console](https://console.agentruntime.io): create a workspace, invite a teammate, connect an integration, and run your first workflow.
+
+## Before you begin
+
+- An AgentRuntime account ([sign up](https://console.agentruntime.io/auth) with email or Google)
+- **Project contributor** access (or tenant admin) in your workspace
+- An API key or OAuth account for at least one connector you want to use (for example, a Google account or a Resend API key)
+
+## Steps
+
+<Steps>
+  <Step title="Sign in and complete onboarding">
+    Open the [Console](https://console.agentruntime.io) and sign in. New users are guided through onboarding to create a **workspace** (tenant) and your first **project**. Choose a workspace name your team will recognize in notifications and URLs.
+  </Step>
+  <Step title="Review workspace settings">
+    Go to **Settings** and confirm your workspace name and slug. The slug appears in API calls and shared links. Set billing preferences if you are on a paid plan.
+  </Step>
+  <Step title="Invite a teammate (optional)">
+    From **Settings → Team & Members**, invite teammates by email. Assign a project role — **project contributor** for builders who will edit workflows, **project viewer** for read-only observers. See [Roles and permissions](/platform/roles-permissions).
+  </Step>
+  <Step title="Add an LLM provider key">
+    Go to **Providers** and add an API key for your preferred LLM vendor (OpenAI, Anthropic, Google, and others). Workflow **LLM call** steps resolve models through this catalog. See [LLM providers](/ai/llm-providers).
+  </Step>
+  <Step title="Connect an integration">
+    Go to **Connections** and connect a tool:
+
+    - **Google** — OAuth for Gmail, Drive, Sheets, Calendar, and other Workspace MCP adapters
+    - **WhatsApp** — Embedded signup or manual credentials
+    - **API key connectors** — Create a generic connection and paste the key (for example, Resend, Exa, or GitHub)
+
+    See [Connections](/integrations/connections) for step-by-step flows.
+  </Step>
+  <Step title="Install an MCP instance">
+    Go to **MCP**, browse the platform catalog, and install a server (for example, `gmail` or `resend`). Bind your saved **connection** to the instance so workflow steps can call tools with the right credentials. See [MCP instances](/integrations/mcp-instances).
+  </Step>
+  <Step title="Create and run a workflow">
+    Open **Workflow Studio** and create a workflow. Add at least one step — an **MCP call** to a tool on your installed instance, or an **LLM call** step. Click **Validate** to dry-run the graph, then **Run** to start your first execution.
+
+    Watch live step events in the run panel. If the workflow includes a human approval step, complete it from **Command Center**.
+  </Step>
+</Steps>
+
+<Note>
+  You can also create and run workflows through the REST API with a [personal access token](/api/authentication). External automation should always go through the BFF at `https://api.agentruntime.io`, not internal service URLs.
+</Note>
+
+## Next steps
+
+- Read [Key concepts](/platform/key-concepts) for workspaces, projects, roles, and runs
+- Learn [Workflow Studio](/workflows/studio) authoring patterns
+- Follow an end-to-end [guide](/guides/overview) (GitHub PR review, form webhook digest, and more)
+- Track usage in [Analytics](/platform/analytics) when enabled for your workspace
+- Browse the full [connector catalog](/integrations/connector-catalog)
