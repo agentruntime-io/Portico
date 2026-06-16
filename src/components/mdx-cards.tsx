@@ -67,21 +67,25 @@ export function Card({
   const inner = (
     <>
       {Icon ? (
-        <Icon className="h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
+        <Icon className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
       ) : null}
       <div className="flex flex-col gap-1">
         {title ? (
-          <span className="font-medium text-[var(--text-main)]">{title}</span>
+          <span className="text-base font-semibold text-[var(--text-main)]">
+            {title}
+          </span>
         ) : null}
         {children ? (
-          <span className="text-sm leading-relaxed text-[var(--text-muted)]">
+          <div className="text-sm leading-relaxed text-[var(--text-muted)]">
             {children}
-          </span>
+          </div>
         ) : null}
       </div>
     </>
   );
-  const cls = `rounded-2xl flex flex-col gap-3 border border-[var(--panel-border)] bg-[var(--panel-bg)] p-4 shadow-sm transition hover:border-emerald-500/50 ${className ?? ""}`;
+  const cls =
+    `ds-card rounded-2xl flex flex-col gap-3 border border-[var(--panel-border)] bg-[var(--panel-bg)] p-4 no-underline shadow-sm transition hover:border-emerald-500/50 hover:bg-emerald-500/5 ` +
+    (className ?? "");
   if (href) {
     return (
       <Link href={localizeHref(href, locale)} className={cls}>
@@ -106,7 +110,7 @@ export function CardGroup({
         ? "sm:grid-cols-2"
         : "sm:grid-cols-2";
   return (
-    <div className={`my-6 grid grid-cols-1 gap-4 ${grid}`}>{children}</div>
+    <div className={`not-prose my-6 grid grid-cols-1 gap-4 ${grid}`}>{children}</div>
   );
 }
 
@@ -122,7 +126,7 @@ export function Icon({
   const Lucide = iconMap[icon] ?? InfoIcon;
   return (
     <Lucide
-      className={className ?? "h-5 w-5 shrink-0 text-emerald-600"}
+      className={className ?? "h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400"}
       aria-hidden
     />
   );

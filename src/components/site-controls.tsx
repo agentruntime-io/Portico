@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Bot,
@@ -12,71 +12,61 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
+import { themeTokens, type ThemeName } from "@/lib/theme-tokens";
 import { locales, type Locale } from "@/lib/i18n";
 
-const themeVars = {
-  light: {
-    "--background": "#f3f6f4",
-    "--foreground": "#171717",
-    "--app-bg": "#eef3f0",
-    "--panel-bg": "#fbfcfb",
-    "--sidebar-bg": "#f5f8f6",
-    "--panel-border": "#cfd8d3",
-    "--text-main": "#18181b",
-    "--text-muted": "#4b5563",
-  },
-  dark: {
-    "--background": "#0a0a0a",
-    "--foreground": "#ededed",
-    "--app-bg": "#080b0a",
-    "--panel-bg": "#0b100e",
-    "--sidebar-bg": "#080b0a",
-    "--panel-border": "#27272a",
-    "--text-main": "#f4f4f5",
-    "--text-muted": "#a1a1aa",
-  },
-} as const;
+const themeVars = themeTokens;
+
+function readThemeFromDom(): ThemeName {
+  if (typeof document === "undefined") return "dark";
+  const fromDom = document.documentElement.dataset.theme;
+  return fromDom === "light" ? "light" : "dark";
+}
 
 export function ThemeToggle() {
   const { t } = useI18n();
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const [ready, setReady] = useState(false);
+  const [theme, setTheme] = useState<ThemeName>("dark");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      const stored = window.localStorage.getItem("doc-theme");
-      setTheme(stored === "light" ? "light" : "dark");
-      setReady(true);
-    }, 0);
-    return () => window.clearTimeout(timer);
+    setTheme(readThemeFromDom());
+    setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!mounted) return;
     document.documentElement.dataset.theme = theme;
     for (const [name, value] of Object.entries(themeVars[theme])) {
       document.documentElement.style.setProperty(name, value);
     }
     window.localStorage.setItem("doc-theme", theme);
-  }, [ready, theme]);
+  }, [mounted, theme]);
+
+  const isDark = mounted ? theme === "dark" : true;
 
   return (
     <button
       type="button"
-      aria-label={theme === "dark" ? t("theme.switchToLight") : t("theme.switchToDark")}
+      suppressHydrationWarning
+      aria-label={isDark ? t("theme.switchToLight") : t("theme.switchToDark")}
+      aria-pressed={isDark}
       onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
       className="ds-control inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
     >
-      {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+      {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
     </button>
   );
 }
 
-export function LanguageSelector() {
+export function LanguageSelector({ variant }: { variant?: "drawer" }) {
   const { locale, setLocale, t } = useI18n();
+  const visibility =
+    variant === "drawer" ? "inline-flex" : "hidden md:inline-flex";
 
   return (
-    <label className="ds-control hidden h-9 shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-medium md:inline-flex">
+    <label
+      className={`ds-control h-9 shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-medium ${visibility}`}
+    >
       <Globe2 className="h-4 w-4" aria-hidden />
       <select
         aria-label={t("language.label")}
@@ -100,8 +90,9 @@ export function AssistantLauncher() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const dialogRef = useRef<HTMLElement>(null);
+  const closeDialog = useCallback(() => setOpen(false), []);
 
-  useDialog(open, () => setOpen(false), dialogRef);
+  useDialog(open, closeDialog, dialogRef);
 
   useEffect(() => {
     setMounted(true);
@@ -114,7 +105,7 @@ export function AssistantLauncher() {
             <button
               type="button"
               aria-label={t("assistant.close")}
-              onClick={() => setOpen(false)}
+              onClick={closeDialog}
               className="fixed inset-0 z-[100] bg-black/40"
             />
             <aside
@@ -130,7 +121,7 @@ export function AssistantLauncher() {
                 <button
                   type="button"
                   aria-label={t("assistant.close")}
-                  onClick={() => setOpen(false)}
+                  onClick={closeDialog}
                   className="ml-auto rounded-md p-1 text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
                 >
                   <X className="h-4 w-4" />

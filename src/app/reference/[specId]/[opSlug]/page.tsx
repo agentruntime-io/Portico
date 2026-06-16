@@ -90,16 +90,7 @@ export default async function ApiTagPage({ params }: Props) {
   const neighbors = getApiTagNeighbors(specId, ops, opSlug);
 
   return (
-    <ApiReferenceShell
-      specId={specId}
-      siteName={site.name}
-      nav={nav}
-      navbar={site.navbar}
-      doc={doc}
-      operations={ops}
-      activeTag={opSlug}
-      rightRail={<ApiRightRail doc={doc} operation={tagOps[0]} />}
-    >
+    <>
       <StructuredData
         data={webPageJsonLd({
           site,
@@ -108,6 +99,16 @@ export default async function ApiTagPage({ params }: Props) {
           canonicalPath: `/reference/${specId}/${opSlug}`,
         })}
       />
+      <ApiReferenceShell
+        specId={specId}
+        siteName={site.name}
+        nav={nav}
+        navbar={site.navbar}
+        doc={doc}
+        operations={ops}
+        activeTag={opSlug}
+        rightRail={<ApiRightRail doc={doc} operation={tagOps[0]} />}
+      >
       <article className="max-w-4xl">
         <div className="mb-10">
           <p className="api-faint text-sm font-medium">
@@ -137,5 +138,6 @@ export default async function ApiTagPage({ params }: Props) {
         <DocPager prev={neighbors.prev} next={neighbors.next} />
       </article>
     </ApiReferenceShell>
+    </>
   );
 }

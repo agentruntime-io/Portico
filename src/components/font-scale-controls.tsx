@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useI18n } from "@/components/i18n-provider";
-
-const levels = [0.9, 1, 1.1, 1.2] as const;
+import { fontScaleLevels } from "@/lib/theme-tokens";
 
 export function FontScaleControls() {
   const { t } = useI18n();
@@ -11,22 +10,21 @@ export function FontScaleControls() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      const stored = window.localStorage.getItem("doc-font-scale");
-      const parsed = stored ? Number(stored) : 1;
-      const nextIndex = levels.findIndex((level) => level === parsed);
-      setIndex(nextIndex >= 0 ? nextIndex : 1);
-      setReady(true);
-    }, 0);
-    return () => window.clearTimeout(timer);
+    const stored = window.localStorage.getItem("doc-font-scale");
+    const parsed = stored ? Number(stored) : 1;
+    const nextIndex = fontScaleLevels.findIndex((level) => level === parsed);
+    setIndex(nextIndex >= 0 ? nextIndex : 1);
+    setReady(true);
   }, []);
 
   useEffect(() => {
     if (!ready) return;
-    const value = levels[index];
+    const value = fontScaleLevels[index] ?? 1;
     document.documentElement.style.setProperty("--doc-font-scale", String(value));
     window.localStorage.setItem("doc-font-scale", String(value));
   }, [index, ready]);
+
+  const current = Math.round((fontScaleLevels[index] ?? 1) * 100);
 
   return (
     <div
@@ -38,18 +36,23 @@ export function FontScaleControls() {
         type="button"
         aria-label={t("fontScale.decrease")}
         disabled={index === 0}
-        onClick={() => setIndex((current) => Math.max(0, current - 1))}
+        onClick={() => setIndex((currentIndex) => Math.max(0, currentIndex - 1))}
         className="px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
       >
         A-
       </button>
       <span className="api-divider border-l" aria-hidden />
+      <span className="sr-only" aria-live="polite">
+        {current}%
+      </span>
       <button
         type="button"
         aria-label={t("fontScale.increase")}
-        disabled={index === levels.length - 1}
+        disabled={index === fontScaleLevels.length - 1}
         onClick={() =>
-          setIndex((current) => Math.min(levels.length - 1, current + 1))
+          setIndex((currentIndex) =>
+            Math.min(fontScaleLevels.length - 1, currentIndex + 1),
+          )
         }
         className="px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
       >

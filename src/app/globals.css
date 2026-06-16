@@ -1,9 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Match Tailwind `dark:` utilities to the site theme toggle, not OS preference. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
   --doc-font-scale: 1;
   --app-bg: #080b0a;
   --panel-bg: #0b100e;
@@ -11,17 +14,8 @@
   --panel-border: #27272a;
   --text-main: #f4f4f5;
   --text-muted: #a1a1aa;
-}
-
-[data-theme="light"] {
-  --background: #f3f6f4;
-  --foreground: #171717;
-  --app-bg: #eef3f0;
-  --panel-bg: #fbfcfb;
-  --sidebar-bg: #f5f8f6;
-  --panel-border: #cfd8d3;
-  --text-main: #18181b;
-  --text-muted: #4b5563;
+  --z-modal-backdrop: 100;
+  --z-modal: 110;
 }
 
 @theme inline {
@@ -29,13 +23,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 html[data-theme="light"] {
@@ -214,6 +201,14 @@ body {
   outline-offset: 2px;
 }
 
+.search-dialog input:focus,
+.search-dialog input:focus-visible,
+.search-dialog button:focus,
+.search-dialog button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -301,6 +296,34 @@ body {
 .nav-item:hover {
   background: rgb(16 185 129 / 0.08);
   color: #34d399;
+}
+
+/* Home / marketing card grids */
+[data-product-guide-index] h2 {
+  margin-top: 0;
+}
+
+[data-product-guide-index] .my-6 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.doc-prose [data-product-guide-index] a {
+  text-decoration: none;
+}
+
+.doc-prose [data-product-guide-index] a:hover {
+  text-decoration: none;
+}
+
+.doc-prose a.ds-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.doc-prose a.ds-card:hover {
+  color: inherit;
+  text-decoration: none;
 }
 
 .nav-item-muted {
@@ -701,13 +724,24 @@ body {
   text-decoration: none !important;
 }
 
-[data-theme="light"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link) {
+[data-theme="light"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link):not(.ds-card) {
   color: #047857 !important;
+  text-decoration: underline;
   text-decoration-color: rgb(4 120 87 / 0.35) !important;
 }
 
-[data-theme="light"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link):hover {
+[data-theme="light"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link):not(.ds-card):hover {
   color: #065f46 !important;
+}
+
+[data-theme="dark"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link):not(.ds-card) {
+  color: #34d399 !important;
+  text-decoration: underline;
+  text-decoration-color: rgb(52 211 153 / 0.35) !important;
+}
+
+[data-theme="dark"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link):not(.ds-card):hover {
+  color: #6ee7b7 !important;
 }
 
 [data-theme="light"] .doc-prose :where(:not(pre) > code) {

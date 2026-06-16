@@ -5,18 +5,16 @@
 name: AgentRuntime Docs
 description: Documentation powered by Portico from AgentRuntime.
 url: https://docs.agentruntime.io
+# Social preview image (absolute URL or site-relative path)
+ogImage: /opengraph-image
+
+# Google Search Console — paste the content value from the HTML tag method,
+# or set GOOGLE_SITE_VERIFICATION in Vercel / .env.local (env wins over yaml).
+verification:
+  google: ""
+
 # Optional: override "Edit this page" base (defaults from CONTENT_GIT_REPO + CONTENT_GIT_BRANCH)
 # githubEditBase: https://github.com/your-org/your-docs/blob/main
-# Default social preview image (absolute URL or site-relative path)
-# ogImage: /og-default.png
-
-# Search engine verification (Next.js metadata verification)
-# verification:
-#   google: your-google-site-verification-token
-#   yandex: your-yandex-verification-token
-#   other:
-#     - name: me
-#       content: your-custom-verification-token
 
 openapi:
   specs:

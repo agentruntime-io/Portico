@@ -10,6 +10,8 @@ import remarkGfm from "remark-gfm";
 
 import { createRscMdxComponents } from "@/lib/mdx-rsc-components";
 
+import { rehypeMdxPlugins } from "@/lib/rehype-pipeline";
+
 import { markdownToHtml } from "@/lib/markdown";
 
 import { slugSegmentsToPagePath } from "@/lib/docs-config";
@@ -66,6 +68,18 @@ export function bodyUsesMdxComponents(body: string): boolean {
 
   return /<(Card|CardGroup)\b/.test(body) || /data-product-guide-index/.test(body);
 
+}
+
+export function isMarketingHomePage(body: string): boolean {
+  return /data-product-guide-index/.test(body);
+}
+
+export function mdxNeedsProseEnhancements(body: string): boolean {
+  return (
+    bodyUsesMdxComponents(body) &&
+    !isMarketingHomePage(body) &&
+    (/```mermaid/.test(body) || /```[a-z]/i.test(body))
+  );
 }
 
 
@@ -300,8 +314,7 @@ export async function compileMdxPage(
 
           remarkPlugins: [remarkGfm],
 
-          // Skip rehype sanitize/pretty-code here — marketing-style pages mix raw
-          // HTML/JSX with <Card>; sanitize strips unknown attrs like data-product-guide-index.
+          rehypePlugins: rehypeMdxPlugins as import("unified").Pluggable[],
 
         },
 

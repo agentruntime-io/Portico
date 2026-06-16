@@ -71,6 +71,19 @@ export const rehypePlugins = [
   [rehypeSanitize, rehypeSanitizeSchema],
 ];
 
+/** Rehype plugins for RSC MDX pages (Cards/JSX) — no sanitize to preserve custom attrs. */
+export const rehypeMdxPlugins = [
+  rehypeSlug,
+  rehypeMermaid,
+  [
+    rehypeAutolinkHeadings,
+    {
+      behavior: "wrap" as const,
+      properties: { className: ["anchor-heading-link"] },
+    },
+  ],
+];
+
 export function applyRehypePlugins<T extends { use: (...args: never[]) => T }>(
   processor: T,
 ): T {

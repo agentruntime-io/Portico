@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useI18n } from "@/components/i18n-provider";
 import { CircleHelp, FileClock, Home } from "lucide-react";
+import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
-import { navIcon } from "@/lib/nav-icons";
 import { localizeHref } from "@/lib/locale-routing";
 import { FontScaleControls } from "@/components/font-scale-controls";
 import { MobileNavButton } from "@/components/mobile-nav";
@@ -17,6 +17,8 @@ import {
 } from "@/components/site-controls";
 import type { SiteConfig } from "@/lib/site";
 import { PorticoAttribution } from "@/components/portico-attribution";
+import { GlobalNavAnchors } from "@/components/global-nav-anchors";
+import { SidebarNavGroup } from "@/components/sidebar-nav-group";
 
 const utilityLinks = [
   { titleKey: "nav.home" as const, href: "/", icon: Home },
@@ -51,9 +53,9 @@ export function DocsHeader({
           <span className="shrink-0 rounded-md bg-emerald-600 px-2 py-0.5 text-xs font-bold uppercase text-white">
             {t("nav.docsBadge")}
           </span>
-          <span className="truncate">{siteName}</span>
+          <span className="hidden truncate min-[420px]:inline">{siteName}</span>
         </Link>
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden min-w-0 items-center gap-1 lg:flex" aria-label={t("nav.sectionNav")}>
           {topLinks.map((item) => {
             const active =
               activePath === item.href ||
@@ -73,21 +75,23 @@ export function DocsHeader({
             );
           })}
         </nav>
-        <div className="flex flex-1 items-center justify-end gap-1.5 sm:gap-2">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-1 sm:gap-2">
           <NavbarLinks
             navbar={navbar}
-            className="hidden items-center gap-3 md:flex"
+            className="hidden shrink-0 items-center gap-3 lg:flex"
           />
           <NavbarPrimaryCta navbar={navbar} />
+          <SearchControl />
           <div className="hidden items-center gap-2 lg:flex">
             <FontScaleControls />
             <LanguageSelector />
           </div>
-          <div className="hidden sm:block">
+          <div className="hidden lg:block">
             <AssistantLauncher />
           </div>
-          <ThemeToggle />
-          <SearchControl />
+          <div className="hidden lg:block">
+            <ThemeToggle />
+          </div>
           <MobileNavButton
             nav={nav}
             activePath={activePath}
@@ -107,13 +111,6 @@ export function DocsSidebar({
   activePath: string;
 }) {
   const { t, locale } = useI18n();
-  const isActiveItem = (href: string) => {
-    if (href === "/") return activePath === "/";
-    if (href === "/docs" || href === "/guides" || href === "/reference") {
-      return activePath === href;
-    }
-    return activePath === href || activePath.startsWith(`${href}/`);
-  };
 
   const groupedNav = nav.groups.filter(
     (group) => !(group.label === "Project" && group.items.length === 1),
@@ -128,7 +125,7 @@ export function DocsSidebar({
               const href = item.href.startsWith("mailto:")
                 ? item.href
                 : localizeHref(item.href, locale);
-              const active = isActiveItem(href);
+              const active = isActiveNavItem(href, activePath);
               const Icon = item.icon;
               const content = (
                 <>
@@ -155,38 +152,16 @@ export function DocsSidebar({
               );
             })}
           </ul>
+          <GlobalNavAnchors nav={nav} locale={locale} />
         </nav>
 
-        {groupedNav.map((group) => {
-          const Icon = navIcon(group.icon);
-          return (
-          <div key={group.label}>
-            <div className="mb-2 flex items-center gap-3 px-2 text-sm font-semibold text-[var(--text-main)]">
-              <Icon className="h-4 w-4 shrink-0 text-[var(--text-muted)]" />
-              <span>{group.label}</span>
-            </div>
-            <ul className="space-y-0.5">
-              {group.items.map((item) => {
-                const active = isActiveItem(item.href);
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`block rounded-md px-2 py-1.5 text-sm transition-colors ${
-                        active
-                          ? "docs-nav-active font-medium"
-                          : "docs-nav-item"
-                      }`}
-                    >
-                      {item.title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-          );
-        })}
+        {groupedNav.map((group) => (
+          <SidebarNavGroup
+            key={group.label}
+            group={group}
+            isActiveItem={(href) => isActiveNavItem(href, activePath)}
+          />
+        ))}
         <PorticoAttribution />
       </div>
     </aside>

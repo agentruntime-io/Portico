@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ChevronRight, ListTree, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ApiMethod } from "@/components/api-method";
 import { useI18n } from "@/components/i18n-provider";
@@ -55,9 +55,12 @@ export function ApiMobileNav({
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const panelId = useId();
+  const dialogRef = useRef<HTMLElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const closeDialog = useCallback(() => setOpen(false), []);
 
-  useDialog(open, () => setOpen(false), dialogRef);
+  useDialog(open, closeDialog, dialogRef, closeRef);
 
   useEffect(() => {
     setMounted(true);
@@ -75,28 +78,30 @@ export function ApiMobileNav({
   const drawer =
     open && mounted
       ? createPortal(
-          <div
-            ref={dialogRef}
-            className="fixed inset-0 z-[100] lg:hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("nav.apiEndpoints")}
-          >
-            <button
-              type="button"
-              aria-label={t("nav.closeMenu")}
-              onClick={() => setOpen(false)}
+          <div className="fixed inset-0 z-[100] lg:hidden">
+            <div
+              role="presentation"
+              aria-hidden
+              onClick={closeDialog}
               className="absolute inset-0 bg-black/60"
             />
-            <aside className="absolute bottom-0 left-0 top-14 flex w-[min(22rem,92vw)] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] shadow-2xl">
+            <aside
+              ref={dialogRef}
+              id={panelId}
+              className="absolute bottom-0 left-0 top-14 flex w-[min(22rem,92vw)] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] shadow-2xl"
+              role="dialog"
+              aria-modal="true"
+              aria-label={t("nav.apiEndpoints")}
+            >
               <div className="flex items-center justify-between border-b border-[var(--panel-border)] px-4 py-3">
                 <p className="text-sm font-semibold text-[var(--text-main)]">
                   {t("nav.apiEndpoints")}
                 </p>
                 <button
+                  ref={closeRef}
                   type="button"
                   aria-label={t("nav.closeMenu")}
-                  onClick={() => setOpen(false)}
+                  onClick={closeDialog}
                   className="rounded-md p-2 text-[var(--text-muted)] hover:bg-emerald-500/10"
                 >
                   <X className="h-4 w-4" />
@@ -111,7 +116,7 @@ export function ApiMobileNav({
                     <li key={href}>
                       <Link
                         href={`/reference/${specId}${href}`}
-                        onClick={() => setOpen(false)}
+                        onClick={closeDialog}
                         className="nav-item-muted block rounded-md px-2 py-2 text-sm"
                       >
                         {t(key)}
@@ -139,7 +144,7 @@ export function ApiMobileNav({
                           <li>
                             <Link
                               href={`/reference/${specId}/${tagSlug}`}
-                              onClick={() => setOpen(false)}
+                              onClick={closeDialog}
                               className="nav-item-muted block rounded-md px-2 py-1.5 text-sm"
                             >
                               {t("api.sectionOverview")}
@@ -151,7 +156,7 @@ export function ApiMobileNav({
                               <li key={op.slug}>
                                 <Link
                                   href={`/reference/${specId}/${tagSlugForOperation(op)}#${op.slug}`}
-                                  onClick={() => setOpen(false)}
+                                  onClick={closeDialog}
                                   className={`flex items-center gap-2 rounded-md px-2 py-2 text-sm ${
                                     active ? "nav-active" : "nav-item-muted"
                                   }`}
@@ -183,6 +188,7 @@ export function ApiMobileNav({
           type="button"
           aria-label={t("nav.apiEndpoints")}
           aria-expanded={open}
+          aria-controls={panelId}
           onClick={() => setOpen(true)}
           className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 py-2.5 text-sm font-medium text-[var(--text-main)] hover:bg-emerald-500/10"
         >

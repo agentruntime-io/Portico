@@ -39,6 +39,8 @@ export type NavGroup = {
 
   items: NavItem[];
 
+  defaultExpanded?: boolean;
+
 };
 
 
@@ -122,6 +124,8 @@ async function groupToNav(
     icon: group.icon,
 
     items,
+
+    defaultExpanded: group.expanded ?? true,
 
   };
 

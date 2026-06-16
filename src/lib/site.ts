@@ -73,6 +73,28 @@ async function loadPortalOverrides(): Promise<Partial<SiteConfig>> {
   }
 }
 
+function mergeVerification(
+  fromYaml?: SiteVerification,
+): SiteVerification | undefined {
+  const google =
+    process.env.GOOGLE_SITE_VERIFICATION?.trim() ||
+    fromYaml?.google?.trim() ||
+    undefined;
+
+  const merged: SiteVerification = {
+    ...fromYaml,
+    ...(google ? { google } : {}),
+  };
+
+  const hasValue =
+    merged.google ||
+    merged.yahoo ||
+    merged.yandex ||
+    (merged.other?.length ?? 0) > 0;
+
+  return hasValue ? merged : undefined;
+}
+
 export async function getSiteConfig(): Promise<SiteConfig> {
   if (cached) return cached;
 
@@ -90,11 +112,11 @@ export async function getSiteConfig(): Promise<SiteConfig> {
       docsJson.description ??
       "Documentation for AgentRuntime.",
     url: overrides.url ?? process.env.SITE_URL ?? "https://docs.agentruntime.io",
-    ogImage: overrides.ogImage ?? process.env.SITE_OG_IMAGE,
+    ogImage: overrides.ogImage ?? process.env.SITE_OG_IMAGE ?? "/opengraph-image",
     githubEditBase:
       overrides.githubEditBase ??
       buildGithubEditBase(contentRepo, contentBranch),
-    verification: overrides.verification,
+    verification: mergeVerification(overrides.verification),
     openapi: overrides.openapi ?? { specs: [] },
     navbar: docsJson.navbar
       ? {

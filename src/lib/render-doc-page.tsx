@@ -2,13 +2,11 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { DocsShell } from "@/components/docs-shell";
 import { ContentLocaleBanner } from "@/components/content-locale-banner";
-import { DocPager } from "@/components/doc-pager";
-import { docProseClasses } from "@/components/markdown-body";
 import { ProsePageLayout } from "@/components/prose-page-layout";
 import { StructuredData } from "@/components/structured-data";
 import { extractHeadings } from "@/lib/headings";
 import type { Locale } from "@/lib/i18n";
-import { compileMdxPage, loadMdxPage } from "@/lib/mdx-pages";
+import { compileMdxPage, loadMdxPage, isMarketingHomePage, mdxNeedsProseEnhancements } from "@/lib/mdx-pages";
 import { getNavigation } from "@/lib/nav";
 import { githubEditUrl } from "@/lib/edit-url";
 import { getPageNeighbors } from "@/lib/pager";
@@ -19,8 +17,6 @@ import {
   techArticleJsonLd,
 } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site";
-import { PageActions } from "@/components/page-actions";
-
 export async function docPageMetadata(
   contentSlug: string[],
   locale: Locale,
@@ -78,41 +74,45 @@ export async function RenderDocPage({
   ];
 
   return (
-    <DocsShell
-      siteName={site.name}
-      nav={nav}
-      activePath={page.href}
-      navbar={site.navbar}
-    >
+    <>
       <StructuredData data={structuredData} />
-      {page.isContentFallback ? (
+      <DocsShell
+        siteName={site.name}
+        nav={nav}
+        activePath={page.href}
+        navbar={site.navbar}
+      >
+        {page.isContentFallback ? (
         <ContentLocaleBanner
           requestedLocale={page.locale}
           contentLocale={page.contentLocale}
         />
       ) : null}
-      {compiled.kind === "mdx" && page.usesMdxComponents ? (
-        <div className="mx-auto w-full max-w-5xl px-2 pt-6 sm:px-0 sm:pt-10">
-          <div className="mb-6">
-            <PageActions editUrl={editUrl} />
-          </div>
-          <div className={docProseClasses}>{compiled.content}</div>
-          <DocPager prev={neighbors.prev} next={neighbors.next} />
-        </div>
-      ) : (
-        <ProsePageLayout
-          eyebrow={page.pagePath.split("/")[0]?.replace(/-/g, " ") ?? "Docs"}
-          title={page.title}
-          description={page.description}
-          mdx={compiled.kind === "mdx" ? compiled.content : undefined}
-          html={compiled.kind === "html" ? compiled.html : undefined}
-          headings={headings}
-          prev={neighbors.prev}
-          next={neighbors.next}
-          editUrl={editUrl}
-        />
-      )}
+      <ProsePageLayout
+        eyebrow={
+          page.pagePath === "index"
+            ? "Documentation"
+            : (page.pagePath.split("/")[0]?.replace(/-/g, " ") ?? "Docs")
+        }
+        title={page.title}
+        description={page.description}
+        mdx={compiled.kind === "mdx" ? compiled.content : undefined}
+        html={compiled.kind === "html" ? compiled.html : undefined}
+        headings={headings}
+        prev={neighbors.prev}
+        next={neighbors.next}
+        editUrl={editUrl}
+        bareMdx={compiled.kind === "mdx" && page.usesMdxComponents}
+        hideChrome={isMarketingHomePage(page.rawBody)}
+        enhanceMdx={mdxNeedsProseEnhancements(page.rawBody)}
+        bodyClassName={
+          compiled.kind === "mdx" && page.usesMdxComponents
+            ? "[&_[data-product-guide-index]]:max-w-none [&_[data-product-guide-index]]:px-0"
+            : undefined
+        }
+      />
     </DocsShell>
+    </>
   );
 }
 
