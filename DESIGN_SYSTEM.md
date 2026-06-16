@@ -198,8 +198,8 @@ Persisted in `localStorage` key `doc-font-scale`.
 |--------|-------------|
 | App wrapper | `bg-[var(--app-bg)]` |
 | Header | `sticky top-0 z-40 h-14 border-b backdrop-blur-md` |
-| Sidebar | `fixed w-[320px] top-14 hidden md:block` |
-| Main offset | `md:pl-[344px]` (sidebar + gap) |
+| Sidebar | `fixed w-[320px] top-14 hidden lg:block` |
+| Main offset | `lg:pl-[344px]` (sidebar + gap) |
 | Content max width | `max-w-[1800px]` shell; `max-w-6xl` inside prose layout |
 
 ### 4.2 API reference layout
@@ -223,9 +223,9 @@ Persisted in `localStorage` key `doc-font-scale`.
 | Prefix | Min width | Portal usage |
 |--------|-----------|--------------|
 | `sm` | 640px | Horizontal padding, kbd in search |
-| `md` | 768px | Sidebar visible; mobile nav hidden |
-| `lg` | 1024px | API sidebar; prose TOC column |
-| `xl` | 1280px | API right rail |
+| `md` | 768px | Language selector in header |
+| `lg` | 1024px | Docs sidebar + section nav + desktop toolbar; mobile drawer hidden |
+| `xl` | 1280px | API right rail; wider search bar |
 
 ### 4.5 Radii & elevation
 
@@ -275,9 +275,11 @@ inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700 text
 
 ### 5.2 Header toolbar
 
-Right cluster order: `NavbarLinks` → `NavbarPrimaryCta` → `FontScaleControls` → `LanguageSelector` → `ThemeToggle` → `AssistantLauncher` → `SearchControl` → `MobileNavButton`.
+Right cluster order (desktop `lg+`): `NavbarLinks` → `NavbarPrimaryCta` → `SearchControl` → `FontScaleControls` → `LanguageSelector` → `AssistantLauncher` → `ThemeToggle`.
 
-- **`NavbarLinks`** / **`NavbarPrimaryCta`** (`navbar-cta.tsx`) — sourced from `docs.json` → `navbar.links` and `navbar.primary` (e.g. Pricing, GitHub, Open Console).
+Below `lg`, header shows: logo → `NavbarPrimaryCta` → `SearchControl` → `MobileNavButton`. Theme, language, font scale, assistant, GitHub, and full nav live in the drawer.
+
+- **`NavbarLinks`** / **`NavbarPrimaryCta`** (`navbar-cta.tsx`) — sourced from `docs.json` → `navbar.links` and `navbar.primary` (e.g. GitHub, Open Console).
 - External links open in a new tab; internal links respect locale via `localizeHref`.
 - Primary CTA is visible on all breakpoints (`text-xs`, compact padding on phones).
 - On mobile (`lg:hidden` drawer), the same navbar block appears at the top of `MobileNavButton` before doc sections.
@@ -286,10 +288,9 @@ All icon buttons share the `h-9` control height for alignment.
 
 ### 5.3 Search modal
 
-- Trigger: full-width up to `max-w-md`, shows `Ctrl K` kbd on `sm+`
-- Overlay: `bg-black/40`, panel `max-w-2xl rounded-xl`
-- Modes: **Search** (zinc active tab) / **AI Search** (emerald active tab)
-- Results: section badge + title + URL + excerpt; hover `bg-zinc-50 dark:bg-zinc-900`
+- Trigger: `max-w-xs` (`xl:max-w-md`) on desktop; icon-only below `lg`
+- Overlay: `bg-black/50`, compact panel `max-w-lg`
+- Suggested pages when empty; loading and no-results states; no reserved empty panel height
 
 ### 5.4 Cards
 

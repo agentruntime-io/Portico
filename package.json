@@ -1,6 +1,6 @@
 {
   "name": "portico",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Portico — self-hosted documentation portal from AgentRuntime (https://www.agentruntime.io). Open source.",
   "private": false,
   "author": "AgentRuntime <https://www.agentruntime.io>",

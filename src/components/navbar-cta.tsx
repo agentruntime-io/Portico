@@ -26,7 +26,7 @@ export function NavbarLinks({
   if (!navbar?.links?.length) return null;
 
   return (
-    <nav className={className} aria-label={t("nav.externalLinks")}>
+    <nav className={className} aria-label={t("nav.siteLinks")}>
       {navbar.links.map((link) =>
         isExternalHref(link.href) ? (
           <a
@@ -38,6 +38,7 @@ export function NavbarLinks({
             className="text-xs font-medium text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
           >
             {link.label}
+            <span className="sr-only"> ({t("nav.opensNewTab")})</span>
           </a>
         ) : (
           <Link
@@ -63,6 +64,7 @@ export function NavbarPrimaryCta({
   className?: string;
   onNavigate?: () => void;
 }) {
+  const { t } = useI18n();
   if (!navbar?.primary) return null;
 
   const external = isExternalHref(navbar.primary.href);
@@ -79,6 +81,7 @@ export function NavbarPrimaryCta({
       }
     >
       {navbar.primary.label}
+      {external ? <span className="sr-only"> ({t("nav.opensNewTab")})</span> : null}
     </a>
   );
 }

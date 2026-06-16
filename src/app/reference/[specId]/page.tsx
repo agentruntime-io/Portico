@@ -56,15 +56,7 @@ export default async function SpecOverviewPage({ params }: Props) {
   const description = excerptFromBody(doc.info?.description ?? "");
 
   return (
-    <ApiReferenceShell
-      specId={specId}
-      siteName={site.name}
-      nav={nav}
-      navbar={site.navbar}
-      doc={doc}
-      operations={ops}
-      rightRail={<ApiRightRail doc={doc} />}
-    >
+    <>
       <StructuredData
         data={webPageJsonLd({
           site,
@@ -73,6 +65,15 @@ export default async function SpecOverviewPage({ params }: Props) {
           canonicalPath: `/reference/${specId}`,
         })}
       />
+      <ApiReferenceShell
+        specId={specId}
+        siteName={site.name}
+        nav={nav}
+        navbar={site.navbar}
+        doc={doc}
+        operations={ops}
+        rightRail={<ApiRightRail doc={doc} />}
+      >
       <article className="max-w-3xl">
         <div className="mb-8 flex flex-wrap gap-2">
           <span className="api-soft api-muted rounded-full px-2.5 py-1 text-xs">
@@ -101,5 +102,6 @@ export default async function SpecOverviewPage({ params }: Props) {
         <DocPager prev={neighbors.prev} next={neighbors.next} />
       </article>
     </ApiReferenceShell>
+    </>
   );
 }

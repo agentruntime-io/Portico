@@ -45,12 +45,7 @@ export default async function ChangelogPage() {
   const headings = extractHeadings(ch.body);
 
   return (
-    <DocsShell
-      siteName={site.name}
-      nav={nav}
-      activePath="/changelog"
-      navbar={site.navbar}
-    >
+    <>
       <StructuredData
         data={webPageJsonLd({
           site,
@@ -59,13 +54,20 @@ export default async function ChangelogPage() {
           canonicalPath: "/changelog",
         })}
       />
-      <ProsePageLayout
+      <DocsShell
+        siteName={site.name}
+        nav={nav}
+        activePath="/changelog"
+        navbar={site.navbar}
+      >
+        <ProsePageLayout
         eyebrow="Project"
         title={ch.title}
         description={ch.description}
         html={html}
         headings={headings}
       />
-    </DocsShell>
+      </DocsShell>
+    </>
   );
 }

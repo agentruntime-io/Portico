@@ -9,8 +9,11 @@ export function useDialog(
   open: boolean,
   onClose: () => void,
   containerRef: RefObject<HTMLElement | null>,
+  initialFocusRef?: RefObject<HTMLElement | null>,
 ) {
   const triggerRef = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -19,15 +22,16 @@ export function useDialog(
     document.body.style.overflow = "hidden";
 
     const root = containerRef.current;
-    const focusables = root
-      ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE))
-      : [];
-    focusables[0]?.focus();
+    const focusTarget =
+      initialFocusRef?.current ??
+      root?.querySelector<HTMLElement>(FOCUSABLE) ??
+      null;
+    focusTarget?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (event.key !== "Tab" || !root) return;
@@ -50,5 +54,5 @@ export function useDialog(
       document.body.style.overflow = prevOverflow;
       triggerRef.current?.focus();
     };
-  }, [open, onClose, containerRef]);
+  }, [open, containerRef, initialFocusRef]);
 }
