@@ -255,7 +255,7 @@ export function ApiReferenceShell({
     ? `/reference/${specId}/${activeTag}`
     : `/reference/${specId}`;
   return (
-    <div className="min-h-screen bg-[var(--app-bg)] text-[var(--text-main)]">
+    <div className="min-h-screen bg-[var(--sidebar-bg)] text-[var(--text-main)]">
       <DocsHeader
         siteName={siteName}
         nav={nav}
@@ -290,7 +290,7 @@ export function ApiReferenceShell({
         id="main-content"
         tabIndex={-1}
         aria-label={t("a11y.mainContent")}
-        className="min-w-0 lg:pl-[340px]"
+        className="min-w-0 bg-[var(--panel-bg)] lg:ml-[340px] lg:rounded-tl-2xl"
       >
         <div className="mx-auto flex max-w-[1520px] flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:flex-row lg:gap-14 lg:px-10 lg:py-10 xl:px-16">
           <div className="min-w-0 flex-1">{contentChildren}</div>

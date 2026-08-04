@@ -28,21 +28,24 @@ export function SidebarNavGroup({
 
   const groupHeaderClass =
     variant === "drawer"
-      ? "flex min-h-11 w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]"
-      : "flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]";
+      ? "docs-nav-label flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]"
+      : "docs-nav-label flex min-h-7 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]";
 
   const itemClass = (active: boolean) =>
     variant === "drawer"
-      ? `flex min-h-11 items-center rounded-lg px-2.5 py-2 text-sm leading-5 ${
+      ? `docs-nav-row flex min-h-11 items-center rounded-lg px-2.5 py-2 ${
           active ? "docs-nav-active font-medium" : "docs-nav-item"
         }`
-      : `block rounded-lg px-2.5 py-1.5 text-[13px] leading-5 transition-colors ${
+      : `docs-nav-row flex min-h-8 items-center rounded-lg px-2.5 py-1.5 transition-colors ${
           active ? "docs-nav-active font-medium" : "docs-nav-item"
         }`;
   const headerContent = (
     <>
       {createElement(navIcon(group.icon), {
-        className: "h-3.5 w-3.5 shrink-0",
+        className:
+          variant === "drawer"
+            ? "h-4 w-4 shrink-0"
+            : "h-3.5 w-3.5 shrink-0",
         "aria-hidden": true,
       })}
       <span className="flex-1">{group.label}</span>
@@ -56,7 +59,7 @@ export function SidebarNavGroup({
   );
 
   return (
-    <div className={variant === "drawer" ? "mb-5" : undefined}>
+    <div className={variant === "drawer" ? "mb-2" : undefined}>
       {toggleable ? (
         <button
           type="button"
@@ -71,7 +74,10 @@ export function SidebarNavGroup({
         <div className={groupHeaderClass}>{headerContent}</div>
       )}
       {open ? (
-        <ul id={listId} className="mt-1 space-y-0.5">
+        <ul
+          id={listId}
+          className={variant === "drawer" ? "mt-0.5" : "mt-1 space-y-0.5"}
+        >
           {group.items.map((item) => {
             const active = isActiveItem(item.href);
             return (

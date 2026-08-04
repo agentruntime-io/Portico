@@ -8,6 +8,7 @@ import { useDialog } from "@/lib/a11y/use-dialog";
 import type { MessageKey } from "@/lib/i18n";
 
 type Entry = { url: string; title: string; excerpt: string };
+const OPEN_SEARCH_EVENT = "docs:open-search";
 
 function sectionKey(url: string): MessageKey {
   if (url.startsWith("/reference")) return "search.sectionApiReference";
@@ -22,6 +23,31 @@ function sectionKey(url: string): MessageKey {
   if (normalized.startsWith("/connectors")) return "search.sectionConnectors";
   if (normalized.startsWith("/api")) return "search.sectionApi";
   return "search.sectionDocs";
+}
+
+export function DrawerSearchTrigger({
+  onActivate,
+}: {
+  onActivate?: () => void;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <button
+      type="button"
+      aria-label={t("search.label")}
+      onClick={() => {
+        onActivate?.();
+        window.setTimeout(() => {
+          window.dispatchEvent(new Event(OPEN_SEARCH_EVENT));
+        }, 0);
+      }}
+      className="inline-flex min-h-11 w-full items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 text-left text-sm text-[var(--text-muted)] hover:bg-[var(--surface-muted)]"
+    >
+      <Search className="h-4 w-4 shrink-0" aria-hidden />
+      <span className="flex-1 truncate">{t("search.placeholderShort")}</span>
+    </button>
+  );
 }
 
 export function SearchControl() {
@@ -54,8 +80,13 @@ export function SearchControl() {
         setOpen(true);
       }
     };
+    const onOpenRequest = () => setOpen(true);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener(OPEN_SEARCH_EVENT, onOpenRequest);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener(OPEN_SEARCH_EVENT, onOpenRequest);
+    };
   }, []);
 
   useEffect(() => {
@@ -178,7 +209,7 @@ export function SearchControl() {
                   type="button"
                   aria-label={t("search.close")}
                   onClick={onClose}
-                  className="shrink-0 rounded-md p-2 text-[var(--text-muted)] outline-none ring-0 hover:bg-emerald-500/10 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-[var(--text-muted)] outline-none ring-0 hover:bg-emerald-500/10 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -277,7 +308,7 @@ export function SearchControl() {
         aria-expanded={open}
         aria-controls={dialogId}
         onClick={() => setOpen(true)}
-        className="hidden h-11 w-full max-w-xs items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 text-left text-sm text-[var(--text-muted)] hover:bg-[var(--surface-muted)] xl:inline-flex xl:max-w-md"
+        className="hidden h-9 w-full max-w-xs items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 text-left text-sm text-[var(--text-muted)] hover:bg-[var(--surface-muted)] xl:inline-flex xl:max-w-md"
       >
         <Search className="h-4 w-4 shrink-0" aria-hidden />
         <span className="flex-1 truncate">{t("search.placeholderShort")}</span>
