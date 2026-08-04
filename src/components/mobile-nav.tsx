@@ -34,11 +34,13 @@ export function MobileNavButton({
   activePath,
   navbar,
   mainNav,
+  hideAt = "xl",
 }: {
   nav: NavFile;
   activePath: string;
   navbar?: SiteConfig["navbar"];
   mainNav: MainNavTargets;
+  hideAt?: "lg" | "xl";
 }) {
   const { t, locale } = useI18n();
   const [open, setOpen] = useState(false);
@@ -47,6 +49,7 @@ export function MobileNavButton({
   const dialogRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const closeDialog = useCallback(() => setOpen(false), []);
+  const desktopVisibility = hideAt === "lg" ? "lg:hidden" : "xl:hidden";
 
   useDialog(open, closeDialog, dialogRef, closeRef);
 
@@ -61,7 +64,9 @@ export function MobileNavButton({
   const drawer =
     open && mounted
       ? createPortal(
-          <div className="fixed inset-0 z-[var(--z-modal-backdrop)] xl:hidden">
+          <div
+            className={`fixed inset-0 z-[var(--z-modal-backdrop)] ${desktopVisibility}`}
+          >
             <div
               role="presentation"
               aria-hidden
@@ -185,7 +190,7 @@ export function MobileNavButton({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen(true)}
-        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 xl:hidden"
+        className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 ${desktopVisibility}`}
       >
         <Menu className="h-4 w-4" />
       </button>

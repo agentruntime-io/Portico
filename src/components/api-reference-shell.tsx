@@ -6,7 +6,7 @@ import { ChevronRight, ExternalLink, KeyRound, Mail } from "lucide-react";
 import { ApiMobileNav } from "@/components/api-mobile-nav";
 import { ApiMethod } from "@/components/api-method";
 import { AuthenticatedClientSamples } from "@/components/api-reference-controls";
-import { DocsHeader } from "@/components/docs-shell";
+import { DocsBrand, DocsHeader } from "@/components/docs-shell";
 import { useI18n } from "@/components/i18n-provider";
 import type { NavFile } from "@/lib/nav";
 import type { SiteConfig } from "@/lib/site";
@@ -25,6 +25,7 @@ import { openApiDownloadUrl } from "@/lib/main-nav";
 import { PorticoAttribution } from "@/components/portico-attribution";
 
 function ApiSidebar({
+  siteName,
   specId,
   operations,
   apiSpecs,
@@ -32,6 +33,7 @@ function ApiSidebar({
   activeTag,
   activeSlug,
 }: {
+  siteName: string;
   specId: string;
   operations: ResolvedOperation[];
   apiSpecs: MainNavTargets["apiSpecs"];
@@ -44,77 +46,79 @@ function ApiSidebar({
 
   return (
     <aside
-      className="fixed bottom-0 left-0 top-16 hidden w-[340px] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-3 py-4 lg:flex"
+      className="fixed inset-y-0 left-0 z-30 hidden w-[340px] flex-col overflow-hidden bg-[var(--sidebar-bg)] lg:flex"
       aria-label={t("nav.sectionNav")}
     >
-      <ApiSpecSwitcher
-        specs={apiSpecs}
-        activeSpecId={specId}
-      />
-      <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
-        <ApiSectionNav specId={specId} />
-        <div className="mt-6 space-y-2">
-          {[...grouped.entries()].map(([tag, tagOps]) => {
-            const tagSlug = slugifyTag(tag);
-            const tagActive = activeTag === tagSlug;
-            return (
-              <details key={tag} open={tagActive} className="group">
-                <summary
-                  className={`flex cursor-pointer list-none items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium ${
-                    tagActive ? "nav-active" : "nav-item-muted"
-                  }`}
-                >
-                  <span>{tag}</span>
-                  <ChevronRight className="api-faint ml-auto h-3.5 w-3.5 transition group-open:rotate-90" />
-                  <span className="api-faint text-xs">
-                    {tagOps.length}
-                  </span>
-                </summary>
-              <ul className="api-divider mt-1 space-y-0.5 border-l pl-3">
-                <li>
-                  <Link
-                    href={`/reference/${specId}/${tagSlug}`}
-                    className="nav-item-muted api-faint block rounded-md px-2 py-1.5 text-sm"
+      <div className="flex h-16 shrink-0 items-center px-4">
+        <DocsBrand siteName={siteName} />
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col px-3 py-4">
+        <ApiSpecSwitcher specs={apiSpecs} activeSpecId={specId} />
+        <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
+          <ApiSectionNav specId={specId} />
+          <div className="mt-6 space-y-2">
+            {[...grouped.entries()].map(([tag, tagOps]) => {
+              const tagSlug = slugifyTag(tag);
+              const tagActive = activeTag === tagSlug;
+              return (
+                <details key={tag} open={tagActive} className="group">
+                  <summary
+                    className={`flex cursor-pointer list-none items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium ${
+                      tagActive ? "nav-active" : "nav-item-muted"
+                    }`}
                   >
-                    {t("api.sectionOverview")}
-                  </Link>
-                </li>
-                {tagOps.map((op) => {
-                  const active = activeSlug === op.slug;
-                  return (
-                    <li key={op.slug}>
+                    <span>{tag}</span>
+                    <ChevronRight className="api-faint ml-auto h-3.5 w-3.5 transition group-open:rotate-90" />
+                    <span className="api-faint text-xs">
+                      {tagOps.length}
+                    </span>
+                  </summary>
+                  <ul className="api-divider mt-1 space-y-0.5 border-l pl-3">
+                    <li>
                       <Link
-                        href={apiOperationHref(specId, op)}
-                        className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-tight ${
-                          active ? "nav-active" : "nav-item-muted"
-                        }`}
+                        href={`/reference/${specId}/${tagSlug}`}
+                        className="nav-item-muted api-faint block rounded-md px-2 py-1.5 text-sm"
                       >
-                        <span className="min-w-0 flex-1 truncate">
-                          {op.summary ?? stripApiPrefix(op.path)}
-                        </span>
-                        <ApiMethod method={op.method} />
+                        {t("api.sectionOverview")}
                       </Link>
                     </li>
-                  );
-                })}
-              </ul>
-              </details>
-            );
-          })}
+                    {tagOps.map((op) => {
+                      const active = activeSlug === op.slug;
+                      return (
+                        <li key={op.slug}>
+                          <Link
+                            href={apiOperationHref(specId, op)}
+                            className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-tight ${
+                              active ? "nav-active" : "nav-item-muted"
+                            }`}
+                          >
+                            <span className="min-w-0 flex-1 truncate">
+                              {op.summary ?? stripApiPrefix(op.path)}
+                            </span>
+                            <ApiMethod method={op.method} />
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </details>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      <div className="api-divider mt-3 space-y-3 border-t pt-3 text-sm">
-        <a
-          href={openApiDownloadUrl(openApiFile)}
-          className="api-control flex items-center justify-center gap-2 rounded-md border px-3 py-2 font-medium"
-        >
-          <ExternalLink className="h-3.5 w-3.5" />
-          {t("api.openApiClient")}
-        </a>
-        <div className="api-faint text-xs">
-          <span>{t("api.poweredBy")}</span>
+        <div className="api-divider mt-3 space-y-3 border-t pt-3 text-sm">
+          <a
+            href={openApiDownloadUrl(openApiFile)}
+            className="api-control flex items-center justify-center gap-2 rounded-md border px-3 py-2 font-medium"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            {t("api.openApiClient")}
+          </a>
+          <div className="api-faint text-xs">
+            <span>{t("api.poweredBy")}</span>
+          </div>
+          <PorticoAttribution />
         </div>
-        <PorticoAttribution />
       </div>
     </aside>
   );
@@ -258,8 +262,10 @@ export function ApiReferenceShell({
         activePath={activePath}
         navbar={navbar}
         mainNav={mainNav}
+        desktopSidebar="api"
       />
       <ApiSidebar
+        siteName={siteName}
         specId={specId}
         operations={operations}
         apiSpecs={mainNav.apiSpecs}
