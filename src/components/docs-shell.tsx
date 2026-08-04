@@ -18,7 +18,9 @@ import {
 import type { SiteConfig } from "@/lib/site";
 import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";
+import { MainNavTabs } from "@/components/main-nav-tabs";
 import { SidebarNavGroup } from "@/components/sidebar-nav-group";
+import type { MainNavTargets } from "@/lib/main-nav";
 
 const utilityLinks = [
   { titleKey: "nav.home" as const, href: "/", icon: Home },
@@ -31,17 +33,15 @@ export function DocsHeader({
   nav,
   activePath,
   navbar,
+  mainNav,
 }: {
   siteName: string;
   nav: NavFile;
   activePath: string;
   navbar?: SiteConfig["navbar"];
+  mainNav: MainNavTargets;
 }) {
   const { t, locale } = useI18n();
-  const topLinks = nav.groups.slice(0, 3).map((group) => ({
-    label: group.label,
-    href: group.items[0]?.href ?? "/",
-  }));
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--panel-border)] bg-[var(--panel-bg)]/90 backdrop-blur-md">
@@ -55,26 +55,7 @@ export function DocsHeader({
           </span>
           <span className="hidden truncate min-[420px]:inline">{siteName}</span>
         </Link>
-        <nav className="hidden min-w-0 items-center gap-1 lg:flex" aria-label={t("nav.sectionNav")}>
-          {topLinks.map((item) => {
-            const active =
-              activePath === item.href ||
-              (item.href !== "/" && activePath.startsWith(item.href));
-            return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`rounded-md px-2 py-1 text-xs font-medium uppercase tracking-wide transition-colors ${
-                active
-                  ? "text-[var(--text-main)]"
-                  : "text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
-              }`}
-            >
-              {item.label}
-            </Link>
-            );
-          })}
-        </nav>
+        <MainNavTabs activePath={activePath} mainNav={mainNav} />
         <div className="flex min-w-0 flex-1 items-center justify-end gap-1 sm:gap-2">
           <NavbarLinks
             navbar={navbar}
@@ -96,6 +77,7 @@ export function DocsHeader({
             nav={nav}
             activePath={activePath}
             navbar={navbar}
+            mainNav={mainNav}
           />
         </div>
       </div>
@@ -173,12 +155,14 @@ export function DocsShell({
   nav,
   activePath,
   navbar,
+  mainNav,
   children,
 }: {
   siteName: string;
   nav: NavFile;
   activePath: string;
   navbar?: SiteConfig["navbar"];
+  mainNav: MainNavTargets;
   children: React.ReactNode;
 }) {
   const { t } = useI18n();
@@ -189,6 +173,7 @@ export function DocsShell({
         nav={nav}
         activePath={activePath}
         navbar={navbar}
+        mainNav={mainNav}
       />
       <div className="mx-auto flex w-full max-w-[1800px] flex-1 gap-0 px-1 py-1.5 sm:px-4 sm:py-4 lg:pl-[344px] lg:px-6">
         <DocsSidebar nav={nav} activePath={activePath} />

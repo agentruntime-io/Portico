@@ -11,6 +11,10 @@ export const es: Messages = {
     menuTitle: "Menú de navegación",
     closeMenu: "Cerrar menú",
     docsBadge: "Docs",
+    mainNav: "Navegación principal",
+    documentation: "Documentación",
+    apiReference: "Referencia de API",
+    allApiReferences: "Todas las referencias de API",
     sectionNav: "Secciones de documentación",
     apiEndpoints: "Endpoints de la API",
     guideSections: "Guía",
@@ -93,6 +97,11 @@ export const es: Messages = {
   },
   api: {
     sectionOverview: "Resumen de la sección",
+    selectSpec: "Especificación de API",
+    referenceIndexTitle: "Referencia de API",
+    referenceIndexDescription:
+      "Elige una especificación OpenAPI para explorar endpoints, esquemas y ejemplos de solicitud.",
+    viewReference: "Ver referencia",
     openApiClient: "Abrir cliente API",
     poweredBy: "Referencia API renderizada por Portico",
     proprietary: "Propietario",
@@ -144,5 +153,23 @@ export const es: Messages = {
     portico: "Portico",
     openSourceFrom: "— código abierto de",
     agentRuntime: "AgentRuntime",
+  },
+  changelog: {
+    eyebrow: "Producto",
+    title: "Registro de cambios",
+    description:
+      "Notas de versión de AgentRuntime: flujos de trabajo, integraciones, API y plataforma.",
+    filterArea: "Filtrar por área",
+    filterVersion: "Filtrar por versión",
+    allAreas: "Todas las áreas",
+    allVersions: "Todas las versiones",
+    subscribeRss: "Suscribirse por RSS",
+    emptyFiltered: "Ninguna versión coincide con los filtros.",
+    emptyNoReleases:
+      "No hay notas de versión. Añade archivos en changelog/ del repositorio de contenido.",
+    backToIndex: "Todas las versiones",
+    newerRelease: "Más reciente",
+    olderRelease: "Anterior",
+    readRelease: "Leer notas de la versión",
   },
 };

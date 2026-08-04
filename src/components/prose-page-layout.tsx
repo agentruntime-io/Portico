@@ -80,10 +80,10 @@ export function ProsePageLayout({
                 {description}
               </p>
             ) : null}
-            <div className="mt-4 sm:mt-6">
+            <div className="mt-4 flex flex-col gap-5 sm:mt-6 sm:gap-6">
               <PageActions editUrl={editUrl} />
+              <MobileTableOfContents headings={headings} />
             </div>
-            <MobileTableOfContents headings={headings} />
           </>
         )}
         <div className={hideChrome ? undefined : "mt-8 sm:mt-12"}>

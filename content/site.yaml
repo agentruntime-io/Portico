@@ -21,3 +21,7 @@ openapi:
     - id: agentruntime
       title: AgentRuntime API
       file: openapi/agentruntime.yaml
+    # Additional specs appear in the API reference menu and at /reference/{id}:
+    # - id: integrations
+    #   title: Integrations API
+    #   file: openapi/integrations.yaml

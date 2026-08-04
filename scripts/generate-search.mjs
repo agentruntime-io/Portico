@@ -184,6 +184,34 @@ async function main() {
     }
   }
 
+  const changelogDir = path.join(contentRoot, "changelog");
+  try {
+    const changelogFiles = await fs.readdir(changelogDir);
+    all.push({
+      url: `${origin}/changelog`,
+      title: "Changelog",
+      excerpt: "Product release notes",
+    });
+    for (const name of changelogFiles) {
+      if (!/\.mdx?$/i.test(name)) continue;
+      const base = name.replace(/\.(mdx?|markdown)$/i, "");
+      if (["readme", "_template", "index"].includes(base.toLowerCase())) continue;
+      const raw = await fs.readFile(path.join(changelogDir, name), "utf8");
+      const { data, content } = matter(raw);
+      const title = String(data.title ?? `Release ${base}`);
+      const excerpt = String(
+        data.summary ?? data.description ?? content.replace(/\s+/g, " ").trim().slice(0, 200),
+      );
+      all.push({
+        url: `${origin}/changelog/${base}`,
+        title,
+        excerpt,
+      });
+    }
+  } catch {
+    /* no changelog directory */
+  }
+
   if (site.openapi?.specs?.length) {
     all.push({
       url: `${origin}/reference`,

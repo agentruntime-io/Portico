@@ -450,6 +450,26 @@
     "excerpt": "**Platform MCP** exposes the AgentRuntime BFF as MCP tools so IDEs and AI assistants can list workflows, start runs, check analytics, and manage integrations — without crafting raw HTTP requests. | | "
   },
   {
+    "url": "/changelog",
+    "title": "Changelog",
+    "excerpt": "Product release notes"
+  },
+  {
+    "url": "/changelog/2025-11-20",
+    "title": "Autopilot, memory, and end-to-end guides",
+    "excerpt": "New Autopilot and memory docs, five end-to-end automation guides, and analytics that surface failed steps and median run duration per workflow."
+  },
+  {
+    "url": "/changelog/2026-03-01",
+    "title": "BFF API v1 and platform billing updates",
+    "excerpt": "Public BFF endpoints stabilize under `/v1`, async run semantics are documented end-to-end, and billing surfaces per-workflow credit usage in the Console."
+  },
+  {
+    "url": "/changelog/2026-05-16",
+    "title": "Workflow Studio GA and connector catalog expansion",
+    "excerpt": "Workflow Studio is generally available, the MCP catalog passes 40 adapters, and run recovery handles transient tool failures without operator intervention."
+  },
+  {
     "url": "/reference",
     "title": "API reference",
     "excerpt": "OpenAPI reference overview"

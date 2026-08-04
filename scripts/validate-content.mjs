@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import yaml from "js-yaml";
+import matter from "gray-matter";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { assertContentRoot } from "./content-root.mjs";
 
@@ -67,6 +68,21 @@ async function main() {
     const file = path.join(portalRoot, "content", spec.file);
     if (!(await exists(file))) problems.push(`Missing OpenAPI file: ${file}`);
     else await SwaggerParser.validate(file);
+  }
+
+  const changelogDir = path.join(contentRoot, "changelog");
+  if (await exists(changelogDir)) {
+    const entries = await fs.readdir(changelogDir);
+    for (const name of entries) {
+      if (!/\.mdx?$/i.test(name)) continue;
+      const base = name.replace(/\.(mdx?|markdown)$/i, "");
+      if (["readme", "_template", "index"].includes(base.toLowerCase())) continue;
+      const raw = await fs.readFile(path.join(changelogDir, name), "utf8");
+      const { data } = matter(raw);
+      if (!data.date) {
+        problems.push(`Changelog ${name} is missing required frontmatter: date`);
+      }
+    }
   }
 
   if (problems.length) {

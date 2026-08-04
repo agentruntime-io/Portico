@@ -9,6 +9,10 @@ export const en = {
     menuTitle: "Navigation menu",
     closeMenu: "Close menu",
     docsBadge: "Docs",
+    mainNav: "Main navigation",
+    documentation: "Documentation",
+    apiReference: "API reference",
+    allApiReferences: "All API references",
     sectionNav: "Documentation sections",
     apiEndpoints: "API endpoints",
     guideSections: "Guide",
@@ -91,6 +95,11 @@ export const en = {
   },
   api: {
     sectionOverview: "Section overview",
+    selectSpec: "API specification",
+    referenceIndexTitle: "API reference",
+    referenceIndexDescription:
+      "Choose an OpenAPI specification to browse endpoints, schemas, and request examples.",
+    viewReference: "View reference",
     openApiClient: "Open API Client",
     poweredBy: "API reference rendered by Portico",
     proprietary: "Proprietary",
@@ -142,6 +151,24 @@ export const en = {
     portico: "Portico",
     openSourceFrom: "— open source from",
     agentRuntime: "AgentRuntime",
+  },
+  changelog: {
+    eyebrow: "Product",
+    title: "Changelog",
+    description:
+      "Release notes for AgentRuntime — workflows, integrations, API, and platform updates.",
+    filterArea: "Filter by product area",
+    filterVersion: "Filter by version",
+    allAreas: "All areas",
+    allVersions: "All versions",
+    subscribeRss: "Subscribe via RSS",
+    emptyFiltered: "No releases match the selected filters.",
+    emptyNoReleases:
+      "No release notes found. Add files under changelog/ in your content repository.",
+    backToIndex: "All releases",
+    newerRelease: "Newer",
+    olderRelease: "Older",
+    readRelease: "Read release notes",
   },
 };
 

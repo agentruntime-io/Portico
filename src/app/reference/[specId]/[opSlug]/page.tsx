@@ -12,6 +12,7 @@ import { OperationDocView } from "@/components/operation-doc";
 import { StructuredData } from "@/components/structured-data";
 import { getSiteConfig } from "@/lib/site";
 import { getNavigation } from "@/lib/nav";
+import { resolveMainNav } from "@/lib/main-nav";
 import { markdownToHtml } from "@/lib/markdown";
 import { buildPageMetadata, webPageJsonLd } from "@/lib/seo";
 import {
@@ -88,6 +89,7 @@ export default async function ApiTagPage({ params }: Props) {
   const description = getTagDescription(doc, tag) ?? "";
   const descriptionHtml = await markdownToHtml(description);
   const neighbors = getApiTagNeighbors(specId, ops, opSlug);
+  const mainNav = resolveMainNav(nav, site);
 
   return (
     <>
@@ -104,6 +106,8 @@ export default async function ApiTagPage({ params }: Props) {
         siteName={site.name}
         nav={nav}
         navbar={site.navbar}
+        mainNav={mainNav}
+        openApiFile={meta.file}
         doc={doc}
         operations={ops}
         activeTag={opSlug}

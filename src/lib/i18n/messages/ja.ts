@@ -11,6 +11,10 @@ export const ja: Messages = {
     menuTitle: "ナビゲーションメニュー",
     closeMenu: "メニューを閉じる",
     docsBadge: "Docs",
+    mainNav: "メインナビゲーション",
+    documentation: "ドキュメント",
+    apiReference: "API リファレンス",
+    allApiReferences: "すべての API リファレンス",
     sectionNav: "ドキュメントセクション",
     apiEndpoints: "API エンドポイント",
     guideSections: "ガイド",
@@ -93,6 +97,11 @@ export const ja: Messages = {
   },
   api: {
     sectionOverview: "セクション概要",
+    selectSpec: "API 仕様",
+    referenceIndexTitle: "API リファレンス",
+    referenceIndexDescription:
+      "OpenAPI 仕様を選んで、エンドポイント、スキーマ、リクエスト例を参照します。",
+    viewReference: "リファレンスを見る",
     openApiClient: "API クライアントを開く",
     poweredBy: "Portico による API リファレンス",
     proprietary: "プロプライエタリ",
@@ -143,5 +152,23 @@ export const ja: Messages = {
     portico: "Portico",
     openSourceFrom: "— AgentRuntime のオープンソース",
     agentRuntime: "AgentRuntime",
+  },
+  changelog: {
+    eyebrow: "プロダクト",
+    title: "変更履歴",
+    description:
+      "AgentRuntime のリリースノート — ワークフロー、連携、API、プラットフォームの更新。",
+    filterArea: "領域で絞り込み",
+    filterVersion: "バージョンで絞り込み",
+    allAreas: "すべての領域",
+    allVersions: "すべてのバージョン",
+    subscribeRss: "RSS で購読",
+    emptyFiltered: "フィルターに一致するリリースはありません。",
+    emptyNoReleases:
+      "リリースノートがありません。コンテンツリポジトリの changelog/ にファイルを追加してください。",
+    backToIndex: "すべてのリリース",
+    newerRelease: "新しい",
+    olderRelease: "以前",
+    readRelease: "リリースノートを読む",
   },
 };
