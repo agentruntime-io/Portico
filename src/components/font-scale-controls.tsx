@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/components/i18n-provider";
 import { fontScaleLevels } from "@/lib/theme-tokens";
 
-export function FontScaleControls() {
+export function FontScaleControls({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
   const { t } = useI18n();
   const [index, setIndex] = useState(1);
   const [ready, setReady] = useState(false);
@@ -25,19 +29,24 @@ export function FontScaleControls() {
   }, [index, ready]);
 
   const current = Math.round((fontScaleLevels[index] ?? 1) * 100);
+  const buttonClass = compact
+    ? "min-h-10 min-w-10 px-2 py-1.5"
+    : "min-h-11 min-w-11 px-2.5 py-2 xl:min-h-9 xl:min-w-9 xl:px-2 xl:py-1.5";
 
   return (
     <div
       role="group"
       aria-label={t("fontScale.group")}
-      className="ds-control inline-flex shrink-0 overflow-hidden rounded-lg text-xs font-semibold"
+      className={`ds-control inline-flex shrink-0 overflow-hidden text-xs font-semibold ${
+        compact ? "rounded-md" : "rounded-lg"
+      }`}
     >
       <button
         type="button"
         aria-label={t("fontScale.decrease")}
         disabled={index === 0}
         onClick={() => setIndex((currentIndex) => Math.max(0, currentIndex - 1))}
-        className="min-h-11 min-w-11 px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+        className={`${buttonClass} disabled:cursor-not-allowed disabled:opacity-40`}
       >
         A-
       </button>
@@ -54,7 +63,7 @@ export function FontScaleControls() {
             Math.min(fontScaleLevels.length - 1, currentIndex + 1),
           )
         }
-        className="min-h-11 min-w-11 px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+        className={`${buttonClass} disabled:cursor-not-allowed disabled:opacity-40`}
       >
         A+
       </button>

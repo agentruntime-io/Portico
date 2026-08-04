@@ -23,7 +23,11 @@ function readThemeFromDom(): ThemeName {
   return fromDom === "dark" ? "dark" : "light";
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
   const { t } = useI18n();
   const [theme, setTheme] = useState<ThemeName>("light");
   const [mounted, setMounted] = useState(false);
@@ -51,21 +55,34 @@ export function ThemeToggle() {
       aria-label={isDark ? t("theme.switchToLight") : t("theme.switchToDark")}
       aria-pressed={isDark}
       onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-      className="ds-control inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
+      className={`ds-control inline-flex shrink-0 items-center justify-center ${
+        compact
+          ? "h-10 w-10 rounded-md"
+          : "h-11 w-11 rounded-lg xl:h-9 xl:w-9"
+      }`}
     >
       {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
     </button>
   );
 }
 
-export function LanguageSelector({ variant }: { variant?: "drawer" }) {
+export function LanguageSelector({
+  variant,
+  compact = false,
+}: {
+  variant?: "drawer";
+  compact?: boolean;
+}) {
   const { locale, setLocale, t } = useI18n();
   const visibility =
     variant === "drawer" ? "inline-flex" : "hidden md:inline-flex";
+  const size = compact ? "h-10" : variant === "drawer" ? "h-12" : "h-9";
+  const spacing = compact ? "gap-1.5 px-1.5" : "gap-2 px-2";
+  const radius = compact ? "rounded-md" : "rounded-lg";
 
   return (
     <label
-      className={`ds-control h-12 shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-medium ${visibility}`}
+      className={`ds-control shrink-0 items-center text-xs font-medium ${visibility} ${size} ${spacing} ${radius}`}
     >
       <Globe2 className="h-4 w-4" aria-hidden />
       <select
@@ -166,7 +183,7 @@ export function AssistantLauncher() {
         aria-label={t("assistant.open")}
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="ds-control ds-accent-text inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
+        className="ds-control ds-accent-text inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg xl:h-9 xl:w-9"
       >
         <Bot className="h-4 w-4" />
       </button>

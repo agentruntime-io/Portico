@@ -177,7 +177,7 @@ export function DocsSidebar({
         ref={sidebarRef}
         className="docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-5 pb-14"
       >
-        <div className="space-y-7 pt-7">
+        <div className="space-y-5 pt-7">
           <nav aria-label={t("nav.utilityNav")}>
             <ul className="space-y-1">
               {utilityLinks.map((item) => {
@@ -188,11 +188,11 @@ export function DocsSidebar({
                 const Icon = item.icon;
                 const content = (
                   <>
-                    <Icon className="h-4 w-4 shrink-0" />
+                    <Icon className="h-3.5 w-3.5 shrink-0" />
                     <span>{t(item.titleKey)}</span>
                   </>
                 );
-                const className = `flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm transition-colors ${
+                const className = `docs-nav-row flex min-h-8 items-center gap-3 rounded-lg px-2.5 py-1.5 transition-colors ${
                   active ? "docs-nav-active font-medium" : "docs-nav-item"
                 }`;
 
@@ -255,7 +255,7 @@ export function DocsShell({
 }) {
   const { t } = useI18n();
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-[var(--app-bg)] text-[var(--text-main)]">
+    <div className="flex min-h-0 flex-1 flex-col bg-[var(--sidebar-bg)] text-[var(--text-main)]">
       <DocsHeader
         siteName={siteName}
         nav={nav}
@@ -270,7 +270,7 @@ export function DocsShell({
           id="main-content"
           tabIndex={-1}
           aria-label={t("a11y.mainContent")}
-          className="min-w-0 flex-1 overflow-x-clip bg-[var(--panel-bg)] px-5 pb-12 sm:px-8 sm:pb-16 lg:px-12 xl:px-14"
+          className="min-w-0 flex-1 overflow-x-clip bg-[var(--panel-bg)] px-5 pb-12 sm:px-8 sm:pb-16 lg:px-12 xl:rounded-tl-2xl xl:px-14"
         >
           {children}
         </main>

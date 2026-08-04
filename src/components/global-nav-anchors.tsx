@@ -38,8 +38,8 @@ export function GlobalNavAnchors({
         const href = external ? anchor.href : localizeHref(anchor.href, locale);
         const itemClass =
           variant === "drawer"
-            ? "flex min-h-11 items-center rounded-md px-2 py-2 text-sm transition-colors docs-nav-item"
-            : "block rounded-md px-2 py-2 text-sm transition-colors docs-nav-item";
+            ? "docs-nav-row flex min-h-11 items-center rounded-md px-2.5 py-2 transition-colors docs-nav-item"
+            : "docs-nav-row flex min-h-8 items-center rounded-md px-2.5 py-1.5 transition-colors docs-nav-item";
         return (
           <li key={anchor.href}>
             {external ? (

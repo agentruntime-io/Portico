@@ -13,7 +13,7 @@ import {
 import { localizeHref } from "@/lib/locale-routing";
 
 function tabClass(active: boolean) {
-  return `inline-flex min-h-11 items-center rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
+  return `toolbar-nav-item inline-flex min-h-11 items-center rounded-lg px-2.5 py-1.5 font-medium transition-colors xl:min-h-9 ${
     active
       ? "bg-[var(--surface-muted)] text-[var(--text-main)]"
       : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-main)]"

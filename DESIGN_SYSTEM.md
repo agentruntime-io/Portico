@@ -162,11 +162,17 @@ Add new UI strings to **all four** message files, then use `t("dotted.key")` in 
 | Markdown body | `17px` base, `1.72` line-height | Long-form reading |
 | Markdown H2 | `prose-h2:text-[1.625rem]` | Section headings |
 | Markdown H3 | `prose-h3:text-xl` | Subsections |
-| Header nav | `text-xs font-medium uppercase tracking-wide` | Top bar section links |
-| Sidebar items | `text-sm` | Nav links |
+| Header nav | `.toolbar-nav-item` | 13px / 20px, medium |
+| Sidebar section label | `.docs-nav-label` | 11px / 16px, semibold uppercase |
+| Sidebar item | `.docs-nav-row` | 13px / 20px |
 | On-this-page | `text-[13px]` | Right rail TOC |
 | API section label | `text-sm font-bold uppercase tracking-wide text-zinc-500` | Parameters, Responses, etc. |
 | Code blocks | `text-xs leading-relaxed` | JSON / curl samples |
+
+Toolbar and sidebar sizes are defined once in `globals.css` through
+`--font-size-toolbar-item`, `--font-size-sidebar-label`,
+`--line-height-sidebar-label`, `--font-size-sidebar-item`, and
+`--line-height-sidebar-item`.
 
 ### 3.3 Font scaling
 
@@ -200,11 +206,12 @@ Persisted in `localStorage` key `doc-font-scale`.
 
 | Region | Key classes |
 |--------|-------------|
-| App wrapper | `bg-[var(--app-bg)]` |
+| App wrapper | `bg-[var(--sidebar-bg)]` |
 | Header | `sticky top-0 z-40 xl:ml-[280px] h-16 bg-[var(--sidebar-bg)]` |
 | Sidebar | `fixed inset-y-0 w-[280px] hidden xl:flex` |
 | Main offset | `xl:pl-[280px]` (no outer gutter) |
-| Content max width | Flat canvas; `46rem` reading column |
+| Reading canvas | `bg-[var(--panel-bg)] xl:rounded-tl-2xl` |
+| Content max width | `46rem` reading column |
 
 The shell uses surface-color contrast rather than divider lines between the sidebar, toolbar, and reading canvas. Structural borders are reserved for interactive components and content groups.
 
@@ -214,7 +221,7 @@ The shell uses surface-color contrast rather than divider lines between the side
 |--------|-------|------------|
 | API sidebar | `340px` | `lg:flex` |
 | API header offset | `lg:ml-[340px]` | `lg` |
-| Main content | `flex-1 min-w-0` | — |
+| Main content | `bg-[var(--panel-bg)] lg:ml-[340px] lg:rounded-tl-2xl` | — |
 | Right rail (server, samples) | `380px` | `xl:block` |
 | Content max width | `max-w-[1520px]` | — |
 
@@ -239,7 +246,7 @@ The shell uses surface-color contrast rather than divider lines between the side
 | Pattern | Value |
 |---------|-------|
 | Buttons / inputs | `rounded-lg` |
-| Main panel | `rounded-2xl` |
+| Reading canvas | `rounded-tl-2xl` at the desktop sidebar breakpoint |
 | Modals / assistant | `rounded-xl` / `rounded-2xl` |
 | Pills / badges | `rounded-md` / `rounded` |
 | Shadow (panels) | `shadow-2xl shadow-black/20` (light theme softens via CSS override) |
@@ -265,7 +272,7 @@ rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold hov
 **Icon control (header toolbar)**
 
 ```
-inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10
+inline-flex h-11 w-11 xl:h-9 xl:w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10
 ```
 
 **API control (copy, etc.)**
@@ -283,15 +290,19 @@ inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700 text
 ### 5.2 Header toolbar
 
 Right cluster order (desktop `xl+`): `NavbarLinks` → `NavbarPrimaryCta` → `SearchControl` → `FontScaleControls` → `LanguageSelector` → `AssistantLauncher` → `ThemeToggle`.
+Controls are 44px on touch layouts and 36px in the `xl` desktop toolbar.
 
-Below `xl`, header shows: logo → primary navigation where space allows → `NavbarPrimaryCta` → compact search → `MobileNavButton`. Theme, language, font scale, assistant, GitHub, and full nav live in the drawer.
+Below `xl`, header shows: logo → primary navigation where space allows → `NavbarPrimaryCta` → compact search → `MobileNavButton`.
 
 - **`NavbarLinks`** / **`NavbarPrimaryCta`** (`navbar-cta.tsx`) — sourced from `docs.json` → `navbar.links` and `navbar.primary` (e.g. GitHub, Open Console).
 - External links open in a new tab; internal links respect locale via `localizeHref`.
-- Primary CTA is visible on all breakpoints (`text-xs`, compact padding on phones).
-- On mobile (`lg:hidden` drawer), the same navbar block appears at the top of `MobileNavButton` before doc sections.
+- Primary CTA is visible on all breakpoints and keeps a 44px touch target.
+- The mobile menu is a full-height edge drawer rather than a popup: it remains mounted off-canvas, slides in from the left over 300ms, and pairs with a fading backdrop. It uses a fixed header, persistent search and Docs/API switcher, independently scrolling navigation auto-centered on the active page, and a compact fixed footer.
+- Drawer navigation keeps 44px link targets but uses compact vertical rhythm: 8px between groups, no added gap between item rows, and 8–12px between secondary utility sections.
+- Open Console and site links such as GitHub appear as quiet utility links near the end of the scrollable navigation.
+- The fixed footer is a single 56px, shadow-free preferences row containing theme, text size, and language. Its controls use compact 40px sizing with 6px separation; navigation rows remain 44px. The inactive assistant launcher remains outside the navigation drawer.
 
-All icon buttons share the `h-9` control height for alignment.
+Icon buttons are 44px on touch layouts and 36px in the `xl` desktop toolbar.
 
 ### 5.3 Search modal
 
@@ -433,7 +444,7 @@ Keep motion minimal; this is a documentation surface, not a marketing site.
 | Language | `document.documentElement.lang` from selector |
 | Heading anchors | `.anchor-heading-link` — no underline, inherit color |
 
-Interactive controls use a minimum 44×44px touch target on mobile (`min-h-11 min-w-11`). Inline links inside prose are the only compact-target exception.
+Interactive controls use a minimum 44×44px touch target on mobile (`min-h-11 min-w-11`). The mobile drawer footer uses a deliberate 40px compact utility-control exception with at least 6px separation; inline prose links are the other compact-target exception.
 
 ---
 
@@ -491,7 +502,7 @@ Prose utility highlights:
 - Use semantic CSS variables for surfaces and text in shell components.
 - Use `.api-*` classes inside API reference UI.
 - Use emerald for links, active nav, and primary CTAs.
-- Match existing `h-11` toolbar control sizing.
+- Use 44px controls on touch layouts, 40px for compact mobile-drawer footer utilities, and 36px at `xl`.
 - Test both `data-theme="light"` and `data-theme="dark"`.
 
 **Don't**
@@ -533,7 +544,7 @@ Prose utility highlights:
 ```tsx
 <Link
   href="/docs/example"
-  className="block rounded-md px-2 py-1.5 text-sm transition-colors docs-nav-item"
+  className="docs-nav-row flex min-h-8 items-center rounded-lg px-2.5 py-1.5 transition-colors docs-nav-item"
 >
   Example
 </Link>
@@ -542,7 +553,7 @@ Prose utility highlights:
 **Active sidebar link**
 
 ```tsx
-className="block rounded-md px-2 py-1.5 text-sm transition-colors docs-nav-active font-medium"
+className="docs-nav-row flex min-h-8 items-center rounded-lg px-2.5 py-1.5 transition-colors docs-nav-active font-medium"
 ```
 
 **Section eyebrow + title (docs page)**
