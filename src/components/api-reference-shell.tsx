@@ -20,18 +20,25 @@ import {
   tagSlugForOperation,
 } from "@/lib/openapi/core";
 import { ApiSectionNav } from "@/components/api-section-nav";
+import { ApiSpecSwitcher } from "@/components/api-spec-switcher";
+import type { MainNavTargets } from "@/lib/main-nav";
+import { openApiDownloadUrl } from "@/lib/main-nav";
 import { PorticoAttribution } from "@/components/portico-attribution";
 
 function ApiSidebar({
   specId,
   doc,
   operations,
+  apiSpecs,
+  openApiFile,
   activeTag,
   activeSlug,
 }: {
   specId: string;
   doc: OpenApiDocument;
   operations: ResolvedOperation[];
+  apiSpecs: MainNavTargets["apiSpecs"];
+  openApiFile: string;
   activeTag?: string;
   activeSlug?: string;
 }) {
@@ -44,6 +51,11 @@ function ApiSidebar({
       aria-label={t("nav.sectionNav")}
     >
       <SearchControl />
+      <ApiSpecSwitcher
+        specs={apiSpecs}
+        activeSpecId={specId}
+        className="mt-4"
+      />
       <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
         <ApiSectionNav specId={specId} />
         <div className="mt-6 space-y-2">
@@ -99,7 +111,7 @@ function ApiSidebar({
       </div>
       <div className="api-divider mt-3 space-y-3 border-t pt-3 text-sm">
         <a
-          href="/openapi/agentruntime.yaml"
+          href={openApiDownloadUrl(openApiFile)}
           className="api-control flex items-center justify-center gap-2 rounded-md border px-3 py-2 font-medium"
         >
           <ExternalLink className="h-3.5 w-3.5" />
@@ -214,6 +226,8 @@ export function ApiReferenceShell({
   siteName,
   nav,
   navbar,
+  mainNav,
+  openApiFile,
   doc,
   operations,
   activeTag,
@@ -225,6 +239,8 @@ export function ApiReferenceShell({
   siteName: string;
   nav: NavFile;
   navbar?: SiteConfig["navbar"];
+  mainNav: MainNavTargets;
+  openApiFile: string;
   doc: OpenApiDocument;
   operations: ResolvedOperation[];
   activeTag?: string;
@@ -243,16 +259,20 @@ export function ApiReferenceShell({
         nav={nav}
         activePath={activePath}
         navbar={navbar}
+        mainNav={mainNav}
       />
       <ApiSidebar
         specId={specId}
         doc={doc}
         operations={operations}
+        apiSpecs={mainNav.apiSpecs}
+        openApiFile={openApiFile}
         activeTag={activeTag}
         activeSlug={activeSlug}
       />
       <ApiMobileNav
         specId={specId}
+        apiSpecs={mainNav.apiSpecs}
         operations={operations.map((op) => ({
           slug: op.slug,
           method: op.method,

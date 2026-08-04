@@ -16,7 +16,7 @@ import path from "path";
 
  * 1. CONTENT_ROOT env
 
- * 2. .content-root file (written by scripts/prepare-content.mjs)
+ * 2. .content-root pointer (only when CONTENT_GIT_REPO is set — clone at build)
 
  * 3. Sibling agentruntime-docs checkout (AgentRuntime dev layout)
 
@@ -40,7 +40,9 @@ export function getContentRoot(): string {
 
   const pointerFile = path.join(cwd, ".content-root");
 
-  if (fs.existsSync(pointerFile)) {
+  const cloneAtBuild = process.env.CONTENT_GIT_REPO?.trim();
+
+  if (cloneAtBuild && fs.existsSync(pointerFile)) {
 
     const pointed = fs.readFileSync(pointerFile, "utf8").trim();
 

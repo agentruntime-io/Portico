@@ -5,6 +5,7 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
+  color-scheme: dark;
   --background: #0a0a0a;
   --foreground: #ededed;
   --doc-font-scale: 1;
@@ -26,6 +27,7 @@
 }
 
 html[data-theme="light"] {
+  color-scheme: light;
   --background: #f3f6f4;
   --foreground: #171717;
   --app-bg: #eef3f0;
@@ -37,6 +39,7 @@ html[data-theme="light"] {
 }
 
 html[data-theme="dark"] {
+  color-scheme: dark;
   --background: #0a0a0a;
   --foreground: #ededed;
   --app-bg: #080b0a;
@@ -822,4 +825,45 @@ html[data-theme="dark"] .shiki span {
   width: 100%;
   height: auto;
   border-radius: 0.5rem;
+}
+
+/* Changelog timeline — dates are labels, not autolink headings */
+.changelog-date,
+.changelog-section-title,
+.changelog-title-link {
+  text-decoration: none !important;
+}
+
+.changelog-title-link {
+  color: inherit;
+}
+
+.changelog-body.doc-prose :where(h1, h2, h3, h4) > a,
+.changelog-body.doc-prose :where(.anchor-heading-link) {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.changelog-select,
+.changelog-subscribe {
+  color: var(--text-main);
+}
+
+.changelog-select option,
+.ds-control option {
+  background-color: var(--panel-bg);
+  color: var(--text-main);
+}
+
+.changelog-version {
+  background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+  color: var(--text-main);
+}
+
+.changelog-card {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.changelog-card:hover {
+  border-color: color-mix(in srgb, #10b981 35%, var(--panel-border));
 }

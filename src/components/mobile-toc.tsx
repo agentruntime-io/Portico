@@ -13,7 +13,7 @@ export function MobileTableOfContents({
   if (headings.length < 2) return null;
 
   return (
-    <details className="mb-8 rounded-lg border border-[var(--panel-border)] bg-[var(--sidebar-bg)] lg:hidden">
+    <details className="rounded-lg border border-[var(--panel-border)] bg-[var(--sidebar-bg)] lg:hidden">
       <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium text-[var(--text-main)] [&::-webkit-details-marker]:hidden">
         <ListFilter className="h-4 w-4 text-[var(--text-muted)]" aria-hidden />
         {t("toc.title")}

@@ -16,7 +16,8 @@ export function getContentRoot(cwd = portalRoot) {
   }
 
   const pointerFile = path.join(cwd, ".content-root");
-  if (fs.existsSync(pointerFile)) {
+  const cloneAtBuild = process.env.CONTENT_GIT_REPO?.trim();
+  if (cloneAtBuild && fs.existsSync(pointerFile)) {
     const pointed = fs.readFileSync(pointerFile, "utf8").trim();
     if (pointed && fs.existsSync(path.join(pointed, "docs.json"))) {
       return pointed;

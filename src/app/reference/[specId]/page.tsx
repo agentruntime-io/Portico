@@ -11,9 +11,11 @@ import { MarkdownBody } from "@/components/markdown-body";
 import { StructuredData } from "@/components/structured-data";
 import { getSiteConfig } from "@/lib/site";
 import { getNavigation } from "@/lib/nav";
+import { resolveMainNav } from "@/lib/main-nav";
 import { markdownToHtml } from "@/lib/markdown";
 import { buildPageMetadata, excerptFromBody, webPageJsonLd } from "@/lib/seo";
 import { flattenOperations, loadBundledSpec } from "@/lib/openapi/core";
+import { openApiDownloadUrl } from "@/lib/main-nav";
 
 type Props = { params: Promise<{ specId: string }> };
 
@@ -52,6 +54,7 @@ export default async function SpecOverviewPage({ params }: Props) {
   const ops = flattenOperations(specId, doc);
   const descriptionHtml = await markdownToHtml(doc.info?.description ?? "");
   const neighbors = getApiOverviewNeighbors(nav, specId, ops);
+  const mainNav = resolveMainNav(nav, site);
   const title = doc.info?.title ?? meta.title;
   const description = excerptFromBody(doc.info?.description ?? "");
 
@@ -70,6 +73,8 @@ export default async function SpecOverviewPage({ params }: Props) {
         siteName={site.name}
         nav={nav}
         navbar={site.navbar}
+        mainNav={mainNav}
+        openApiFile={meta.file}
         doc={doc}
         operations={ops}
         rightRail={<ApiRightRail doc={doc} />}
@@ -87,7 +92,7 @@ export default async function SpecOverviewPage({ params }: Props) {
           {doc.info?.title ?? meta.title}
         </h1>
         <a
-          href="/openapi/agentruntime.yaml"
+          href={openApiDownloadUrl(meta.file)}
           className="ds-link ds-accent-text mt-4 inline-flex items-center border-b border-current text-base font-semibold"
         >
           Download OpenAPI Document

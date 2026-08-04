@@ -10,6 +10,7 @@ import { compileMdxPage, loadMdxPage, isMarketingHomePage, mdxNeedsProseEnhancem
 import { getNavigation } from "@/lib/nav";
 import { githubEditUrl } from "@/lib/edit-url";
 import { getPageNeighbors } from "@/lib/pager";
+import { resolveMainNav } from "@/lib/main-nav";
 import {
   breadcrumbItemsForPage,
   breadcrumbJsonLd,
@@ -62,6 +63,7 @@ export async function RenderDocPage({
     page.contentLocale,
   );
   const breadcrumbs = breadcrumbItemsForPage(page.pagePath, page.title, locale);
+  const mainNav = resolveMainNav(nav, site);
   const structuredData = [
     techArticleJsonLd({
       site,
@@ -81,6 +83,7 @@ export async function RenderDocPage({
         nav={nav}
         activePath={page.href}
         navbar={site.navbar}
+        mainNav={mainNav}
       >
         {page.isContentFallback ? (
         <ContentLocaleBanner

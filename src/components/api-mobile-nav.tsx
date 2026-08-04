@@ -5,8 +5,10 @@ import { ChevronRight, ListTree, X } from "lucide-react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ApiMethod } from "@/components/api-method";
+import { ApiSpecSwitcher } from "@/components/api-spec-switcher";
 import { useI18n } from "@/components/i18n-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
+import type { ApiSpecNavEntry } from "@/lib/main-nav";
 
 type ApiOp = {
   slug: string;
@@ -43,11 +45,13 @@ const sectionKeys = [
 
 export function ApiMobileNav({
   specId,
+  apiSpecs,
   operations,
   activeTag,
   activeSlug,
 }: {
   specId: string;
+  apiSpecs: ApiSpecNavEntry[];
   operations: ApiOp[];
   activeTag?: string;
   activeSlug?: string;
@@ -108,6 +112,12 @@ export function ApiMobileNav({
                 </button>
               </div>
               <nav className="flex-1 overflow-y-auto px-3 py-4">
+                <ApiSpecSwitcher
+                  specs={apiSpecs}
+                  activeSpecId={specId}
+                  className="mb-4"
+                  onNavigate={closeDialog}
+                />
                 <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                   {t("nav.guideSections")}
                 </p>

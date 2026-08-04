@@ -1,7 +1,8 @@
-import fs from "fs/promises";
-import path from "path";
-import matter from "gray-matter";
 import { getSiteConfig } from "@/lib/site";
+import {
+  listChangelogReleases,
+  releaseExcerpt,
+} from "@/lib/changelog";
 
 function escapeXml(value: string) {
   return value
@@ -13,31 +14,26 @@ function escapeXml(value: string) {
 
 export async function GET() {
   const site = await getSiteConfig();
-  const raw = await fs.readFile(
-    path.join(process.cwd(), "content", "changelog", "index.md"),
-    "utf8",
-  );
-  const parsed = matter(raw);
-  const title = String(parsed.data.title ?? "Changelog");
-  const description = String(parsed.data.description ?? site.description);
+  const releases = await listChangelogReleases();
   const base = site.url.replace(/\/$/, "");
-  const sections = parsed.content.split(/^##\s+/m).slice(1);
-  const items = sections.map((section) => {
-    const [heading = "Release", ...body] = section.split(/\r?\n/);
-    const cleanHeading = heading.trim();
+
+  const items = releases.map((release) => {
+    const link = `${base}${release.href}`;
     return `<item>
-      <title>${escapeXml(cleanHeading)}</title>
-      <link>${base}/changelog#${encodeURIComponent(cleanHeading.toLowerCase())}</link>
-      <description>${escapeXml(body.join("\n").trim())}</description>
+      <title>${escapeXml(release.version ? `${release.title} (v${release.version})` : release.title)}</title>
+      <link>${link}</link>
+      <guid isPermaLink="true">${link}</guid>
+      <pubDate>${new Date(`${release.date}T12:00:00Z`).toUTCString()}</pubDate>
+      <description>${escapeXml(releaseExcerpt(release))}</description>
     </item>`;
   });
 
   const xml = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
   <channel>
-    <title>${escapeXml(title)}</title>
+    <title>${escapeXml(`${site.name} Changelog`)}</title>
     <link>${base}/changelog</link>
-    <description>${escapeXml(description)}</description>
+    <description>${escapeXml("Product release notes for AgentRuntime.")}</description>
     ${items.join("\n")}
   </channel>
 </rss>`;

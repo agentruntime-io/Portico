@@ -10,6 +10,7 @@ import { FontScaleControls } from "@/components/font-scale-controls";
 import { NavbarLinks, NavbarPrimaryCta } from "@/components/navbar-cta";
 import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";
+import { MainNavTabs } from "@/components/main-nav-tabs";
 import { SidebarNavGroup } from "@/components/sidebar-nav-group";
 import {
   AssistantLauncher,
@@ -19,6 +20,7 @@ import {
 import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
 import { localizeHref } from "@/lib/locale-routing";
+import type { MainNavTargets } from "@/lib/main-nav";
 import type { SiteConfig } from "@/lib/site";
 
 const utilityLinks = [
@@ -31,10 +33,12 @@ export function MobileNavButton({
   nav,
   activePath,
   navbar,
+  mainNav,
 }: {
   nav: NavFile;
   activePath: string;
   navbar?: SiteConfig["navbar"];
+  mainNav: MainNavTargets;
 }) {
   const { t, locale } = useI18n();
   const [open, setOpen] = useState(false);
@@ -102,6 +106,12 @@ export function MobileNavButton({
                   navbar={navbar}
                   className="mb-3 flex flex-col gap-2"
                   onNavigate={closeDialog}
+                />
+                <MainNavTabs
+                  activePath={activePath}
+                  mainNav={mainNav}
+                  onNavigate={closeDialog}
+                  className="mb-4 flex flex-wrap gap-2"
                 />
                 <ul className="space-y-1">
                   {utilityLinks.map((item) => {
