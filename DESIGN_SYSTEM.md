@@ -122,7 +122,7 @@ Use these anywhere a component is not API-specific. API-only surfaces still use 
 | `.ds-shadow-panel` | Elevated panel shadow (main card, modals, drawers) |
 | `.ds-callout` / `.ds-callout-note` / `.ds-callout-warning` / `.ds-callout-info` | MDX `<Note>`, `<Warning>`, `<Info>` callouts |
 
-**Layout split (unchanged):** docs use `DocsShell` + rounded main panel; API uses `ApiReferenceShell` + flat main column + optional right rail. Both share tokens, nav classes, and toolbar controls.
+**Unified shell:** docs and API both use a full-height branded sidebar with a content-only top toolbar and flat main canvas. API pages add an optional right rail. Both share tokens, nav classes, and toolbar controls.
 
 **No zinc overrides:** components use `data-theme` tokens and `ds-*` / `api-*` classes — not Tailwind `zinc-*` utilities or legacy `dark:` zinc patches.
 
@@ -189,10 +189,10 @@ Persisted in `localStorage` key `doc-font-scale`.
 ### 4.1 Shell structure (docs / guides / changelog)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ DocsHeader (sticky, h-16, max-w-[1680px])                   │
-├──────────┬──────────────────────────────────────────────────┤
-│ Sidebar  │ Main panel (rounded-2xl, shadow-2xl)             │
+┌──────────┬──────────────────────────────────────────────────┐
+│ Brand    │ DocsHeader (sticky, content toolbar)             │
+├──────────┼──────────────────────────────────────────────────┤
+│ Sidebar  │ Flat main canvas                                 │
 │ 280px    │ px-5 sm:px-8, pb-16                              │
 │ fixed    │                                                  │
 └──────────┴──────────────────────────────────────────────────┘
@@ -201,16 +201,19 @@ Persisted in `localStorage` key `doc-font-scale`.
 | Region | Key classes |
 |--------|-------------|
 | App wrapper | `bg-[var(--app-bg)]` |
-| Header | `sticky top-0 z-40 h-16 border-b backdrop-blur-md` |
-| Sidebar | `fixed w-[280px] top-16 hidden xl:block` |
-| Main offset | `xl:pl-[304px]` (sidebar + gap) |
-| Content max width | `max-w-[1720px]` shell; `46rem` reading column |
+| Header | `sticky top-0 z-40 xl:ml-[280px] h-16 bg-[var(--sidebar-bg)]` |
+| Sidebar | `fixed inset-y-0 w-[280px] hidden xl:flex` |
+| Main offset | `xl:pl-[280px]` (no outer gutter) |
+| Content max width | Flat canvas; `46rem` reading column |
+
+The shell uses surface-color contrast rather than divider lines between the sidebar, toolbar, and reading canvas. Structural borders are reserved for interactive components and content groups.
 
 ### 4.2 API reference layout
 
 | Region | Width | Breakpoint |
 |--------|-------|------------|
 | API sidebar | `340px` | `lg:flex` |
+| API header offset | `lg:ml-[340px]` | `lg` |
 | Main content | `flex-1 min-w-0` | — |
 | Right rail (server, samples) | `380px` | `xl:block` |
 | Content max width | `max-w-[1520px]` | — |
