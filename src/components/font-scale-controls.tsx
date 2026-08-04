@@ -37,7 +37,7 @@ export function FontScaleControls() {
         aria-label={t("fontScale.decrease")}
         disabled={index === 0}
         onClick={() => setIndex((currentIndex) => Math.max(0, currentIndex - 1))}
-        className="px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+        className="min-h-11 min-w-11 px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
       >
         A-
       </button>
@@ -54,7 +54,7 @@ export function FontScaleControls() {
             Math.min(fontScaleLevels.length - 1, currentIndex + 1),
           )
         }
-        className="px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+        className="min-h-11 min-w-11 px-2.5 py-2 disabled:cursor-not-allowed disabled:opacity-40"
       >
         A+
       </button>

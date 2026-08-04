@@ -3,66 +3,132 @@ title: AgentRuntime Docs
 description: Design, run, and observe production AI agent workflows with MCP integrations, human approvals, and real-time observability.
 ---
 
-<div data-product-guide-index className="flex w-full flex-col gap-8 lg:gap-10">
-  <CardGroup cols={2}>
-    <Card
-      title="What is AgentRuntime?"
-      icon="layers"
-      href="/introduction/what-is-agentruntime"
-    >
-      The platform model — workspaces, workflows, runs, MCP, and agents.
-    </Card>
+<div data-product-guide-index className="flex w-full flex-col gap-14 py-6 sm:py-8 lg:gap-20 lg:py-10">
+  <section className="docs-home-hero rounded-2xl px-6 py-9 sm:px-9 sm:py-12 lg:px-12 lg:py-14">
+    <div className="max-w-3xl">
+      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent-strong)]">
+        AgentRuntime documentation
+      </div>
+      <h1 className="mt-4 max-w-3xl text-3xl font-semibold leading-[1.12] tracking-[-0.04em] text-[var(--text-main)] sm:text-4xl lg:text-5xl">
+        Build reliable AI workflows, from first run to production.
+      </h1>
+      <div className="mt-5 max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8">
+        Learn the platform, connect your tools, and ship workflows with approvals,
+        observability, and recovery built in.
+      </div>
+      <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a
+          href="/platform/quickstart"
+          className="docs-home-primary inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold"
+        >
+          Start the quickstart
+          <span aria-hidden="true">→</span>
+        </a>
+        <a
+          href="/introduction/what-is-agentruntime"
+          className="docs-home-secondary inline-flex min-h-11 items-center justify-center rounded-lg px-5 py-2.5 text-sm font-semibold"
+        >
+          Learn the platform
+        </a>
+      </div>
+    </div>
+  </section>
 
-    <Card title="Quickstart" icon="rocket" href="/platform/quickstart">
-      Create a workspace, connect a tool, and run your first workflow in the Console.
-    </Card>
+  <section aria-labelledby="start-here">
+    <div className="max-w-2xl">
+      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-strong)]">
+        Start here
+      </div>
+      <h2 id="start-here" className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-[var(--text-main)] sm:text-3xl">
+        Choose the path that matches your goal
+      </h2>
+      <div className="mt-3 text-base leading-7 text-[var(--text-muted)]">
+        Get oriented, create your first run, or jump directly into workflow authoring.
+      </div>
+    </div>
 
-    <Card title="Workflow Studio" icon="workflow" href="/workflows/studio">
-      Author DAG workflows, validate before deploy, and stream live run events.
-    </Card>
-
-    <Card title="Connector catalog" icon="plug" href="/integrations/connector-catalog">
-      40+ MCP adapters for Google Workspace, databases, commerce, and more.
-    </Card>
-
-    <Card title="End-to-end guides" icon="book-open" href="/guides/overview">
-      Full recipes — webhook to database to email, Shopify to WhatsApp, PR review, and more.
-    </Card>
-  </CardGroup>
-
-  <hr className="border-0 border-t border-[var(--panel-border)]" />
-
-  <div className="flex flex-col gap-4">
-    <h2 className="text-xl font-semibold tracking-tight text-[var(--text-main)]">Common tasks</h2>
-
-    <CardGroup cols={2}>
-      <Card title="Connect Google or WhatsApp" icon="cable" href="/integrations/connections">
-        Save OAuth credentials and bind them to MCP instances in your project.
+    <CardGroup cols={3}>
+      <Card title="Run your first workflow" icon="rocket" href="/platform/quickstart">
+        Create a workspace, connect a tool, and complete a production-shaped run.
       </Card>
 
-      <Card title="Open Command Center" icon="inbox" href="/workflows/command-center">
-        Approve tasks, pause or stop runs, and triage recent failures.
+      <Card
+        title="Understand AgentRuntime"
+        icon="layers"
+        href="/introduction/what-is-agentruntime"
+      >
+        Learn how workspaces, workflows, runs, MCP, and agents fit together.
+      </Card>
+
+      <Card title="Author in Workflow Studio" icon="workflow" href="/workflows/studio">
+        Build and validate DAG workflows, then follow live run events.
+      </Card>
+    </CardGroup>
+  </section>
+
+  <section aria-labelledby="explore" className="border-t border-[var(--panel-border)] pt-12 lg:pt-16">
+    <div className="max-w-2xl">
+      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-strong)]">
+        Explore by goal
+      </div>
+      <h2 id="explore" className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-[var(--text-main)] sm:text-3xl">
+        Find the guide you need
+      </h2>
+    </div>
+
+    <CardGroup cols={2}>
+      <Card title="Browse connectors" icon="plug" href="/integrations/connector-catalog">
+        Find MCP adapters for Google Workspace, databases, commerce, and more.
+      </Card>
+
+      <Card title="Follow an end-to-end guide" icon="book-open" href="/guides/overview">
+        Build complete recipes for webhooks, databases, messaging, and code review.
+      </Card>
+
+      <Card title="Operate workflows" icon="inbox" href="/workflows/command-center">
+        Approve tasks, pause runs, and investigate failures in Command Center.
+      </Card>
+
+      <Card title="Connect your IDE" icon="key-round" href="/api/platform-mcp">
+        Control workflows and runs from Cursor through the Platform MCP server.
+      </Card>
+    </CardGroup>
+  </section>
+
+  <section aria-labelledby="common-tasks" className="border-t border-[var(--panel-border)] pt-12 lg:pt-16">
+    <div className="max-w-2xl">
+      <h2 id="common-tasks" className="text-2xl font-semibold tracking-[-0.025em] text-[var(--text-main)] sm:text-3xl">
+        Common tasks
+      </h2>
+      <div className="mt-3 text-base leading-7 text-[var(--text-muted)]">
+        Direct routes to the setup and operational work you will do most often.
+      </div>
+    </div>
+
+    <CardGroup cols={3}>
+      <Card title="Connect Google or WhatsApp" icon="cable" href="/integrations/connections">
+        Save OAuth credentials and bind them to MCP instances.
       </Card>
 
       <Card title="Configure LLM providers" icon="brain" href="/ai/llm-providers">
-        Add tenant API keys and pick models for workflow LLM steps.
+        Add tenant API keys and choose models for workflow steps.
       </Card>
 
-      <Card title="Connect your IDE via Platform MCP" icon="key-round" href="/api/platform-mcp">
-        Drive workflows and runs from Cursor with a PAT and mcp.agentruntime.io.
+      <Card title="Trigger with webhooks" icon="webhook" href="/integrations/inbound-webhooks">
+        Start runs from external systems with signed subscriptions.
       </Card>
 
-      <Card title="Understand billing and credits" icon="credit-card" href="/platform/billing-and-credits">
-        Plans, trials, PAYG top-ups, and what actions consume credits.
+      <Card title="Monitor live runs" icon="eye" href="/workflows/runs-and-command-center">
+        Track progress, success rates, failures, and credit use.
       </Card>
 
-      <Card title="Monitor runs" icon="inbox" href="/workflows/runs-and-command-center">
-        Track live runs, success rates, and credits from Analytics and Command Center.
+      <Card title="Manage billing and credits" icon="credit-card" href="/platform/billing-and-credits">
+        Understand plans, trials, top-ups, and usage.
       </Card>
 
-      <Card title="Trigger workflows from webhooks" icon="webhook" href="/integrations/inbound-webhooks">
-        Start runs from external systems via signed inbound webhook subscriptions.
+      <Card title="Secure your workspace" icon="shield" href="/platform/security-and-compliance">
+        Review permissions, controls, and compliance practices.
       </Card>
     </CardGroup>
-  </div>
+  </section>
 </div>

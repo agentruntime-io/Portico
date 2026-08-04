@@ -32,7 +32,7 @@ export function OnThisPage({ headings }: { headings: PageHeading[] }) {
   return (
     <nav
       aria-label={t("toc.title")}
-      className="sticky top-24 border-l border-[var(--panel-border)] pl-5 text-[13px]"
+      className="sticky top-28 border-l border-[var(--panel-border)] pl-5 text-[13px]"
     >
       <p className="mb-4 flex items-center gap-2 font-semibold text-[var(--text-main)]">
         <ListFilter className="h-3.5 w-3.5" aria-hidden />

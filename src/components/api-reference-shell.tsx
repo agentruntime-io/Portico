@@ -1,23 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { Children } from "react";
 import { ChevronRight, ExternalLink, KeyRound, Mail } from "lucide-react";
 import { ApiMobileNav } from "@/components/api-mobile-nav";
 import { ApiMethod } from "@/components/api-method";
 import { AuthenticatedClientSamples } from "@/components/api-reference-controls";
 import { DocsHeader } from "@/components/docs-shell";
 import { useI18n } from "@/components/i18n-provider";
-import { SearchControl } from "@/components/search-control";
 import type { NavFile } from "@/lib/nav";
 import type { SiteConfig } from "@/lib/site";
 import type { OpenApiDocument, ResolvedOperation } from "@/lib/openapi/core";
 import {
+  apiOperationHref,
   getPrimarySecurityScheme,
-  getTagDescription,
   groupOperationsByTag,
   slugifyTag,
   stripApiPrefix,
-  tagSlugForOperation,
 } from "@/lib/openapi/core";
 import { ApiSectionNav } from "@/components/api-section-nav";
 import { ApiSpecSwitcher } from "@/components/api-spec-switcher";
@@ -27,7 +26,6 @@ import { PorticoAttribution } from "@/components/portico-attribution";
 
 function ApiSidebar({
   specId,
-  doc,
   operations,
   apiSpecs,
   openApiFile,
@@ -35,7 +33,6 @@ function ApiSidebar({
   activeSlug,
 }: {
   specId: string;
-  doc: OpenApiDocument;
   operations: ResolvedOperation[];
   apiSpecs: MainNavTargets["apiSpecs"];
   openApiFile: string;
@@ -47,14 +44,12 @@ function ApiSidebar({
 
   return (
     <aside
-      className="fixed bottom-0 left-0 top-14 hidden w-[340px] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-3 py-4 lg:flex"
+      className="fixed bottom-0 left-0 top-16 hidden w-[340px] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-3 py-4 lg:flex"
       aria-label={t("nav.sectionNav")}
     >
-      <SearchControl />
       <ApiSpecSwitcher
         specs={apiSpecs}
         activeSpecId={specId}
-        className="mt-4"
       />
       <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
         <ApiSectionNav specId={specId} />
@@ -63,7 +58,7 @@ function ApiSidebar({
             const tagSlug = slugifyTag(tag);
             const tagActive = activeTag === tagSlug;
             return (
-            <details key={tag} open={tagActive} className="group">
+              <details key={tag} open={tagActive} className="group">
                 <summary
                   className={`flex cursor-pointer list-none items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium ${
                     tagActive ? "nav-active" : "nav-item-muted"
@@ -89,7 +84,7 @@ function ApiSidebar({
                   return (
                     <li key={op.slug}>
                       <Link
-                        href={`/reference/${specId}/${tagSlugForOperation(op)}#${op.slug}`}
+                        href={apiOperationHref(specId, op)}
                         className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-tight ${
                           active ? "nav-active" : "nav-item-muted"
                         }`}
@@ -103,8 +98,7 @@ function ApiSidebar({
                   );
                 })}
               </ul>
-              {getTagDescription(doc, tag) ? null : null}
-            </details>
+              </details>
             );
           })}
         </div>
@@ -131,9 +125,11 @@ export { ApiMethod } from "@/components/api-method";
 export function ApiMobileRightRail({
   doc,
   operation,
+  className = "mt-12",
 }: {
   doc: OpenApiDocument;
   operation?: ResolvedOperation;
+  className?: string;
 }) {
   const { t } = useI18n();
   const server = doc.servers?.[0];
@@ -143,7 +139,9 @@ export function ApiMobileRightRail({
   const path = operation ? `${server?.url ?? ""}${operation.path}` : server?.url;
 
   return (
-    <section className="mt-12 space-y-4 border-t border-[var(--panel-border)] pt-8 xl:hidden">
+    <section
+      className={`${className} space-y-4 border-t border-[var(--panel-border)] pt-8 xl:hidden`}
+    >
       <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
         {t("api.server")}
       </h2>
@@ -181,7 +179,7 @@ export function ApiRightRail({
 
   return (
     <aside className="hidden w-[380px] shrink-0 xl:block">
-      <div className="sticky top-10 space-y-4">
+      <div className="sticky top-24 space-y-4">
         <div className="api-muted flex justify-end gap-4 pr-1">
           <a
             href="mailto:hello@agentruntime.io"
@@ -228,7 +226,6 @@ export function ApiReferenceShell({
   navbar,
   mainNav,
   openApiFile,
-  doc,
   operations,
   activeTag,
   activeSlug,
@@ -241,7 +238,6 @@ export function ApiReferenceShell({
   navbar?: SiteConfig["navbar"];
   mainNav: MainNavTargets;
   openApiFile: string;
-  doc: OpenApiDocument;
   operations: ResolvedOperation[];
   activeTag?: string;
   activeSlug?: string;
@@ -249,6 +245,8 @@ export function ApiReferenceShell({
   rightRail?: React.ReactNode;
 }) {
   const { t } = useI18n();
+  const contentChildren = Children.toArray(children);
+  const railChildren = Children.toArray(rightRail);
   const activePath = activeTag
     ? `/reference/${specId}/${activeTag}`
     : `/reference/${specId}`;
@@ -263,7 +261,6 @@ export function ApiReferenceShell({
       />
       <ApiSidebar
         specId={specId}
-        doc={doc}
         operations={operations}
         apiSpecs={mainNav.apiSpecs}
         openApiFile={openApiFile}
@@ -290,8 +287,8 @@ export function ApiReferenceShell({
         className="min-w-0 lg:pl-[340px]"
       >
         <div className="mx-auto flex max-w-[1520px] flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:flex-row lg:gap-14 lg:px-10 lg:py-10 xl:px-16">
-          <div className="min-w-0 flex-1">{children}</div>
-          {rightRail}
+          <div className="min-w-0 flex-1">{contentChildren}</div>
+          {railChildren}
         </div>
       </main>
     </div>

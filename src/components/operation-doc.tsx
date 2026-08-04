@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { OpenApiDocument, ResolvedOperation } from "@/lib/openapi/core";
 import { CopyButton } from "@/components/api-reference-controls";
 import { useI18n } from "@/components/i18n-provider";
@@ -90,10 +91,12 @@ export function OperationDocView({
   op,
   doc,
   id,
+  mobileTester,
 }: {
   op: ResolvedOperation;
   doc: OpenApiDocument;
   id?: string;
+  mobileTester?: ReactNode;
 }) {
   const { t } = useI18n();
   const base = doc.servers?.[0]?.url ?? "https://example.com";
@@ -111,16 +114,24 @@ export function OperationDocView({
 
   return (
     <div id={id} className="scroll-mt-8 space-y-10">
-      <div className="api-divider flex flex-wrap items-center gap-3 border-b pb-6">
-        <MethodBadge method={op.method} />
-        <code className="break-all font-mono text-xs text-[var(--text-main)] sm:text-sm">{op.path}</code>
-      </div>
-      {op.summary ? <p className="text-lg api-muted">{op.summary}</p> : null}
-      {op.description ? (
-        <div className="doc-prose prose prose-zinc max-w-none">
-          <p>{op.description}</p>
+      <header className="space-y-5">
+        <div className="api-divider flex flex-wrap items-center gap-3 border-b pb-6">
+          <MethodBadge method={op.method} />
+          <code className="break-all font-mono text-xs text-[var(--text-main)] sm:text-sm">
+            {op.path}
+          </code>
         </div>
-      ) : null}
+        <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-main)] sm:text-4xl">
+          {op.summary ?? `${op.method.toUpperCase()} ${op.path}`}
+        </h1>
+        {op.description ? (
+          <div className="doc-prose prose prose-zinc max-w-none">
+            <p>{op.description}</p>
+          </div>
+        ) : null}
+      </header>
+
+      {mobileTester}
 
       <section>
         <h2 className="ds-section-label">{t("api.operation.sampleRequest")}</h2>

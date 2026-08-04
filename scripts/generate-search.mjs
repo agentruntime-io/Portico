@@ -238,7 +238,7 @@ async function main() {
         });
         for (const op of tagOps) {
           all.push({
-            url: `${origin}/reference/${spec.id}/${tagSlug}#${op.slug}`,
+            url: `${origin}/reference/${spec.id}/${tagSlug}/${op.slug}`,
             title: `${op.method.toUpperCase()} ${op.path}`,
             excerpt: op.summary || op.description || "API operation",
           });

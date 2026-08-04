@@ -2,6 +2,15 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { createCalloutComponents } from "@/components/mdx-callouts-server";
 import { Card, CardGroup, Icon } from "@/components/mdx-cards";
+import {
+  Accordion,
+  AccordionGroup,
+  CodeGroup,
+  Expandable,
+  Frame,
+  Tab,
+  Tabs,
+} from "@/components/mdx-layout";
 import { Step, Steps } from "@/components/mdx-steps";
 import type { Locale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/locale-routing";
@@ -33,6 +42,13 @@ export function createRscMdxComponents(locale: Locale) {
     Steps,
     Step,
     ...callouts,
+    Tab,
+    Tabs,
+    CodeGroup,
+    Accordion,
+    AccordionGroup,
+    Frame,
+    Expandable,
     Card: (props: ComponentProps<typeof Card>) => (
       <Card {...props} locale={locale} />
     ),

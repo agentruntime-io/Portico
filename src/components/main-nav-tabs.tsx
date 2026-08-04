@@ -13,10 +13,10 @@ import {
 import { localizeHref } from "@/lib/locale-routing";
 
 function tabClass(active: boolean) {
-  return `rounded-md px-2 py-1 text-xs font-medium uppercase tracking-wide transition-colors ${
+  return `inline-flex min-h-11 items-center rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
     active
-      ? "bg-emerald-500/15 text-[var(--text-main)]"
-      : "text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+      ? "bg-[var(--surface-muted)] text-[var(--text-main)]"
+      : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-main)]"
   }`;
 }
 
@@ -75,7 +75,7 @@ function ApiReferenceNav({
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((value) => !value)}
-        className={`inline-flex items-center gap-1 ${tabClass(active)}`}
+        className={`gap-1 ${tabClass(active)}`}
       >
         {t("nav.apiReference")}
         <ChevronDown
@@ -98,7 +98,7 @@ function ApiReferenceNav({
                 close();
                 onNavigate?.();
               }}
-              className="block px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+              className="flex min-h-11 items-center px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
             >
               {t("nav.allApiReferences")}
             </Link>
@@ -116,7 +116,7 @@ function ApiReferenceNav({
                     close();
                     onNavigate?.();
                   }}
-                  className={`block px-3 py-2 text-sm transition-colors ${
+                  className={`flex min-h-11 items-center px-3 py-2 text-sm transition-colors ${
                     isActive
                       ? "bg-emerald-500/15 font-medium text-[var(--text-main)]"
                       : "text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"

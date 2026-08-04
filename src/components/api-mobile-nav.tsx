@@ -92,7 +92,7 @@ export function ApiMobileNav({
             <aside
               ref={dialogRef}
               id={panelId}
-              className="absolute bottom-0 left-0 top-14 flex w-[min(22rem,92vw)] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] shadow-2xl"
+              className="absolute bottom-0 left-0 top-16 flex w-[min(22rem,92vw)] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] shadow-2xl"
               role="dialog"
               aria-modal="true"
               aria-label={t("nav.apiEndpoints")}
@@ -106,7 +106,7 @@ export function ApiMobileNav({
                   type="button"
                   aria-label={t("nav.closeMenu")}
                   onClick={closeDialog}
-                  className="rounded-md p-2 text-[var(--text-muted)] hover:bg-emerald-500/10"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-emerald-500/10"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -127,7 +127,7 @@ export function ApiMobileNav({
                       <Link
                         href={`/reference/${specId}${href}`}
                         onClick={closeDialog}
-                        className="nav-item-muted block rounded-md px-2 py-2 text-sm"
+                        className="nav-item-muted flex min-h-11 items-center rounded-md px-2 py-2 text-sm"
                       >
                         {t(key)}
                       </Link>
@@ -143,7 +143,7 @@ export function ApiMobileNav({
                     const tagActive = activeTag === tagSlug;
                     return (
                       <details key={tag} open={tagActive} className="group">
-                        <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md px-2 py-2 text-sm font-medium text-[var(--text-main)] [&::-webkit-details-marker]:hidden">
+                        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-md px-2 py-2 text-sm font-medium text-[var(--text-main)] [&::-webkit-details-marker]:hidden">
                           <span className="min-w-0 flex-1 truncate">{tag}</span>
                           <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[var(--text-muted)] transition group-open:rotate-90" />
                           <span className="text-xs text-[var(--text-muted)]">
@@ -155,7 +155,7 @@ export function ApiMobileNav({
                             <Link
                               href={`/reference/${specId}/${tagSlug}`}
                               onClick={closeDialog}
-                              className="nav-item-muted block rounded-md px-2 py-1.5 text-sm"
+                              className="nav-item-muted flex min-h-11 items-center rounded-md px-2 py-2 text-sm"
                             >
                               {t("api.sectionOverview")}
                             </Link>
@@ -165,9 +165,9 @@ export function ApiMobileNav({
                             return (
                               <li key={op.slug}>
                                 <Link
-                                  href={`/reference/${specId}/${tagSlugForOperation(op)}#${op.slug}`}
+                                  href={`/reference/${specId}/${tagSlugForOperation(op)}/${op.slug}`}
                                   onClick={closeDialog}
-                                  className={`flex items-center gap-2 rounded-md px-2 py-2 text-sm ${
+                                  className={`flex min-h-11 items-center gap-2 rounded-md px-2 py-2 text-sm ${
                                     active ? "nav-active" : "nav-item-muted"
                                   }`}
                                 >
@@ -193,14 +193,14 @@ export function ApiMobileNav({
 
   return (
     <>
-      <div className="sticky top-14 z-30 border-b border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-4 py-2 lg:hidden">
+      <div className="sticky top-16 z-30 border-b border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-4 py-2 lg:hidden">
         <button
           type="button"
           aria-label={t("nav.apiEndpoints")}
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen(true)}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 py-2.5 text-sm font-medium text-[var(--text-main)] hover:bg-emerald-500/10"
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 py-2.5 text-sm font-medium text-[var(--text-main)] hover:bg-emerald-500/10"
         >
           <ListTree className="h-4 w-4 shrink-0" aria-hidden />
           {t("nav.apiEndpoints")}

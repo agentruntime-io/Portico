@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { AppProviders } from "@/components/app-providers";
 import { buildSiteRootMetadata, webSiteJsonLd } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site";
 import { themeInitScriptSource } from "@/lib/theme-tokens";
 import "./globals.css";
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+});
 
 const themeInitScript = themeInitScriptSource();
 
@@ -25,7 +38,7 @@ export default async function RootLayout({
     <html
       lang={lang}
       data-doc-locale={lang}
-      className="h-full antialiased"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

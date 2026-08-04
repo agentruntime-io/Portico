@@ -33,7 +33,12 @@ const nextConfig: NextConfig = {
     "/changelog": [".content/**/*", ".content-root", "content/**/*"],
     "/reference": [".content/**/*", ".content-root", "content/**/*"],
     "/reference/[specId]": [".content/**/*", ".content-root", "content/**/*"],
-    "/reference/[specId]/[opSlug]": [
+    "/reference/[specId]/[tagSlug]": [
+      ".content/**/*",
+      ".content-root",
+      "content/**/*",
+    ],
+    "/reference/[specId]/[tagSlug]/[operationSlug]": [
       ".content/**/*",
       ".content-root",
       "content/**/*",

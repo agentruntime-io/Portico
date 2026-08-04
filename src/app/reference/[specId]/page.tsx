@@ -75,11 +75,10 @@ export default async function SpecOverviewPage({ params }: Props) {
         navbar={site.navbar}
         mainNav={mainNav}
         openApiFile={meta.file}
-        doc={doc}
         operations={ops}
         rightRail={<ApiRightRail doc={doc} />}
       >
-      <article className="max-w-3xl">
+        <article key="api-overview" className="max-w-3xl">
         <div className="mb-8 flex flex-wrap gap-2">
           <span className="api-soft api-muted rounded-full px-2.5 py-1 text-xs">
             v{doc.info?.version ?? "1.0.0"}
@@ -105,8 +104,8 @@ export default async function SpecOverviewPage({ params }: Props) {
         </div>
         <ApiMobileRightRail doc={doc} />
         <DocPager prev={neighbors.prev} next={neighbors.next} />
-      </article>
-    </ApiReferenceShell>
+        </article>
+      </ApiReferenceShell>
     </>
   );
 }
