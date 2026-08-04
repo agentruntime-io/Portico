@@ -61,7 +61,7 @@ export function MobileNavButton({
   const drawer =
     open && mounted
       ? createPortal(
-          <div className="fixed inset-0 z-[var(--z-modal-backdrop)] lg:hidden">
+          <div className="fixed inset-0 z-[var(--z-modal-backdrop)] xl:hidden">
             <div
               role="presentation"
               aria-hidden
@@ -71,7 +71,7 @@ export function MobileNavButton({
             <aside
               ref={dialogRef}
               id={panelId}
-              className="absolute bottom-0 left-0 top-14 flex w-[min(20rem,88vw)] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] shadow-2xl"
+              className="absolute bottom-0 left-0 top-16 flex w-[min(20rem,88vw)] flex-col border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] shadow-2xl"
               role="dialog"
               aria-modal="true"
               aria-label={t("nav.menuTitle")}
@@ -85,7 +85,7 @@ export function MobileNavButton({
                   type="button"
                   aria-label={t("nav.closeMenu")}
                   onClick={closeDialog}
-                  className="rounded-md p-2 text-[var(--text-muted)] hover:bg-emerald-500/10"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-emerald-500/10"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -99,7 +99,7 @@ export function MobileNavButton({
                 </div>
                 <NavbarPrimaryCta
                   navbar={navbar}
-                  className="mb-3 inline-flex w-full items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                  className="mb-3 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
                   onNavigate={closeDialog}
                 />
                 <NavbarLinks
@@ -120,7 +120,7 @@ export function MobileNavButton({
                       : localizeHref(item.href, locale);
                     const active = isActiveNavItem(href, activePath);
                     const Icon = item.icon;
-                    const className = `flex items-center gap-3 rounded-md px-2 py-2 text-sm ${
+                    const className = `flex min-h-11 items-center gap-3 rounded-md px-2 py-2 text-sm ${
                       active ? "docs-nav-active font-medium" : "docs-nav-item"
                     }`;
                     const content = (
@@ -148,11 +148,6 @@ export function MobileNavButton({
                     );
                   })}
                 </ul>
-                <GlobalNavAnchors
-                  nav={nav}
-                  locale={locale}
-                  onNavigate={closeDialog}
-                />
                 <div className="my-4 border-t border-[var(--panel-border)]" />
                 {groupedNav.map((group) => (
                   <SidebarNavGroup
@@ -163,6 +158,15 @@ export function MobileNavButton({
                     variant="drawer"
                   />
                 ))}
+                <div className="mt-4 border-t border-[var(--panel-border)] pt-4">
+                  <GlobalNavAnchors
+                    nav={nav}
+                    locale={locale}
+                    onNavigate={closeDialog}
+                    className="space-y-1"
+                    variant="drawer"
+                  />
+                </div>
                 <div className="mt-8 pb-4">
                   <PorticoAttribution />
                 </div>
@@ -181,7 +185,7 @@ export function MobileNavButton({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen(true)}
-        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 lg:hidden"
+        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 xl:hidden"
       >
         <Menu className="h-4 w-4" />
       </button>

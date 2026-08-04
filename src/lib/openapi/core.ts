@@ -183,3 +183,21 @@ export function stripApiPrefix(pathKey: string): string {
 export function tagSlugForOperation(op: ResolvedOperation): string {
   return slugifyTag(op.tags[0] ?? "default");
 }
+
+export function apiTagHref(specId: string, tagName: string): string {
+  return `/reference/${specId}/${slugifyTag(tagName)}`;
+}
+
+export function apiOperationHref(
+  specId: string,
+  operation: ResolvedOperation,
+): string {
+  return `${apiTagHref(specId, operation.tags[0] ?? "default")}/${operation.slug}`;
+}
+
+export function findTagBySlug(
+  grouped: Map<string, ResolvedOperation[]>,
+  tagSlug: string,
+): string | undefined {
+  return [...grouped.keys()].find((tag) => slugifyTag(tag) === tagSlug);
+}

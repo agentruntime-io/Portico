@@ -18,14 +18,14 @@ import { locales, type Locale } from "@/lib/i18n";
 const themeVars = themeTokens;
 
 function readThemeFromDom(): ThemeName {
-  if (typeof document === "undefined") return "dark";
+  if (typeof document === "undefined") return "light";
   const fromDom = document.documentElement.dataset.theme;
-  return fromDom === "light" ? "light" : "dark";
+  return fromDom === "dark" ? "dark" : "light";
 }
 
 export function ThemeToggle() {
   const { t } = useI18n();
-  const [theme, setTheme] = useState<ThemeName>("dark");
+  const [theme, setTheme] = useState<ThemeName>("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export function ThemeToggle() {
     window.localStorage.setItem("doc-theme", theme);
   }, [mounted, theme]);
 
-  const isDark = mounted ? theme === "dark" : true;
+  const isDark = mounted ? theme === "dark" : false;
 
   return (
     <button
@@ -51,7 +51,7 @@ export function ThemeToggle() {
       aria-label={isDark ? t("theme.switchToLight") : t("theme.switchToDark")}
       aria-pressed={isDark}
       onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-      className="ds-control inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+      className="ds-control inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
     >
       {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
     </button>
@@ -65,7 +65,7 @@ export function LanguageSelector({ variant }: { variant?: "drawer" }) {
 
   return (
     <label
-      className={`ds-control h-9 shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-medium ${visibility}`}
+      className={`ds-control h-12 shrink-0 items-center gap-2 rounded-lg px-2 text-xs font-medium ${visibility}`}
     >
       <Globe2 className="h-4 w-4" aria-hidden />
       <select
@@ -73,7 +73,7 @@ export function LanguageSelector({ variant }: { variant?: "drawer" }) {
         title={t("language.uiOnlyHint")}
         value={locale}
         onChange={(event) => setLocale(event.target.value as Locale)}
-        className="bg-transparent outline-none"
+        className="h-full min-w-11 bg-transparent outline-none"
       >
         {locales.map((item) => (
           <option key={item.code} value={item.code} className="bg-[var(--panel-bg)]">
@@ -122,7 +122,7 @@ export function AssistantLauncher() {
                   type="button"
                   aria-label={t("assistant.close")}
                   onClick={closeDialog}
-                  className="ml-auto rounded-md p-1 text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+                  className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -147,7 +147,7 @@ export function AssistantLauncher() {
                     type="submit"
                     disabled
                     aria-label={t("assistant.send")}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700/40 text-white"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-emerald-700/40 text-white"
                   >
                     <Send className="h-4 w-4" />
                   </button>
@@ -166,7 +166,7 @@ export function AssistantLauncher() {
         aria-label={t("assistant.open")}
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="ds-control ds-accent-text inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+        className="ds-control ds-accent-text inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
       >
         <Bot className="h-4 w-4" />
       </button>

@@ -6,6 +6,7 @@ import { rehypeMermaid } from "@/lib/rehype-mermaid";
 
 export const rehypeSanitizeSchema = {
   ...defaultSchema,
+  clobberPrefix: "",
   tagNames: [...(defaultSchema.tagNames ?? []), "figure"],
   attributes: {
     ...defaultSchema.attributes,
@@ -75,6 +76,17 @@ export const rehypePlugins = [
 export const rehypeMdxPlugins = [
   rehypeSlug,
   rehypeMermaid,
+  [
+    rehypePrettyCode,
+    {
+      theme: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      defaultColor: false,
+      keepBackground: false,
+    },
+  ],
   [
     rehypeAutolinkHeadings,
     {

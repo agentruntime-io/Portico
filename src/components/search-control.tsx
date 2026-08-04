@@ -267,7 +267,7 @@ export function SearchControl() {
         aria-expanded={open}
         aria-controls={dialogId}
         onClick={() => setOpen(true)}
-        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 lg:hidden"
+        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 xl:hidden"
       >
         <Search className="h-4 w-4" />
       </button>
@@ -277,7 +277,7 @@ export function SearchControl() {
         aria-expanded={open}
         aria-controls={dialogId}
         onClick={() => setOpen(true)}
-        className="hidden h-9 w-full max-w-xs items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 text-left text-sm text-[var(--text-muted)] hover:border-[var(--panel-border)] xl:max-w-md lg:inline-flex"
+        className="hidden h-11 w-full max-w-xs items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 text-left text-sm text-[var(--text-muted)] hover:bg-[var(--surface-muted)] xl:inline-flex xl:max-w-md"
       >
         <Search className="h-4 w-4 shrink-0" aria-hidden />
         <span className="flex-1 truncate">{t("search.placeholderShort")}</span>

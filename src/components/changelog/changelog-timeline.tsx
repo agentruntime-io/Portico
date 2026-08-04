@@ -2,15 +2,6 @@ import Link from "next/link";
 import type { ChangelogRelease, ChangelogSectionKey } from "@/lib/changelog";
 import { CHANGELOG_SECTIONS } from "@/lib/changelog";
 
-const SECTION_LABELS: Record<ChangelogSectionKey, string> = {
-  added: "Added",
-  changed: "Changed",
-  deprecated: "Deprecated",
-  removed: "Removed",
-  fixed: "Fixed",
-  security: "Security",
-};
-
 export function ChangelogTimeline({
   releases,
   emptyMessage,

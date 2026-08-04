@@ -64,7 +64,7 @@
       {
         "group": "Platform",
         "icon": "layers",
-        "expanded": true,
+        "expanded": false,
         "pages": [
           "platform/settings",
           "platform/user-management",
@@ -81,7 +81,7 @@
       {
         "group": "Workflows",
         "icon": "workflow",
-        "expanded": true,
+        "expanded": false,
         "pages": [
           "workflows/studio",
           "workflows/template-intellisense",
@@ -112,7 +112,7 @@
       {
         "group": "Integration setup",
         "icon": "plug",
-        "expanded": true,
+        "expanded": false,
         "pages": [
           "integrations/quickstart",
           "integrations/connections",

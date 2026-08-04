@@ -49,7 +49,7 @@ export function CopyButton({ value }: { value: string }) {
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1500);
       }}
-      className="api-control inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-medium"
+      className="api-control inline-flex min-h-11 items-center gap-1 rounded-md border px-3 py-2 text-xs font-medium"
     >
       {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
       {copied ? t("copy.copied") : t("copy.copy")}
@@ -118,13 +118,13 @@ function AuthPanel({
             placeholder="Token"
             autoComplete="off"
             spellCheck={false}
-            className="api-input min-w-0 flex-1 rounded-md border px-3 py-2 text-sm outline-none"
+            className="api-input min-h-11 min-w-0 flex-1 rounded-md border px-3 py-2 text-sm outline-none"
           />
           <button
             type="button"
             aria-label={visible ? t("api.auth.hideToken") : t("api.auth.showToken")}
             onClick={() => setVisible((current) => !current)}
-            className="api-control inline-flex h-9 w-9 items-center justify-center rounded-md border"
+            className="api-control inline-flex h-11 w-11 items-center justify-center rounded-md border"
           >
             {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
@@ -132,7 +132,7 @@ function AuthPanel({
             type="button"
             aria-label={t("api.auth.clearToken")}
             onClick={() => setToken("")}
-            className="api-control inline-flex h-9 w-9 items-center justify-center rounded-md border"
+            className="api-control inline-flex h-11 w-11 items-center justify-center rounded-md border"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -170,7 +170,7 @@ function ClientLibraryTabs({
             key={key}
             type="button"
             onClick={() => setActive(key)}
-            className={`rounded-md px-3 py-1.5 font-medium ${
+            className={`min-h-11 min-w-11 rounded-md px-3 py-2 font-medium ${
               active === key ? "nav-active" : "nav-item-muted api-faint"
             }`}
           >
@@ -224,7 +224,7 @@ function TestRequestPanel({
           <input
             value={requestUrl}
             onChange={(event) => setRequestUrl(event.target.value)}
-            className="api-input mt-1 w-full rounded-md border px-3 py-2 font-mono text-xs outline-none"
+            className="api-input mt-1 min-h-11 w-full rounded-md border px-3 py-2 font-mono text-xs outline-none"
           />
         </label>
         {!isReadOnly ? (
@@ -286,7 +286,7 @@ function TestRequestPanel({
               setBusy(false);
             }
           }}
-          className="api-control inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-45"
+          className="api-control inline-flex min-h-11 items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-45"
         >
           <Play className="h-3.5 w-3.5" />
           {busy ? t("api.auth.sending") : `${t("api.auth.send")} ${verb}`}
@@ -334,8 +334,8 @@ export function AuthenticatedClientSamples({
         token={token}
         setToken={setToken}
       />
-      <ClientLibraryTabs method={method} url={url} token={token} />
       <TestRequestPanel key={`${method ?? "GET"}:${url}`} method={method} url={url} token={token} />
+      <ClientLibraryTabs method={method} url={url} token={token} />
     </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLayoutEffect, useRef } from "react";
 import { useI18n } from "@/components/i18n-provider";
 import { CircleHelp, FileClock, Home } from "lucide-react";
 import { isActiveNavItem } from "@/lib/nav-active";
@@ -45,32 +46,32 @@ export function DocsHeader({
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--panel-border)] bg-[var(--panel-bg)]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-[1600px] items-center gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-[1680px] items-center gap-4 px-4 sm:px-6">
         <Link
           href={localizeHref("/", locale)}
-          className="flex min-w-0 shrink items-center gap-2 text-sm font-semibold tracking-tight text-[var(--text-main)]"
+          className="flex min-h-11 min-w-0 shrink items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--text-main)]"
         >
-          <span className="shrink-0 rounded-md bg-emerald-600 px-2 py-0.5 text-xs font-bold uppercase text-white">
+          <span className="shrink-0 rounded-lg border border-[var(--panel-border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)]">
             {t("nav.docsBadge")}
           </span>
-          <span className="hidden truncate min-[420px]:inline">{siteName}</span>
+          <span className="hidden truncate text-[15px] min-[420px]:inline">{siteName}</span>
         </Link>
         <MainNavTabs activePath={activePath} mainNav={mainNav} />
         <div className="flex min-w-0 flex-1 items-center justify-end gap-1 sm:gap-2">
           <NavbarLinks
             navbar={navbar}
-            className="hidden shrink-0 items-center gap-3 lg:flex"
+            className="hidden shrink-0 items-center gap-3 xl:flex"
           />
           <NavbarPrimaryCta navbar={navbar} />
           <SearchControl />
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="hidden items-center gap-2 xl:flex">
             <FontScaleControls />
             <LanguageSelector />
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <AssistantLauncher />
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <ThemeToggle />
           </div>
           <MobileNavButton
@@ -93,15 +94,46 @@ export function DocsSidebar({
   activePath: string;
 }) {
   const { t, locale } = useI18n();
+  const sidebarRef = useRef<HTMLElement>(null);
 
   const groupedNav = nav.groups.filter(
     (group) => !(group.label === "Project" && group.items.length === 1),
   );
 
+  useLayoutEffect(() => {
+    const sidebar = sidebarRef.current;
+    const activeItem = sidebar?.querySelector<HTMLElement>(
+      '[aria-current="page"]',
+    );
+    if (!sidebar || !activeItem) return;
+
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const activeRect = activeItem.getBoundingClientRect();
+    const visibleInset = 32;
+    const isVisible =
+      activeRect.top >= sidebarRect.top + visibleInset &&
+      activeRect.bottom <= sidebarRect.bottom - visibleInset;
+
+    if (isVisible) return;
+
+    const centeredTop =
+      sidebar.scrollTop +
+      activeRect.top -
+      sidebarRect.top -
+      (sidebar.clientHeight - activeItem.offsetHeight) / 2;
+    sidebar.scrollTop = Math.max(0, centeredTop);
+  }, [activePath]);
+
   return (
-    <aside className="fixed bottom-0 left-0 top-14 z-30 hidden w-[min(320px,85vw)] overflow-y-auto border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-4 pb-16 sm:px-6 lg:block">
-      <div className="space-y-8 pt-8">
-        <nav aria-label={t("nav.utilityNav")}>
+    <aside
+      ref={sidebarRef}
+      className="docs-sidebar fixed bottom-0 left-0 top-16 z-30 hidden w-[min(280px,85vw)] overflow-y-auto border-r border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-5 pb-14 xl:block"
+    >
+      <div className="space-y-7 pt-7">
+        <nav
+          aria-label={t("nav.utilityNav")}
+          className="border-b border-[var(--panel-border)] pb-5"
+        >
           <ul className="space-y-1">
             {utilityLinks.map((item) => {
               const href = item.href.startsWith("mailto:")
@@ -115,7 +147,7 @@ export function DocsSidebar({
                   <span>{t(item.titleKey)}</span>
                 </>
               );
-              const className = `flex items-center gap-3 rounded-md px-2 py-2 text-sm transition-colors ${
+              const className = `flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm transition-colors ${
                 active ? "docs-nav-active font-medium" : "docs-nav-item"
               }`;
 
@@ -126,7 +158,11 @@ export function DocsSidebar({
                       {content}
                     </a>
                   ) : (
-                    <Link href={href} className={className}>
+                    <Link
+                      href={href}
+                      aria-current={active ? "page" : undefined}
+                      className={className}
+                    >
                       {content}
                     </Link>
                   )}
@@ -134,7 +170,6 @@ export function DocsSidebar({
               );
             })}
           </ul>
-          <GlobalNavAnchors nav={nav} locale={locale} />
         </nav>
 
         {groupedNav.map((group) => (
@@ -144,6 +179,13 @@ export function DocsSidebar({
             isActiveItem={(href) => isActiveNavItem(href, activePath)}
           />
         ))}
+        <div className="border-t border-[var(--panel-border)] pt-5">
+          <GlobalNavAnchors
+            nav={nav}
+            locale={locale}
+            className="space-y-1"
+          />
+        </div>
         <PorticoAttribution />
       </div>
     </aside>
@@ -175,13 +217,13 @@ export function DocsShell({
         navbar={navbar}
         mainNav={mainNav}
       />
-      <div className="mx-auto flex w-full max-w-[1800px] flex-1 gap-0 px-1 py-1.5 sm:px-4 sm:py-4 lg:pl-[344px] lg:px-6">
+      <div className="mx-auto flex w-full max-w-[1720px] flex-1 px-0 py-0 sm:px-4 sm:py-4 xl:pl-[304px] xl:pr-6">
         <DocsSidebar nav={nav} activePath={activePath} />
         <main
           id="main-content"
           tabIndex={-1}
           aria-label={t("a11y.mainContent")}
-          className="ds-shadow-panel min-w-0 flex-1 overflow-x-clip rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 pb-10 sm:rounded-2xl sm:px-8 sm:pb-16 lg:px-10"
+          className="ds-shadow-panel min-w-0 flex-1 overflow-x-clip border-y border-[var(--panel-border)] bg-[var(--panel-bg)] px-5 pb-12 sm:rounded-2xl sm:border sm:px-8 sm:pb-16 lg:px-12 xl:px-14"
         >
           {children}
         </main>

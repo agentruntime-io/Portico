@@ -42,6 +42,11 @@ export function ProsePageLayout({
     ? `${docProseClasses} ${bodyClassName}`
     : docProseClasses;
   const hasToc = headings.length > 0;
+  const layoutClass = hideChrome
+    ? "mx-auto w-full max-w-6xl"
+    : hasToc
+      ? "mx-auto grid w-full max-w-[68rem] grid-cols-1 gap-10 xl:grid-cols-[minmax(0,46rem)_220px] xl:gap-16"
+      : "mx-auto grid w-full max-w-[46rem] grid-cols-1";
 
   function renderMdxBody() {
     if (!mdx) return null;
@@ -57,43 +62,39 @@ export function ProsePageLayout({
   }
 
   return (
-    <div
-      className={`mx-auto grid max-w-6xl grid-cols-1 gap-8 ${
-        hasToc ? "lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10" : ""
-      }`}
-    >
+    <div className={layoutClass}>
       <article
         className={
-          hideChrome ? "min-w-0" : "min-w-0 pt-6 sm:pt-8 lg:pt-14"
+          hideChrome ? "min-w-0" : "min-w-0 pt-8 sm:pt-10 lg:pt-14"
         }
       >
         {hideChrome ? null : (
           <>
-            <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-muted)] sm:text-sm sm:normal-case sm:tracking-normal">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
               {eyebrow}
             </p>
-            <h1 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text-main)] sm:mt-4 sm:text-3xl">
+            <h1 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.035em] text-[var(--text-main)] sm:text-4xl sm:leading-[1.15]">
               {title}
             </h1>
             {description ? (
-              <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:mt-4 sm:text-lg">
+              <p className="mt-4 max-w-[42rem] text-[1.0625rem] leading-8 text-[var(--text-muted)] sm:mt-5 sm:text-lg">
                 {description}
               </p>
             ) : null}
-            <div className="mt-4 flex flex-col gap-5 sm:mt-6 sm:gap-6">
+            <div className="mt-6 flex flex-col gap-5 sm:mt-7 sm:gap-6">
               <PageActions editUrl={editUrl} />
               <MobileTableOfContents headings={headings} />
             </div>
           </>
         )}
-        <div className={hideChrome ? undefined : "mt-8 sm:mt-12"}>
+        <div className={hideChrome ? undefined : "mt-10 sm:mt-14"}>
           {mdx ? renderMdxBody() : html ? <MarkdownBody html={html} /> : null}
         </div>
         <DocPager prev={prev} next={next} />
       </article>
 
       {hasToc && !hideChrome ? (
-        <aside className="hidden pt-14 lg:block">
+        <aside className="hidden pt-14 xl:block">
           <OnThisPage headings={headings} />
         </aside>
       ) : null}

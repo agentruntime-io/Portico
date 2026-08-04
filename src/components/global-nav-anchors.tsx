@@ -18,11 +18,13 @@ export function GlobalNavAnchors({
   locale,
   onNavigate,
   className,
+  variant = "sidebar",
 }: {
   nav: NavFile;
   locale: Locale;
   onNavigate?: () => void;
   className?: string;
+  variant?: "sidebar" | "drawer";
 }) {
   const anchors = nav.globalAnchors?.filter(
     (a) => a.href !== "/" && a.href !== "/changelog",
@@ -35,7 +37,9 @@ export function GlobalNavAnchors({
         const external = isExternalHref(anchor.href);
         const href = external ? anchor.href : localizeHref(anchor.href, locale);
         const itemClass =
-          "block rounded-md px-2 py-2 text-sm transition-colors docs-nav-item";
+          variant === "drawer"
+            ? "flex min-h-11 items-center rounded-md px-2 py-2 text-sm transition-colors docs-nav-item"
+            : "block rounded-md px-2 py-2 text-sm transition-colors docs-nav-item";
         return (
           <li key={anchor.href}>
             {external ? (

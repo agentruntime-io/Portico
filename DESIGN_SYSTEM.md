@@ -26,14 +26,17 @@ Tokens are defined in `src/app/globals.css` and synchronized in `src/app/layout.
 
 | Token | Dark | Light | Usage |
 |-------|------|-------|-------|
-| `--background` | `#0a0a0a` | `#f3f6f4` | Root / body fallback |
-| `--foreground` | `#ededed` | `#171717` | Root text fallback |
-| `--app-bg` | `#080b0a` | `#eef3f0` | Page canvas behind panels |
-| `--panel-bg` | `#0b100e` | `#fbfcfb` | Main content card, header, modals |
-| `--sidebar-bg` | `#080b0a` | `#f5f8f6` | Fixed sidebar |
-| `--panel-border` | `#27272a` | `#cfd8d3` | Borders, dividers |
-| `--text-main` | `#f4f4f5` | `#18181b` | Primary text |
-| `--text-muted` | `#a1a1aa` | `#4b5563` | Secondary text, labels |
+| `--background` | `#0b0f0e` | `#fbfcfa` | Root / body fallback |
+| `--foreground` | `#f2f5f3` | `#1a211d` | Root text fallback |
+| `--app-bg` | `#0b0f0e` | `#f4f7f5` | Page canvas behind panels |
+| `--panel-bg` | `#101613` | `#ffffff` | Main content, header, modals |
+| `--sidebar-bg` | `#0d1210` | `#f7f9f7` | Fixed sidebar |
+| `--panel-border` | `#28332e` | `#dce5df` | Borders, dividers |
+| `--text-main` | `#f2f5f3` | `#18201c` | Primary text |
+| `--text-muted` | `#aeb9b3` | `#53615a` | Secondary text, labels |
+| `--surface-muted` | `#141b17` | `#f3f6f4` | Cards and quiet controls |
+| `--accent` | `#34d399` | `#0f8a5f` | Active indicators and focus |
+| `--accent-strong` | `#6ee7b7` | `#08734f` | Accent text and hover states |
 | `--doc-font-scale` | `1` (default) | `1` | Multiplier for `.doc-prose` font size |
 
 **Usage in Tailwind:**
@@ -42,7 +45,7 @@ Tokens are defined in `src/app/globals.css` and synchronized in `src/app/layout.
 <div class="bg-[var(--panel-bg)] text-[var(--text-main)] border-[var(--panel-border)]">
 ```
 
-Theme is applied via `data-theme="dark"` | `data-theme="light"` on `<html>`. Default is **dark**; preference persists in `localStorage` key `doc-theme`.
+Theme is applied via `data-theme="dark"` | `data-theme="light"` on `<html>`. Default is **light** for long-form reading; preference persists in `localStorage` key `doc-theme`.
 
 ### 2.2 Brand accent — Emerald
 
@@ -144,9 +147,9 @@ Add new UI strings to **all four** message files, then use `t("dotted.key")` in 
 
 | Role | Family | Notes |
 |------|--------|-------|
-| UI / body | Arial, Helvetica, sans-serif | Set on `body` in `globals.css` |
-| Sans (theme) | Geist Sans (`--font-geist-sans`) | Registered in `@theme inline`; use when Geist is loaded |
-| Mono | Geist Mono (`--font-geist-mono`) | Paths, methods, kbd, code samples |
+| UI / body | Geist Sans (`--font-geist-sans`) | Loaded once with `next/font` in the root layout |
+| Sans fallback | Arial, Helvetica, sans-serif | Used only if the optimized font is unavailable |
+| Mono | Geist Mono (`--font-geist-mono`) | Paths, methods, kbd, and code samples |
 | Prose | Tailwind Typography `prose` | Markdown content via `.doc-prose` |
 
 ### 3.2 Type scale
@@ -154,9 +157,10 @@ Add new UI strings to **all four** message files, then use `t("dotted.key")` in 
 | Element | Classes | Size / weight |
 |---------|---------|---------------|
 | Home hero label | `text-sm font-semibold uppercase tracking-widest` | Eyebrow |
-| Page title (prose layout) | `text-3xl font-bold tracking-tight` | H1 in `ProsePageLayout` |
-| Page description | `text-lg leading-7` | Muted intro |
-| Markdown H2 | `prose-h2:text-2xl` | Section headings |
+| Page title (prose layout) | `text-3xl sm:text-4xl font-semibold` | H1 in `ProsePageLayout` |
+| Page description | `text-lg leading-8` | Muted intro |
+| Markdown body | `17px` base, `1.72` line-height | Long-form reading |
+| Markdown H2 | `prose-h2:text-[1.625rem]` | Section headings |
 | Markdown H3 | `prose-h3:text-xl` | Subsections |
 | Header nav | `text-xs font-medium uppercase tracking-wide` | Top bar section links |
 | Sidebar items | `text-sm` | Nav links |
@@ -169,7 +173,7 @@ Add new UI strings to **all four** message files, then use `t("dotted.key")` in 
 `FontScaleControls` sets `--doc-font-scale` to one of `0.9 | 1 | 1.1 | 1.2`. `.doc-prose` uses:
 
 ```css
-font-size: calc(1rem * var(--doc-font-scale));
+font-size: calc(1.0625rem * var(--doc-font-scale));
 ```
 
 Persisted in `localStorage` key `doc-font-scale`.
@@ -186,10 +190,10 @@ Persisted in `localStorage` key `doc-font-scale`.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ DocsHeader (sticky, h-14, max-w-[1600px])                   │
+│ DocsHeader (sticky, h-16, max-w-[1680px])                   │
 ├──────────┬──────────────────────────────────────────────────┤
 │ Sidebar  │ Main panel (rounded-2xl, shadow-2xl)             │
-│ 320px    │ px-6 sm:px-10, pb-16                             │
+│ 280px    │ px-5 sm:px-8, pb-16                              │
 │ fixed    │                                                  │
 └──────────┴──────────────────────────────────────────────────┘
 ```
@@ -197,10 +201,10 @@ Persisted in `localStorage` key `doc-font-scale`.
 | Region | Key classes |
 |--------|-------------|
 | App wrapper | `bg-[var(--app-bg)]` |
-| Header | `sticky top-0 z-40 h-14 border-b backdrop-blur-md` |
-| Sidebar | `fixed w-[320px] top-14 hidden lg:block` |
-| Main offset | `lg:pl-[344px]` (sidebar + gap) |
-| Content max width | `max-w-[1800px]` shell; `max-w-6xl` inside prose layout |
+| Header | `sticky top-0 z-40 h-16 border-b backdrop-blur-md` |
+| Sidebar | `fixed w-[280px] top-16 hidden xl:block` |
+| Main offset | `xl:pl-[304px]` (sidebar + gap) |
+| Content max width | `max-w-[1720px]` shell; `46rem` reading column |
 
 ### 4.2 API reference layout
 
@@ -224,8 +228,8 @@ Persisted in `localStorage` key `doc-font-scale`.
 |--------|-----------|--------------|
 | `sm` | 640px | Horizontal padding, kbd in search |
 | `md` | 768px | Language selector in header |
-| `lg` | 1024px | Docs sidebar + section nav + desktop toolbar; mobile drawer hidden |
-| `xl` | 1280px | API right rail; wider search bar |
+| `lg` | 1024px | Main navigation tabs |
+| `xl` | 1280px | Docs sidebar, full search, desktop toolbar, and API right rail |
 
 ### 4.5 Radii & elevation
 
@@ -258,13 +262,13 @@ rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold hov
 **Icon control (header toolbar)**
 
 ```
-inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10
+inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10
 ```
 
 **API control (copy, etc.)**
 
 ```
-api-control inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-medium
+api-control inline-flex min-h-11 items-center gap-1 rounded-md border px-3 py-2 text-xs font-medium
 ```
 
 **Send (assistant)**
@@ -275,9 +279,9 @@ inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700 text
 
 ### 5.2 Header toolbar
 
-Right cluster order (desktop `lg+`): `NavbarLinks` → `NavbarPrimaryCta` → `SearchControl` → `FontScaleControls` → `LanguageSelector` → `AssistantLauncher` → `ThemeToggle`.
+Right cluster order (desktop `xl+`): `NavbarLinks` → `NavbarPrimaryCta` → `SearchControl` → `FontScaleControls` → `LanguageSelector` → `AssistantLauncher` → `ThemeToggle`.
 
-Below `lg`, header shows: logo → `NavbarPrimaryCta` → `SearchControl` → `MobileNavButton`. Theme, language, font scale, assistant, GitHub, and full nav live in the drawer.
+Below `xl`, header shows: logo → primary navigation where space allows → `NavbarPrimaryCta` → compact search → `MobileNavButton`. Theme, language, font scale, assistant, GitHub, and full nav live in the drawer.
 
 - **`NavbarLinks`** / **`NavbarPrimaryCta`** (`navbar-cta.tsx`) — sourced from `docs.json` → `navbar.links` and `navbar.primary` (e.g. GitHub, Open Console).
 - External links open in a new tab; internal links respect locale via `localizeHref`.
@@ -294,10 +298,10 @@ All icon buttons share the `h-9` control height for alignment.
 
 ### 5.4 Cards
 
-**Docs main panel**
+**Docs navigation cards**
 
 ```
-rounded-2xl border border-[var(--panel-border)] bg-[var(--panel-bg)] shadow-2xl shadow-black/20
+rounded-xl border-transparent bg-[var(--surface-muted)] hover:border-emerald-500/35
 ```
 
 **API card**
@@ -351,7 +355,7 @@ Markdown and MDX fences are highlighted at build time via **Shiki** + `rehype-pr
 `DocPager` — prev/next footer cards at the bottom of doc pages.
 
 - Docs: order follows flattened `docs.json` sidebar (`src/lib/pager.ts`)
-- API reference: tag-level prev/next (`src/lib/api-pager.ts`); overview links back to last API guide page
+- API reference: tag indexes page through tags; operation pages page through endpoints (`src/lib/api-pager.ts`)
 
 ### 5.6 Tables (API parameters)
 
@@ -426,7 +430,7 @@ Keep motion minimal; this is a documentation surface, not a marketing site.
 | Language | `document.documentElement.lang` from selector |
 | Heading anchors | `.anchor-heading-link` — no underline, inherit color |
 
-When adding components, preserve 44×44px touch targets on mobile (`h-9` = 36px — acceptable for dense toolbar; increase padding on primary mobile actions).
+Interactive controls use a minimum 44×44px touch target on mobile (`min-h-11 min-w-11`). Inline links inside prose are the only compact-target exception.
 
 ---
 
@@ -434,7 +438,7 @@ When adding components, preserve 44×44px touch targets on mobile (`h-9` = 36px 
 
 ### 9.1 Marketing home (`/`)
 
-Standalone layout (no `DocsShell`). Gradient hero `from-emerald-50/80 to-zinc-50` (light) / `dark:from-emerald-950/30 dark:to-zinc-950`. Primary + secondary + text link CTAs.
+Uses `DocsShell` with a prominent reading-first hero, primary and secondary CTAs, a three-path starting section, and grouped task cards. The homepage remains full-width while article pages use the constrained reading column.
 
 ### 9.2 Prose content (`/docs`, `/guides`, `/changelog`)
 
@@ -448,7 +452,7 @@ Standalone layout (no `DocsShell`). Gradient hero `from-emerald-50/80 to-zinc-50
 
 ### 9.3 API reference (`/reference`)
 
-`ApiReferenceShell` with tag-grouped sidebar, `OperationDocView` sections:
+`ApiReferenceShell` uses concise tag indexes at `/reference/[specId]/[tagSlug]` and dedicated operation pages at `/reference/[specId]/[tagSlug]/[operationSlug]`. Each operation page contains:
 
 1. Method badge + path
 2. Summary / description
@@ -457,7 +461,7 @@ Standalone layout (no `DocsShell`). Gradient hero `from-emerald-50/80 to-zinc-50
 5. Request body (schema + example)
 6. Responses (per status code cards)
 
-Right rail: server URL, `AuthenticatedClientSamples` with language tabs and auth token field.
+Right rail: server URL, auth token field, test request, then language samples. Below `xl`, the same tester appears immediately after the operation heading.
 
 ---
 
@@ -484,7 +488,7 @@ Prose utility highlights:
 - Use semantic CSS variables for surfaces and text in shell components.
 - Use `.api-*` classes inside API reference UI.
 - Use emerald for links, active nav, and primary CTAs.
-- Match existing `h-9` toolbar control sizing.
+- Match existing `h-11` toolbar control sizing.
 - Test both `data-theme="light"` and `data-theme="dark"`.
 
 **Don't**
@@ -555,4 +559,4 @@ className="block rounded-md px-2 py-1.5 text-sm transition-colors docs-nav-activ
 
 ---
 
-*Last synced with portal source: Tailwind 4, Next.js 16.2.6. Update this doc when adding new tokens or shared components.*
+*Last synced with portal source: Tailwind 4, Next.js 16.2.9. Update this doc when adding new tokens or shared components.*

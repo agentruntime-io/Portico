@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
+  ArrowUpRight,
   BookOpen,
   Brain,
   Cable,
@@ -21,7 +22,7 @@ import {
   Workflow,
   Wrench,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { isValidElement, type ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
 import { defaultLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/locale-routing";
@@ -47,6 +48,16 @@ const iconMap: Record<string, LucideIcon> = {
   "book-open": BookOpen,
 };
 
+function unwrapSingleParagraph(children: ReactNode): ReactNode {
+  if (
+    isValidElement<{ children?: ReactNode }>(children) &&
+    children.type === "p"
+  ) {
+    return children.props.children;
+  }
+  return children;
+}
+
 export function Card({
   title,
   href,
@@ -67,24 +78,32 @@ export function Card({
   const inner = (
     <>
       {Icon ? (
-        <Icon className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)]">
+          <Icon className="h-[18px] w-[18px] text-emerald-700 dark:text-emerald-400" aria-hidden />
+        </span>
       ) : null}
-      <div className="flex flex-col gap-1">
+      <div className="min-w-0 flex-1">
         {title ? (
-          <span className="text-base font-semibold text-[var(--text-main)]">
+          <span className="block text-[15px] font-semibold leading-6 text-[var(--text-main)]">
             {title}
           </span>
         ) : null}
         {children ? (
-          <div className="text-sm leading-relaxed text-[var(--text-muted)]">
-            {children}
+          <div className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
+            {unwrapSingleParagraph(children)}
           </div>
         ) : null}
       </div>
+      {href ? (
+        <ArrowUpRight
+          className="mt-1 h-4 w-4 shrink-0 text-[var(--text-muted)] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--accent-strong)]"
+          aria-hidden
+        />
+      ) : null}
     </>
   );
   const cls =
-    `ds-card rounded-2xl flex flex-col gap-3 border border-[var(--panel-border)] bg-[var(--panel-bg)] p-4 no-underline shadow-sm transition hover:border-emerald-500/50 hover:bg-emerald-500/5 ` +
+    `ds-card group flex h-full flex-row items-start gap-4 rounded-xl border border-transparent bg-[var(--surface-muted)] p-5 no-underline transition hover:border-emerald-500/35 hover:bg-[var(--sidebar-bg)] hover:shadow-sm ` +
     (className ?? "");
   if (href) {
     return (
@@ -110,7 +129,7 @@ export function CardGroup({
         ? "sm:grid-cols-2"
         : "sm:grid-cols-2";
   return (
-    <div className={`not-prose my-6 grid grid-cols-1 gap-4 ${grid}`}>{children}</div>
+    <div className={`not-prose my-7 grid grid-cols-1 gap-3 ${grid}`}>{children}</div>
   );
 }
 

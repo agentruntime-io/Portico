@@ -86,7 +86,7 @@ function sectionsFromBody(
     return { sections, remainder: body.trim() };
   }
 
-  let remainder = parts[0]?.trim() ?? "";
+  const remainder = parts[0]?.trim() ?? "";
   for (let index = 1; index < parts.length; index += 2) {
     const heading = parts[index]?.trim().toLowerCase() as ChangelogSectionKey;
     const block = parts[index + 1] ?? "";

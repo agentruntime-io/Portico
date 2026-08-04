@@ -62,12 +62,12 @@ export type LoadedMdxPage = {
 
 
 
-/** Home / marketing-style pages with Card grids and raw JSX layout. */
+const MDX_COMPONENT_PATTERN =
+  /<(Card|CardGroup|Icon|Note|Warning|Info|Steps|Step|Tab|Tabs|CodeGroup|Accordion|AccordionGroup|Frame|Expandable)\b/;
 
+/** Pages containing JSX components that require the RSC MDX compiler. */
 export function bodyUsesMdxComponents(body: string): boolean {
-
-  return /<(Card|CardGroup)\b/.test(body) || /data-product-guide-index/.test(body);
-
+  return MDX_COMPONENT_PATTERN.test(body) || /data-product-guide-index/.test(body);
 }
 
 export function isMarketingHomePage(body: string): boolean {

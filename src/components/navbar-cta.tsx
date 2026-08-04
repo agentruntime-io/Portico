@@ -35,7 +35,7 @@ export function NavbarLinks({
             target="_blank"
             rel="noopener noreferrer"
             onClick={onNavigate}
-            className="text-xs font-medium text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
+            className="inline-flex min-h-11 items-center text-[13px] font-medium text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
           >
             {link.label}
             <span className="sr-only"> ({t("nav.opensNewTab")})</span>
@@ -45,7 +45,7 @@ export function NavbarLinks({
             key={link.href}
             href={localizeHref(link.href, locale)}
             onClick={onNavigate}
-            className="text-xs font-medium text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
+            className="inline-flex min-h-11 items-center text-[13px] font-medium text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
           >
             {link.label}
           </Link>
@@ -77,7 +77,7 @@ export function NavbarPrimaryCta({
       onClick={onNavigate}
       className={
         className ??
-        "inline-flex shrink-0 items-center rounded-lg bg-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-500 sm:px-3"
+        "inline-flex min-h-11 shrink-0 items-center rounded-lg bg-emerald-700 px-2.5 py-2 text-[13px] font-semibold text-white transition hover:bg-emerald-600 sm:px-3"
       }
     >
       {navbar.primary.label}

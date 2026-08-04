@@ -7,6 +7,7 @@ import { pagePathToHref } from "@/lib/locale-routing";
 import { isPageIndexable, loadPageSeoMeta } from "@/lib/page-meta";
 import { getSiteConfig } from "@/lib/site";
 import {
+  apiOperationHref,
   flattenOperations,
   groupOperationsByTag,
   loadBundledSpec,
@@ -84,6 +85,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           url: `${base}/reference/${spec.id}/${slugifyTag(tag)}`,
           changeFrequency: "monthly",
           priority: 0.65,
+        });
+      }
+
+      for (const operation of ops) {
+        entries.push({
+          url: `${base}${apiOperationHref(spec.id, operation)}`,
+          changeFrequency: "monthly",
+          priority: 0.7,
         });
       }
     }
