@@ -100,6 +100,11 @@ export const fr: Messages = {
     searchDocs: "Rechercher dans la documentation",
     details: "Détails de l'erreur (développement uniquement)",
   },
+  diagram: {
+    expand: "Agrandir le diagramme",
+    close: "Fermer le diagramme",
+    rendering: "Rendu du diagramme…",
+  },
   callout: {
     note: "Note",
     warning: "Avertissement",

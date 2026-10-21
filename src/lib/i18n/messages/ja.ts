@@ -100,6 +100,11 @@ export const ja: Messages = {
     searchDocs: "ドキュメントを検索",
     details: "エラーの詳細（開発時のみ）",
   },
+  diagram: {
+    expand: "図を拡大",
+    close: "図を閉じる",
+    rendering: "図を描画中…",
+  },
   callout: {
     note: "メモ",
     warning: "警告",

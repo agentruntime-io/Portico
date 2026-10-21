@@ -980,9 +980,23 @@ html[data-theme="dark"] .shiki span {
   z-index: 10;
 }
 
+/* Diagrams render at natural size (see pinNaturalSize) and scroll horizontally. */
 .mermaid-diagram svg {
-  max-width: 100%;
+  max-width: none;
   height: auto;
+}
+
+/* Reserve space before the client renders the SVG so the page does not jump. */
+.mermaid-diagram-skeleton,
+.mermaid-diagram-mount:empty {
+  min-height: 12rem;
+}
+
+.mermaid-diagram-mount:empty {
+  margin: 1.5rem 0;
+  border: 1px solid var(--panel-border);
+  border-radius: 0.75rem;
+  background: var(--sidebar-bg);
 }
 
 .ds-frame img {

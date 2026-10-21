@@ -98,6 +98,11 @@ export const en = {
     searchDocs: "Search the docs",
     details: "Error details (development only)",
   },
+  diagram: {
+    expand: "Expand diagram",
+    close: "Close diagram",
+    rendering: "Rendering diagram…",
+  },
   callout: {
     note: "Note",
     warning: "Warning",
