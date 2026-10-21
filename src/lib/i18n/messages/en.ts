@@ -107,6 +107,8 @@ export const en = {
     expand: "Expand diagram",
     close: "Close diagram",
     rendering: "Rendering diagram…",
+    region: "Diagram (scrollable)",
+    error: "Diagram error",
   },
   callout: {
     note: "Note",
@@ -169,6 +171,8 @@ export const en = {
   a11y: {
     skipToContent: "Skip to main content",
     mainContent: "Main content",
+    codeBlock: "Code block",
+    table: "Table",
   },
   attribution: {
     portico: "Portico",

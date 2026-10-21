@@ -109,6 +109,8 @@ export const ja: Messages = {
     expand: "図を拡大",
     close: "図を閉じる",
     rendering: "図を描画中…",
+    region: "図（スクロール可能）",
+    error: "図のエラー",
   },
   callout: {
     note: "メモ",
@@ -170,6 +172,8 @@ export const ja: Messages = {
   a11y: {
     skipToContent: "メインコンテンツへスキップ",
     mainContent: "メインコンテンツ",
+    codeBlock: "コードブロック",
+    table: "表",
   },
   attribution: {
     portico: "Portico",

@@ -67,7 +67,7 @@ export const fr: Messages = {
     uiOnlyHint:
       "Changez de langue pour lire la documentation traduite lorsqu'elle est disponible.",
     fallbackBanner:
-      "Cette page n'est pas disponible en {requested}. Affichage de la version {available}.",
+      "Cette page n'est pas disponible en {requested}. Affichage de la version en {available}.",
   },
   fontScale: {
     group: "Taille du texte",
@@ -109,6 +109,8 @@ export const fr: Messages = {
     expand: "Agrandir le diagramme",
     close: "Fermer le diagramme",
     rendering: "Rendu du diagramme…",
+    region: "Diagramme (défilable)",
+    error: "Erreur de diagramme",
   },
   callout: {
     note: "Note",
@@ -171,6 +173,8 @@ export const fr: Messages = {
   a11y: {
     skipToContent: "Aller au contenu principal",
     mainContent: "Contenu principal",
+    codeBlock: "Bloc de code",
+    table: "Tableau",
   },
   attribution: {
     portico: "Portico",

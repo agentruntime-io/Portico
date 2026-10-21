@@ -109,6 +109,8 @@ export const es: Messages = {
     expand: "Ampliar diagrama",
     close: "Cerrar diagrama",
     rendering: "Renderizando diagrama…",
+    region: "Diagrama (desplazable)",
+    error: "Error en el diagrama",
   },
   callout: {
     note: "Nota",
@@ -171,6 +173,8 @@ export const es: Messages = {
   a11y: {
     skipToContent: "Saltar al contenido principal",
     mainContent: "Contenido principal",
+    codeBlock: "Bloque de código",
+    table: "Tabla",
   },
   attribution: {
     portico: "Portico",

@@ -90,7 +90,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   if (error) {
     return (
       <div className="ds-callout ds-callout-warning my-6 text-sm">
-        <p className="font-semibold">Mermaid diagram error</p>
+        <p className="font-semibold">{t("diagram.error")}</p>
         <pre className="mt-2 overflow-x-auto text-xs">{error}</pre>
       </div>
     );
@@ -121,6 +121,8 @@ export function MermaidDiagram({ chart }: { chart: string }) {
       <div
         className="overflow-x-auto p-4 pr-12 [scrollbar-width:thin]"
         tabIndex={0}
+        role="region"
+        aria-label={t("diagram.region")}
       >
         <div className="mx-auto w-fit" dangerouslySetInnerHTML={{ __html: svg }} />
       </div>

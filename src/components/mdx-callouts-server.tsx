@@ -1,10 +1,10 @@
 import {
   AlertTriangle,
-  CheckCircle2,
+  CircleCheckBig,
   Info as InfoIcon,
   Lightbulb,
   OctagonAlert,
-  Sparkles,
+  StickyNote,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
@@ -38,11 +38,11 @@ function Callout({
     danger: "callout.danger",
   } as const;
   const icons = {
-    note: Lightbulb,
+    note: StickyNote,
     warning: AlertTriangle,
     info: InfoIcon,
-    tip: Sparkles,
-    check: CheckCircle2,
+    tip: Lightbulb,
+    check: CircleCheckBig,
     danger: OctagonAlert,
   };
   const Icon = icons[kind];

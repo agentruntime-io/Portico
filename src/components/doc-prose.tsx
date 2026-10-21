@@ -11,6 +11,7 @@ import {
 import { createPortal } from "react-dom";
 import { CodeCopyButton } from "@/components/code-copy-button";
 import { MermaidDiagram } from "@/components/mermaid-diagram";
+import { useScrollRegions } from "@/lib/use-scroll-regions";
 
 function extractCodeText(pre: HTMLPreElement): string {
   return pre.querySelector("code")?.textContent ?? pre.textContent ?? "";
@@ -72,6 +73,7 @@ export function DocProse({
   }, [children]);
 
   const copyTargets = useCopyTargets(rootRef, children);
+  useScrollRegions(rootRef, children);
 
   return (
     <div ref={rootRef} className={className}>
