@@ -110,6 +110,7 @@ export const ja: Messages = {
     close: "図を閉じる",
     rendering: "図を描画中…",
     region: "図（スクロール可能）",
+    panHint: "ドラッグで移動 · ピンチで拡大",
     zoomIn: "拡大",
     zoomOut: "縮小",
     fit: "幅に合わせる",

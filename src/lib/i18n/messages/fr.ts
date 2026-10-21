@@ -110,6 +110,7 @@ export const fr: Messages = {
     close: "Fermer le diagramme",
     rendering: "Rendu du diagramme…",
     region: "Diagramme (défilable)",
+    panHint: "Glisser pour déplacer · pincer pour zoomer",
     zoomIn: "Zoom avant",
     zoomOut: "Zoom arrière",
     fit: "Ajuster à la largeur",
