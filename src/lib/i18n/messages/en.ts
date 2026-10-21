@@ -54,6 +54,7 @@ export const en = {
     toggle: "Toggle color theme",
     switchToLight: "Switch to light theme",
     switchToDark: "Switch to dark theme",
+    switchToSystem: "Use system theme",
   },
   language: {
     label: "Documentation language",
