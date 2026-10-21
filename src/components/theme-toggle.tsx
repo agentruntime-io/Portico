@@ -164,7 +164,7 @@ function ThemeSegmented() {
       role="radiogroup"
       aria-label={t("theme.label")}
       onKeyDown={onKeyDown}
-      className="grid w-full grid-cols-3 gap-1 rounded-xl border border-[var(--panel-border)] bg-[var(--panel-bg)] p-1"
+      className="theme-segmented grid w-full grid-cols-3 gap-1 rounded-xl border border-[var(--panel-border)] bg-[var(--panel-bg)] p-1"
     >
       {OPTIONS.map(({ value, icon: Icon, labelKey }) => {
         const checked = value === pref;
@@ -183,7 +183,7 @@ function ThemeSegmented() {
             }`}
           >
             <Icon className="h-4 w-4 shrink-0" aria-hidden />
-            <span>{t(labelKey)}</span>
+            <span className="theme-segmented-label">{t(labelKey)}</span>
           </button>
         );
       })}
