@@ -20,6 +20,7 @@ export type PreparedEntry = SearchEntry & {
     url: string;
     bodyWords: string[];
     titleWords: string[];
+    headingWords: string[][];
   };
   avgBodyWords: number;
 };
@@ -34,12 +35,27 @@ const STOP_WORDS = new Set([
   "with", "is", "it", "my", "your", "you", "can", "we", "at", "by", "be",
 ]);
 
-/** Hyphens, underscores, slashes and punctuation all count as word breaks. */
+/**
+ * Minimal singular/plural stemmer: "webhooks"→"webhook", "policies"→"policy",
+ * "access"/"status"/"analysis" are left alone.
+ */
+export function stem(word: string): string {
+  if (word.length <= 3) return word;
+  if (word.endsWith("ies") && word.length > 4) return `${word.slice(0, -3)}y`;
+  if (/(ss|us|is|ous)$/.test(word)) return word;
+  if (word.endsWith("s")) return word.slice(0, -1);
+  return word;
+}
+
+/** Hyphens, underscores, slashes and punctuation all count as word breaks; words are stemmed. */
 export function normalize(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]+/gu, " ")
-    .trim();
+    .trim()
+    .split(" ")
+    .map(stem)
+    .join(" ");
 }
 
 export function tokenize(query: string): string[] {
@@ -67,6 +83,7 @@ export function prepareIndex(
         url: ` ${normalize(e.url)}`,
         bodyWords: body.split(" "),
         titleWords: title.split(" "),
+        headingWords: (e.headings ?? []).map((h) => normalize(h).split(" ")),
       },
       avgBodyWords: 0,
     };
@@ -168,11 +185,93 @@ function buildSnippet(entry: PreparedEntry, tokens: string[]): string {
   return `${start > 0 ? "…" : ""}${slice}${end < text.length ? "…" : ""}`;
 }
 
+/** Operation pages (/reference/<spec>/<tag>/<op>) are noise for generic queries. */
+const OPERATION_URL = /^\/reference\/[^/]+\/[^/]+\/[^/]+/;
+const API_QUERY_WORDS = new Set(["get", "post", "put", "patch", "delete", "endpoint", "operation", "v1"]);
+
+type Scored = { entry: PreparedEntry; score: number; matched: number };
+
+const idfCache = new WeakMap<PreparedEntry[], Map<string, number>>();
+
+/** Rare terms ("invite") should outweigh ubiquitous ones ("workspace", "team"). ~1 at 10% df. */
+function idfWeight(index: PreparedEntry[], token: string): number {
+  let cache = idfCache.get(index);
+  if (!cache) {
+    cache = new Map();
+    idfCache.set(index, cache);
+  }
+  const hit = cache.get(token);
+  if (hit !== undefined) return hit;
+  let df = 0;
+  for (const e of index) {
+    if (hasWord(e.n.title, token) || hasWord(e.n.headings, token) || hasWord(e.n.body, token)) df++;
+  }
+  const weight = Math.log(1 + index.length / Math.max(df, 1)) / Math.log(11);
+  cache.set(token, weight);
+  return weight;
+}
+
+function scoreEntry(index: PreparedEntry[], entry: PreparedEntry, tokens: string[]): Scored {
+  const { title, headings, body, code, url, bodyWords, titleWords, headingWords } = entry.n;
+  let score = 0;
+  let matched = 0;
+  let inTitle = 0;
+  for (const token of tokens) {
+    // Title and URL hits are decisive as-is; heading/body evidence is weighted by how
+    // rare the term is, so "invite" outweighs "team" without hurting title matches.
+    let direct = 0;
+    let evidence = 0;
+    if (hasWord(title, token)) {
+      direct += 14;
+      inTitle++;
+    }
+    if (hasWord(url, token)) direct += 3;
+    if (hasWord(headings, token)) evidence += 7;
+    const tf = countWord(body, token);
+    if (tf >= 3 && hasWord(headings, token)) evidence += 4; // a section about it, not a mention
+    if (tf > 0) {
+      const lengthNorm = 0.25 + 0.75 * (bodyWords.length / entry.avgBodyWords);
+      evidence += 5 * ((tf * (BM25_K + 1)) / (tf + BM25_K * lengthNorm));
+    } else if (hasWord(code, token)) {
+      evidence += 0.75;
+    }
+    if (direct + evidence > 0) matched++;
+    score += direct + evidence * idfWeight(index, token);
+  }
+
+  if (tokens.length > 1 && matched === tokens.length) {
+    const titleSpan = minSpan(titleWords, tokens);
+    if (hasPhrase(titleWords, tokens)) score += 20;
+    else if (titleSpan <= tokens.length) score += 8;
+    const bodySpan = minSpan(bodyWords, tokens);
+    if (hasPhrase(bodyWords, tokens)) {
+      score += 30;
+      // A page that leads with the phrase is usually the one that answers it.
+      if (hasPhrase(bodyWords.slice(0, 60), tokens)) score += 12;
+    } else if (bodySpan <= tokens.length + 1) score += 8;
+    else if (bodySpan <= tokens.length * 3) score += 3;
+  }
+  if (tokens.length > 1 && matched === tokens.length) {
+    // A heading that is (or starts with) the phrase: "Personal access tokens (PATs)".
+    if (headingWords.some((w) => hasPhrase(w, tokens))) score += 18;
+    if (headingWords.some((w) => hasPhrase(w.slice(0, tokens.length + 1), tokens))) score += 6;
+  }
+  if (title.startsWith(` ${tokens.join(" ")}`)) score += 4;
+
+  // Exact title, or a short title that contains every term ("Inbound webhooks" for "webhook").
+  if (inTitle === tokens.length) {
+    if (titleWords.join(" ") === tokens.join(" ")) score += 40;
+    else score += Math.max(0, 22 - 3 * (titleWords.length - tokens.length));
+  }
+  return { entry, score, matched };
+}
+
 /**
- * AND search over word starts: every query token must start a word in the title,
- * headings, URL, body or code. Title and heading hits rank above body hits; body
- * hits use a BM25-style term-frequency score, and tokens that appear close
- * together (stop-words ignored) earn a proximity bonus.
+ * Word-start search. Every query token must start a word in the title, headings, URL,
+ * body or code (singular/plural folded). Title and heading hits rank above body hits;
+ * body hits use a BM25-style term-frequency score; adjacent terms (stop-words ignored)
+ * and short exact titles get bonuses. When fewer than ~5 pages match every term, pages
+ * matching all but one term are appended, down-ranked, so near-miss queries still land.
  */
 export function searchIndex(
   index: PreparedEntry[],
@@ -182,74 +281,58 @@ export function searchIndex(
   const tokens = tokenize(query);
   if (!tokens.length) return [];
 
-  const results: SearchResult[] = [];
-  for (const entry of index) {
-    const { title, headings, body, code, url, bodyWords, titleWords } = entry.n;
-    let score = 0;
-    let ok = true;
-    for (const token of tokens) {
-      let s = 0;
-      if (hasWord(title, token)) s += 14;
-      if (hasWord(headings, token)) s += 7;
-      if (hasWord(url, token)) s += 3;
-      const tf = countWord(body, token);
-      if (tf > 0) {
-        const lengthNorm = 0.25 + 0.75 * (bodyWords.length / entry.avgBodyWords);
-        s += 5 * ((tf * (BM25_K + 1)) / (tf + BM25_K * lengthNorm));
-      } else if (hasWord(code, token)) {
-        s += 0.75;
-      }
-      if (s === 0) {
-        ok = false;
-        break;
-      }
-      score += s;
-    }
-    if (!ok) continue;
+  const generic = !tokens.some((t) => API_QUERY_WORDS.has(t)) && !query.includes("/");
+  // Generic queries should find guides, not reference pages: damp operations hard, other
+  // /reference pages lightly.
+  const penalise = (entry: PreparedEntry, score: number) => {
+    if (!generic) return score;
+    if (OPERATION_URL.test(entry.url)) return score * 0.55;
+    if (entry.url.startsWith("/reference")) return score * 0.8;
+    return score;
+  };
 
-    if (tokens.length > 1) {
-      const titleSpan = minSpan(titleWords, tokens);
-      if (hasPhrase(titleWords, tokens)) score += 20;
-      else if (titleSpan <= tokens.length) score += 8;
-      const bodySpan = minSpan(bodyWords, tokens);
-      // Adjacent words ("create a workspace") are a far better answer than the
-      // same words scattered across a page.
-      if (hasPhrase(bodyWords, tokens)) {
-        score += 30;
-        // A page that leads with the phrase is usually the one that answers it.
-        if (hasPhrase(bodyWords.slice(0, 60), tokens)) score += 12;
-      }
-      else if (bodySpan <= tokens.length + 1) score += 8;
-      else if (bodySpan <= tokens.length * 3) score += 3;
+  const strict: Scored[] = [];
+  const relaxed: Scored[] = [];
+  for (const entry of index) {
+    const scored = scoreEntry(index, entry, tokens);
+    if (scored.matched === tokens.length) {
+      strict.push({ ...scored, score: penalise(entry, scored.score) });
+    } else if (tokens.length >= 2 && scored.matched === tokens.length - 1) {
+      relaxed.push({ ...scored, score: penalise(entry, scored.score) * 0.95 });
     }
-    if (title.startsWith(` ${tokens.join(" ")}`)) score += 4;
-    results.push({ ...entry, score, snippet: buildSnippet(entry, tokens) });
   }
 
-  return results
-    .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
-    .slice(0, limit);
+  const byScore = (a: Scored, b: Scored) =>
+    b.score - a.score || a.entry.title.localeCompare(b.entry.title);
+  strict.sort(byScore);
+  relaxed.sort(byScore);
+
+  const merged =
+    strict.length >= 5 ? strict : [...strict, ...relaxed].sort(byScore);
+
+  return merged.slice(0, limit).map(({ entry, score }) => ({
+    ...entry,
+    score,
+    snippet: buildSnippet(entry, tokens),
+  }));
 }
 
 /**
- * Split `text` into plain/highlighted parts for the query tokens. Matching treats
- * hyphens like spaces and only highlights at word starts, so "dry run" highlights
- * "Dry-run" but "a" does not light up the middle of "Quickstart".
+ * Split `text` into plain/highlighted parts. Whole words are highlighted when their
+ * stem starts with a query token, so "workspaces" lights up for "workspace" and
+ * "Dry-run" for "dry run" — never half a word.
  */
 export function highlightParts(
   text: string,
   tokens: string[],
 ): { text: string; match: boolean }[] {
   if (!tokens.length || !text) return [{ text, match: false }];
-  const pattern = tokens
-    .map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "[\\s_-]+"))
-    .sort((a, b) => b.length - a.length)
-    .join("|");
-  const re = new RegExp(`(?<![\\p{L}\\p{N}])(?:${pattern})`, "giu");
   const parts: { text: string; match: boolean }[] = [];
   let last = 0;
-  for (const m of text.matchAll(re)) {
-    if (m.index === undefined || m[0] === "") continue;
+  for (const m of text.matchAll(/[\p{L}\p{N}]+/gu)) {
+    if (m.index === undefined) continue;
+    const word = stem(m[0].toLowerCase());
+    if (!tokens.some((t) => word.startsWith(t))) continue;
     if (m.index > last) parts.push({ text: text.slice(last, m.index), match: false });
     parts.push({ text: m[0], match: true });
     last = m.index + m[0].length;
