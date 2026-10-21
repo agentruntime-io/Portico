@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { UrlText } from "@/components/url-text";
 import { MarkdownText } from "@/components/markdown-text";
 import type { OpenApiDocument, ResolvedOperation } from "@/lib/openapi/core";
 import { CopyButton } from "@/components/api-reference-controls";
@@ -14,7 +15,7 @@ function JsonBlock({ value }: { value: unknown }) {
       <div className="api-divider flex justify-end border-b px-3 py-2">
         <CopyButton value={body} />
       </div>
-      <pre className="overflow-x-auto p-4 text-xs leading-relaxed">{body}</pre>
+      <pre className="api-scroll overflow-x-auto p-4 text-xs leading-relaxed">{body}</pre>
     </div>
   );
 }
@@ -105,8 +106,8 @@ export function OperationDocView({
       <header className="space-y-5">
         <div className="api-divider flex flex-wrap items-center gap-3 border-b pb-6">
           <MethodBadge method={op.method} />
-          <code className="break-all font-mono text-xs text-[var(--text-main)] sm:text-sm">
-            {op.path}
+          <code className="break-words font-mono text-xs text-[var(--text-main)] sm:text-sm">
+            <UrlText url={op.path} />
           </code>
         </div>
         <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-main)] sm:text-4xl">

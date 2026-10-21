@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Children } from "react";
 import { ChevronRight, ExternalLink, KeyRound, Mail } from "lucide-react";
 import { ApiMobileNav } from "@/components/api-mobile-nav";
+import { UrlText } from "@/components/url-text";
 import { ApiMethod } from "@/components/api-method";
 import { AuthenticatedClientSamples } from "@/components/api-reference-controls";
 import { DocsBrand, DocsHeader } from "@/components/docs-shell";
@@ -46,7 +47,7 @@ function ApiSidebar({
 
   return (
     <aside
-      className="fixed inset-y-0 left-0 z-30 hidden w-[340px] flex-col overflow-hidden bg-[var(--sidebar-bg)] lg:flex"
+      className="fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-hidden bg-[var(--sidebar-bg)] lg:flex"
       aria-label={t("nav.sectionNav")}
     >
       <div className="flex h-16 shrink-0 items-center px-4">
@@ -150,8 +151,8 @@ export function ApiMobileRightRail({
         {t("api.server")}
       </h2>
       <div className="api-card overflow-hidden rounded-lg border">
-        <div className="api-divider break-all border-b px-4 py-3 font-mono text-xs sm:text-sm">
-          {path}
+        <div className="api-divider break-words border-b px-4 py-3 font-mono text-xs sm:text-sm">
+          <UrlText url={path ?? ""} />
         </div>
         <div className="api-faint px-4 py-2 text-sm">
           {server?.description ?? "Production"}
@@ -205,8 +206,8 @@ export function ApiRightRail({
           <div className="api-card-header border-b px-4 py-2 text-sm font-semibold">
             {t("api.server")}
           </div>
-          <div className="api-divider break-all border-b px-4 py-3 font-mono text-xs sm:text-sm">
-            {path}
+          <div className="api-divider break-words border-b px-4 py-3 font-mono text-xs sm:text-sm">
+            <UrlText url={path ?? ""} />
           </div>
           <div className="api-faint px-4 py-2 text-sm">
             {server?.description ?? "Production"}
@@ -290,7 +291,7 @@ export function ApiReferenceShell({
         id="main-content"
         tabIndex={-1}
         aria-label={t("a11y.mainContent")}
-        className="min-w-0 bg-[var(--panel-bg)] lg:ml-[340px] lg:rounded-tl-2xl"
+        className="min-w-0 bg-[var(--panel-bg)] lg:ml-[280px] lg:rounded-tl-2xl"
       >
         <div className="mx-auto flex max-w-[1520px] flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:flex-row lg:gap-14 lg:px-10 lg:py-10 xl:px-16">
           <div className="min-w-0 flex-1">{contentChildren}</div>
