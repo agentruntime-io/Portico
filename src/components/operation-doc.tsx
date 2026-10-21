@@ -37,20 +37,6 @@ function MethodBadge({ method }: { method: string }) {
   );
 }
 
-function CurlSample({ op, baseUrl }: { op: ResolvedOperation; baseUrl: string }) {
-  const url = `${baseUrl.replace(/\/$/, "")}${op.path}`;
-  const lines = [`curl -sS -X ${op.method.toUpperCase()} \\`, `  '${url}'`];
-  const sample = lines.join("\n");
-  return (
-    <div className="api-code overflow-hidden rounded-lg">
-      <div className="api-divider flex justify-end border-b px-3 py-2">
-        <CopyButton value={sample} />
-      </div>
-      <pre className="overflow-x-auto p-4 text-xs leading-relaxed">{sample}</pre>
-    </div>
-  );
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ParamsTable({ params }: { params: any[] }) {
   const { t } = useI18n();
@@ -102,7 +88,6 @@ export function OperationDocView({
   mobileTester?: ReactNode;
 }) {
   const { t } = useI18n();
-  const base = doc.servers?.[0]?.url ?? "https://example.com";
   const parameters = (op.operation.parameters as unknown[]) ?? [];
   const requestBody = op.operation.requestBody as
     | Record<string, unknown>
@@ -135,11 +120,6 @@ export function OperationDocView({
       </header>
 
       {mobileTester}
-
-      <section>
-        <h2 className="ds-section-label">{t("api.operation.sampleRequest")}</h2>
-        <CurlSample op={op} baseUrl={base} />
-      </section>
 
       {parameters.length ? (
         <section>

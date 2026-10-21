@@ -99,6 +99,9 @@ function parseBlocks(src: string): Block[] {
   return blocks;
 }
 
+const BASE =
+  "[&_code]:before:content-none [&_code]:after:content-none [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5";
+
 export function MarkdownText({
   text,
   inline = false,
@@ -112,11 +115,11 @@ export function MarkdownText({
   if (!text) return null;
 
   if (inline) {
-    return <span className={className}>{renderInline(text.replace(/\s*\n\s*/g, " "))}</span>;
+    return <span className={`${BASE} ${className ?? ""}`}>{renderInline(text.replace(/\s*\n\s*/g, " "))}</span>;
   }
 
   return (
-    <div className={className}>
+    <div className={`${BASE} ${className ?? ""}`}>
       {parseBlocks(text).map((b, i) => {
         if (b.kind === "p") return <p key={i}>{renderInline(b.text)}</p>;
         if (b.kind === "code")
