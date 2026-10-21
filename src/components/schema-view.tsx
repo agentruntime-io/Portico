@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { MarkdownText } from "@/components/markdown-text";
+
 import type { OpenApiDocument } from "@/lib/openapi/core";
 
 import { resolveRef } from "@/lib/openapi/core";
@@ -358,11 +360,10 @@ export function SchemaView({
 
         {s.description ? (
 
-          <p className="api-muted text-sm">
-
-            {String(s.description)}
-
-          </p>
+          <MarkdownText
+            text={String(s.description)}
+            className="api-muted text-sm [&>p]:my-0 [&_code]:font-mono [&_code]:text-xs [&_ul]:my-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-5"
+          />
 
         ) : null}
 
