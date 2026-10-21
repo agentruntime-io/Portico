@@ -6,8 +6,17 @@ import { createPortal } from "react-dom";
 import { useI18n } from "@/components/i18n-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
 import type { MessageKey } from "@/lib/i18n";
+import {
+  highlightParts,
+  prepareIndex,
+  searchIndex,
+  tokenize,
+  type PreparedEntry,
+  type SearchEntry,
+  type SearchResult,
+} from "@/lib/search";
 
-type Entry = { url: string; title: string; excerpt: string };
+type Entry = SearchEntry;
 const OPEN_SEARCH_EVENT = "docs:open-search";
 
 function sectionKey(url: string): MessageKey {
@@ -23,6 +32,22 @@ function sectionKey(url: string): MessageKey {
   if (normalized.startsWith("/connectors")) return "search.sectionConnectors";
   if (normalized.startsWith("/api")) return "search.sectionApi";
   return "search.sectionDocs";
+}
+
+function Highlighted({ text, tokens }: { text: string; tokens: string[] }) {
+  return (
+    <>
+      {highlightParts(text, tokens).map((part, i) =>
+        part.match ? (
+          <mark key={i} className="search-mark">
+            {part.text}
+          </mark>
+        ) : (
+          <span key={i}>{part.text}</span>
+        ),
+      )}
+    </>
+  );
 }
 
 export function DrawerSearchTrigger({
@@ -55,7 +80,7 @@ export function SearchControl() {
   const dialogId = useId();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
-  const [data, setData] = useState<Entry[] | null>(null);
+  const [data, setData] = useState<PreparedEntry[] | null>(null);
   const [mounted, setMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -93,7 +118,7 @@ export function SearchControl() {
     if (!open || data) return;
     void fetch("/search-index.json")
       .then((r) => r.json())
-      .then(setData)
+      .then((entries: Entry[]) => setData(prepareIndex(entries)))
       .catch(() => setData([]));
   }, [open, data]);
 
@@ -116,26 +141,17 @@ export function SearchControl() {
     [data, localeMatches],
   );
 
-  const results = useMemo(() => {
-    if (!scopedData || !q.trim()) return scopedData?.slice(0, 8) ?? [];
+  const queryTokens = useMemo(() => tokenize(q), [q]);
 
-    const qq = q.toLowerCase();
-    return scopedData
-      .map((d) => {
-        const title = d.title.toLowerCase();
-        const url = d.url.toLowerCase();
-        const excerpt = d.excerpt.toLowerCase();
-        const score =
-          (title.includes(qq) ? 8 : 0) +
-          (url.includes(qq) ? 4 : 0) +
-          (excerpt.includes(qq) ? 2 : 0) +
-          (title.startsWith(qq) ? 4 : 0);
-        return { ...d, score };
-      })
-      .filter((d) => d.score > 0)
-      .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
-      .slice(0, 24);
-  }, [scopedData, q]);
+  const results = useMemo<SearchResult[]>(() => {
+    if (!scopedData) return [];
+    if (!queryTokens.length) {
+      return scopedData
+        .slice(0, 8)
+        .map((d) => ({ ...d, score: 0, snippet: d.excerpt }));
+    }
+    return searchIndex(scopedData, q);
+  }, [scopedData, q, queryTokens]);
 
   useEffect(() => {
     setActiveIndex(0);
@@ -248,7 +264,7 @@ export function SearchControl() {
                     id="search-results"
                     role="listbox"
                     aria-label={t("search.label")}
-                    className="max-h-[min(20rem,50vh)] overflow-y-auto py-1"
+                    className="docs-sidebar-scroll max-h-[min(20rem,50vh)] overflow-y-auto py-1 [scrollbar-width:thin]"
                   >
                     {results.map((r, index) => (
                       <li key={r.url} role="presentation">
@@ -270,12 +286,12 @@ export function SearchControl() {
                               {t(sectionKey(r.url))}
                             </span>
                             <span className="text-sm font-medium text-[var(--text-main)]">
-                              {r.title}
+                              <Highlighted text={r.title} tokens={queryTokens} />
                             </span>
                           </div>
                           {hasQuery ? (
                             <p className="mt-1 line-clamp-2 text-xs text-[var(--text-muted)]">
-                              {r.excerpt}
+                              <Highlighted text={r.snippet} tokens={queryTokens} />
                             </p>
                           ) : null}
                         </a>

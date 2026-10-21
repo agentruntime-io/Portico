@@ -1032,3 +1032,10 @@ html[data-theme="dark"] .shiki span {
 .changelog-card:hover {
   border-color: color-mix(in srgb, #10b981 35%, var(--panel-border));
 }
+
+.search-mark {
+  border-radius: 2px;
+  background: rgb(16 185 129 / 0.22);
+  color: inherit;
+  padding: 0 1px;
+}
