@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Maximize2, X } from "lucide-react";
+import { Maximize2, Minus, Plus, ScanLine, X, type LucideIcon } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
 
@@ -28,6 +28,28 @@ function pinNaturalSize(svg: string): string {
   return svg.replace(tag, pinned);
 }
 
+function ToolButton({
+  label,
+  icon: Icon,
+  onClick,
+}: {
+  label: string;
+  icon: LucideIcon;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-[var(--panel-border)] text-[var(--text-muted)] hover:text-[var(--text-main)] sm:h-9 sm:w-9"
+    >
+      <Icon className="h-4 w-4" aria-hidden />
+    </button>
+  );
+}
+
 export function MermaidDiagram({ chart }: { chart: string }) {
   const { t } = useI18n();
   const id = useId().replace(/:/g, "");
@@ -36,8 +58,22 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [expanded, setExpanded] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  const naturalWidth = Number(/<svg[^>]*\swidth="(\d+)"/.exec(svg ?? "")?.[1] ?? 0);
+
+  const fit = () => {
+    const available = viewportRef.current?.clientWidth ?? 0;
+    if (available && naturalWidth) setScale(Math.min(3, Math.max(0.2, (available - 32) / naturalWidth)));
+  };
+  const zoom = (factor: number) =>
+    setScale((s) => Math.min(3, Math.max(0.2, Math.round(s * factor * 100) / 100)));
 
   useDialog(expanded, () => setExpanded(false), dialogRef);
+
+  useEffect(() => {
+    if (expanded) setScale(1);
+  }, [expanded]);
 
   useEffect(() => {
     setTheme(readTheme());
@@ -114,7 +150,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
         onClick={() => setExpanded(true)}
         aria-label={t("diagram.expand")}
         title={t("diagram.expand")}
-        className="absolute right-2 top-2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:text-[var(--text-main)]"
+        className="absolute right-2 top-2 z-10 inline-flex h-11 w-11 items-center justify-center rounded-md border sm:h-9 sm:w-9 border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:text-[var(--text-main)]"
       >
         <Maximize2 className="h-4 w-4" aria-hidden />
       </button>
@@ -129,7 +165,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
       {expanded
         ? createPortal(
             <div
-              className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center bg-black/60 p-3 sm:p-6"
+              className="fixed inset-0 z-[var(--z-modal)] flex items-stretch justify-center bg-black/60 sm:items-center sm:p-6"
               onClick={() => setExpanded(false)}
             >
               <div
@@ -137,18 +173,33 @@ export function MermaidDiagram({ chart }: { chart: string }) {
                 role="dialog"
                 aria-modal="true"
                 aria-label={t("diagram.expand")}
-                className="relative max-h-full max-w-full overflow-auto rounded-xl border border-[var(--panel-border)] bg-[var(--panel-bg)] p-6 pt-12"
+                className="relative flex h-full w-full flex-col overflow-hidden bg-[var(--panel-bg)] sm:h-auto sm:max-h-full sm:w-auto sm:max-w-full sm:rounded-xl sm:border sm:border-[var(--panel-border)]"
                 onClick={(e) => e.stopPropagation()}
               >
-                <button
-                  type="button"
-                  onClick={() => setExpanded(false)}
-                  aria-label={t("diagram.close")}
-                  className="absolute right-2 top-2 inline-flex h-9 w-9 items-center justify-center rounded-md border border-[var(--panel-border)] text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                <div className="flex shrink-0 items-center justify-end gap-1 border-b border-[var(--panel-border)] p-2">
+                  <ToolButton label={t("diagram.zoomOut")} icon={Minus} onClick={() => zoom(0.8)} />
+                  <ToolButton label={t("diagram.zoomIn")} icon={Plus} onClick={() => zoom(1.25)} />
+                  <ToolButton label={t("diagram.fit")} icon={ScanLine} onClick={() => fit()} />
+                  <button
+                    type="button"
+                    onClick={() => setExpanded(false)}
+                    aria-label={t("diagram.close")}
+                    title={t("diagram.close")}
+                    className="ml-1 inline-flex h-11 w-11 items-center justify-center rounded-md border border-[var(--panel-border)] text-[var(--text-muted)] hover:text-[var(--text-main)] sm:h-9 sm:w-9"
+                  >
+                    <X className="h-4 w-4" aria-hidden />
+                  </button>
+                </div>
+                <div
+                  ref={viewportRef}
+                  className="min-h-0 flex-1 overflow-auto p-4 [touch-action:pan-x_pan-y_pinch-zoom] sm:p-6"
                 >
-                  <X className="h-4 w-4" aria-hidden />
-                </button>
-                <div className="mermaid-diagram mx-auto w-fit" dangerouslySetInnerHTML={{ __html: svg }} />
+                  <div
+                    className="mermaid-diagram mx-auto w-fit"
+                    style={{ zoom: scale }}
+                    dangerouslySetInnerHTML={{ __html: svg }}
+                  />
+                </div>
               </div>
             </div>,
             document.body,
