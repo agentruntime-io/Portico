@@ -26,8 +26,6 @@ import {
 
   defaultLocale,
 
-  isLocale,
-
   translate,
 
   type Locale,
@@ -58,15 +56,20 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 
 
 
-export function I18nProvider({ children }: { children: ReactNode }) {
+export function I18nProvider({
+  children,
+  initialLocale = defaultLocale,
+}: {
+  children: ReactNode;
+  /** Locale resolved on the server from the URL, so SSR output already matches. */
+  initialLocale?: Locale;
+}) {
 
   const router = useRouter();
 
   const pathname = usePathname();
 
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale);
-
-  const [ready, setReady] = useState(false);
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
 
 
@@ -106,23 +109,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
 
-    const stored = window.localStorage.getItem("doc-language");
-
-    if (stored && isLocale(stored)) setLocaleState(stored);
-
-    setReady(true);
-
-  }, []);
-
-
-
-  useEffect(() => {
-
-    if (!ready) return;
-
     document.documentElement.lang = locale;
 
-  }, [locale, ready]);
+  }, [locale]);
 
 
 
