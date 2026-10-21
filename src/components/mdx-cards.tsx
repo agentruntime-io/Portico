@@ -128,8 +128,12 @@ export function CardGroup({
       : cols === 2
         ? "sm:grid-cols-2"
         : "sm:grid-cols-2";
+  // Two-column grids: a lone last card spans the row instead of leaving an empty slot.
+  const twoCol = cols !== 3 ? "ds-card-group-2" : "";
   return (
-    <div className={`not-prose my-7 grid grid-cols-1 gap-3 ${grid}`}>{children}</div>
+    <div className={`ds-card-group not-prose my-7 grid grid-cols-1 gap-3 ${grid} ${twoCol}`}>
+      {children}
+    </div>
   );
 }
 

@@ -122,8 +122,8 @@ export function MobileNavButton({
               id={panelId}
               inert={!open}
               data-state={open ? "open" : "closed"}
-              className={`absolute inset-y-0 left-0 flex w-[min(20rem,100vw)] flex-col bg-[var(--sidebar-bg)] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none sm:rounded-r-2xl ${
-                open ? "translate-x-0" : "-translate-x-full"
+              className={`absolute inset-y-0 left-0 flex w-[min(20rem,100vw)] flex-col bg-[var(--sidebar-bg)] transition-[transform,box-shadow]  duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none sm:rounded-r-2xl ${
+                open ? "translate-x-0 shadow-2xl" : "-translate-x-full shadow-none"
               }`}
               role="dialog"
               aria-modal="true"
