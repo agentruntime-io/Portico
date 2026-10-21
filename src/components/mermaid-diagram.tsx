@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Maximize2, Minus, Plus, ScanLine, X, type LucideIcon } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
@@ -60,20 +60,63 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [overflowing, setOverflowing] = useState(false);
   const naturalWidth = Number(/<svg[^>]*\swidth="(\d+)"/.exec(svg ?? "")?.[1] ?? 0);
+  const viewBox = /viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"/.exec(svg ?? "");
+  const naturalHeight = viewBox ? Number(viewBox[2]) : 0;
 
   const fit = () => {
     const available = viewportRef.current?.clientWidth ?? 0;
     if (available && naturalWidth) setScale(Math.min(3, Math.max(0.2, (available - 32) / naturalWidth)));
   };
+
+  // Open at the largest legible scale rather than 1:1.
+  // Desktop: fit to width, but never below 0.6. Phones: fit to height (flat diagrams
+  // then fill the screen at a readable size and pan sideways), clamped to 0.6–1.
+  useLayoutEffect(() => {
+    if (!expanded) return;
+    const viewport = viewportRef.current;
+    if (!viewport || !naturalWidth || !naturalHeight) return;
+    const desktop = window.matchMedia("(min-width: 640px)").matches;
+    const fitW = (viewport.clientWidth - 48) / naturalWidth;
+    const fitH = (viewport.clientHeight - 48) / naturalHeight;
+    const next = desktop
+      ? Math.max(0.6, Math.min(1.5, fitW))
+      : Math.max(0.6, Math.min(1, fitH));
+    setScale(Math.round(next * 100) / 100);
+  }, [expanded, naturalWidth, naturalHeight]);
+
+  // Show the pan hint only when there is something to pan.
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    if (!expanded || !viewport) return;
+    setOverflowing(
+      viewport.scrollWidth > viewport.clientWidth + 1 ||
+        viewport.scrollHeight > viewport.clientHeight + 1,
+    );
+  }, [expanded, scale]);
+
+  // Mouse drag-to-pan (touch uses native scrolling and pinch).
+  const drag = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    const el = e.currentTarget;
+    drag.current = { x: e.clientX, y: e.clientY, left: el.scrollLeft, top: el.scrollTop };
+    el.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    if (!d) return;
+    e.currentTarget.scrollLeft = d.left - (e.clientX - d.x);
+    e.currentTarget.scrollTop = d.top - (e.clientY - d.y);
+  };
+  const onPointerUp = () => {
+    drag.current = null;
+  };
   const zoom = (factor: number) =>
     setScale((s) => Math.min(3, Math.max(0.2, Math.round(s * factor * 100) / 100)));
 
   useDialog(expanded, () => setExpanded(false), dialogRef);
-
-  useEffect(() => {
-    if (expanded) setScale(1);
-  }, [expanded]);
 
   useEffect(() => {
     setTheme(readTheme());
@@ -173,10 +216,15 @@ export function MermaidDiagram({ chart }: { chart: string }) {
                 role="dialog"
                 aria-modal="true"
                 aria-label={t("diagram.expand")}
-                className="relative flex h-full w-full flex-col overflow-hidden bg-[var(--panel-bg)] sm:h-auto sm:max-h-full sm:w-auto sm:max-w-full sm:rounded-xl sm:border sm:border-[var(--panel-border)]"
+                className="relative flex h-full w-full flex-col overflow-hidden bg-[var(--panel-bg)] sm:h-auto sm:max-h-[90vh] sm:min-h-[50vh] sm:w-[min(96vw,1700px)] sm:rounded-xl sm:border sm:border-[var(--panel-border)]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex shrink-0 items-center justify-end gap-1 border-b border-[var(--panel-border)] p-2">
+                  {overflowing ? (
+                    <p className="mr-auto min-w-0 truncate pl-2 text-xs text-[var(--text-muted)]">
+                      {t("diagram.panHint")}
+                    </p>
+                  ) : null}
                   <ToolButton label={t("diagram.zoomOut")} icon={Minus} onClick={() => zoom(0.8)} />
                   <ToolButton label={t("diagram.zoomIn")} icon={Plus} onClick={() => zoom(1.25)} />
                   <ToolButton label={t("diagram.fit")} icon={ScanLine} onClick={() => fit()} />
@@ -192,13 +240,21 @@ export function MermaidDiagram({ chart }: { chart: string }) {
                 </div>
                 <div
                   ref={viewportRef}
-                  className="min-h-0 flex-1 overflow-auto p-4 [touch-action:pan-x_pan-y_pinch-zoom] sm:p-6"
+                  onPointerDown={onPointerDown}
+                  onPointerMove={onPointerMove}
+                  onPointerUp={onPointerUp}
+                  onPointerCancel={onPointerUp}
+                  className={`min-h-0 flex-1 overflow-auto p-4 [touch-action:pan-x_pan-y_pinch-zoom] sm:p-6 ${
+                    overflowing ? "cursor-grab active:cursor-grabbing" : ""
+                  }`}
                 >
-                  <div
-                    className="mermaid-diagram mx-auto w-fit"
-                    style={{ zoom: scale }}
-                    dangerouslySetInnerHTML={{ __html: svg }}
-                  />
+                  <div className="flex min-h-full min-w-full items-center">
+                    <div
+                      className="mermaid-diagram mx-auto w-fit"
+                      style={{ zoom: scale }}
+                      dangerouslySetInnerHTML={{ __html: svg }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>,

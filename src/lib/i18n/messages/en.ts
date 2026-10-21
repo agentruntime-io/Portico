@@ -108,6 +108,7 @@ export const en = {
     close: "Close diagram",
     rendering: "Rendering diagram…",
     region: "Diagram (scrollable)",
+    panHint: "Drag to pan · pinch to zoom",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
     fit: "Fit to width",
