@@ -80,7 +80,7 @@ export function SearchControl() {
   const dialogId = useId();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
-  const [data, setData] = useState<PreparedEntry[] | null>(null);
+  const [data, setData] = useState<Entry[] | null>(null);
   const [mounted, setMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -118,51 +118,68 @@ export function SearchControl() {
     if (!open || data) return;
     void fetch("/search-index.json")
       .then((r) => r.json())
-      .then((entries: Entry[]) => setData(prepareIndex(entries)))
+      .then((entries: Entry[]) => setData(entries))
       .catch(() => setData([]));
   }, [open, data]);
 
-  const localeMatches = useCallback(
-    (url: string) => {
-      if (url.startsWith("/reference") || url.startsWith("/changelog")) {
-        return true;
-      }
-      const first = url.split("/").filter(Boolean)[0];
-      if (locale === "en") {
-        return !first || !["es", "fr", "ja"].includes(first);
-      }
-      return url === `/${locale}` || url.startsWith(`/${locale}/`);
-    },
-    [locale],
-  );
-
-  const scopedData = useMemo(
-    () => data?.filter((entry) => localeMatches(entry.url)) ?? null,
-    [data, localeMatches],
-  );
+  // Locale-scoped index. Where a locale has no translated page, fall back to the
+  // English entry and link to the URL the visitor would actually land on
+  // (/fr/<slug> serves the English content with a fallback banner).
+  const scopedData = useMemo<PreparedEntry[] | null>(() => {
+    if (!data) return null;
+    const prefixed = /^\/(es|fr|ja)(\/|$)/;
+    const isShared = (url: string) =>
+      url.startsWith("/reference") || url.startsWith("/changelog");
+    if (locale === "en") {
+      return prepareIndex(data.filter((e) => isShared(e.url) || !prefixed.test(e.url)));
+    }
+    const own = data.filter((e) => e.url === `/${locale}` || e.url.startsWith(`/${locale}/`));
+    const ownSlugs = new Set(own.map((e) => e.url.slice(locale.length + 1) || "/"));
+    const fallback = data.filter(
+      (e) => !isShared(e.url) && !prefixed.test(e.url) && !ownSlugs.has(e.url),
+    );
+    const shared = data.filter((e) => isShared(e.url));
+    const entries = [...own, ...fallback, ...shared];
+    return prepareIndex(entries, (e) =>
+      own.includes(e) || isShared(e.url)
+        ? e.url
+        : e.url === "/"
+          ? `/${locale}`
+          : `/${locale}${e.url}`,
+    );
+  }, [data, locale]);
 
   const queryTokens = useMemo(() => tokenize(q), [q]);
 
+  const hasQueryEarly = queryTokens.length > 0;
+
+  const suggestions = useMemo<SearchResult[]>(
+    () =>
+      (scopedData ?? [])
+        .slice(0, 8)
+        .map((d) => ({ ...d, score: 0, snippet: d.excerpt })),
+    [scopedData],
+  );
+
   const results = useMemo<SearchResult[]>(() => {
     if (!scopedData) return [];
-    if (!queryTokens.length) {
-      return scopedData
-        .slice(0, 8)
-        .map((d) => ({ ...d, score: 0, snippet: d.excerpt }));
-    }
+    if (!queryTokens.length) return suggestions;
     return searchIndex(scopedData, q);
-  }, [scopedData, q, queryTokens]);
+  }, [scopedData, q, queryTokens, suggestions]);
+
+  // With no match, offer the same suggested pages as the empty query.
+  const shown = results.length || !hasQueryEarly ? results : suggestions;
 
   useEffect(() => {
     setActiveIndex(0);
-  }, [q, results.length]);
+  }, [q, shown.length]);
 
   const isLoading = open && data === null;
   const hasQuery = q.trim().length > 0;
   const indexEmpty =
     !isLoading && data !== null && (scopedData?.length ?? 0) === 0;
   const showNoResults = !isLoading && hasQuery && results.length === 0;
-  const showResults = !isLoading && results.length > 0;
+  const showResults = !isLoading && shown.length > 0;
   const showBody = isLoading || indexEmpty || showNoResults || showResults;
 
   const modal =
@@ -198,23 +215,23 @@ export function SearchControl() {
                   aria-expanded={open}
                   aria-controls={showResults ? "search-results" : undefined}
                   aria-activedescendant={
-                    showResults && results[activeIndex]
+                    showResults && shown[activeIndex]
                       ? `search-result-${activeIndex}`
                       : undefined
                   }
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   onKeyDown={(e) => {
-                    if (!results.length) return;
+                    if (!shown.length) return;
                     if (e.key === "ArrowDown") {
                       e.preventDefault();
-                      setActiveIndex((i) => Math.min(i + 1, results.length - 1));
+                      setActiveIndex((i) => Math.min(i + 1, shown.length - 1));
                     } else if (e.key === "ArrowUp") {
                       e.preventDefault();
                       setActiveIndex((i) => Math.max(i - 1, 0));
-                    } else if (e.key === "Enter" && results[activeIndex]) {
+                    } else if (e.key === "Enter" && shown[activeIndex]) {
                       e.preventDefault();
-                      window.location.href = results[activeIndex].url;
+                      window.location.href = shown[activeIndex].href;
                       onClose();
                     }
                   }}
@@ -255,7 +272,7 @@ export function SearchControl() {
 
               {showResults ? (
                 <>
-                  {!hasQuery ? (
+                  {!hasQuery || results.length === 0 ? (
                     <p className="border-b border-[var(--panel-border)] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">
                       {t("search.suggested")}
                     </p>
@@ -266,15 +283,16 @@ export function SearchControl() {
                     aria-label={t("search.label")}
                     className="docs-sidebar-scroll max-h-[min(20rem,50vh)] overflow-y-auto py-1 [scrollbar-width:thin]"
                   >
-                    {results.map((r, index) => (
-                      <li key={r.url} role="presentation">
+                    {shown.map((r, index) => (
+                      <li key={r.href} role="presentation">
                         <a
                           id={`search-result-${index}`}
                           role="option"
                           aria-selected={index === activeIndex}
-                          href={r.url}
+                          href={r.href}
                           onClick={onClose}
-                          onMouseEnter={() => setActiveIndex(index)}
+                          // mousemove, not mouseenter: keyboard scrolling must not be hijacked by a still pointer
+                          onMouseMove={() => setActiveIndex((i) => (i === index ? i : index))}
                           className={`block px-4 py-2.5 transition-colors ${
                             index === activeIndex
                               ? "bg-emerald-500/10"
@@ -282,14 +300,14 @@ export function SearchControl() {
                           }`}
                         >
                           <div className="flex items-center gap-2">
-                            <span className="rounded bg-[var(--sidebar-bg)] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[var(--text-muted)]">
+                            <span className="shrink-0 whitespace-nowrap rounded bg-[var(--sidebar-bg)] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[var(--text-muted)]">
                               {t(sectionKey(r.url))}
                             </span>
-                            <span className="text-sm font-medium text-[var(--text-main)]">
+                            <span className="min-w-0 truncate text-sm font-medium text-[var(--text-main)]">
                               <Highlighted text={r.title} tokens={queryTokens} />
                             </span>
                           </div>
-                          {hasQuery ? (
+                          {hasQuery && r.snippet ? (
                             <p className="mt-1 line-clamp-2 text-xs text-[var(--text-muted)]">
                               <Highlighted text={r.snippet} tokens={queryTokens} />
                             </p>

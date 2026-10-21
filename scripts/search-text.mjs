@@ -46,14 +46,44 @@ export function extractHeadingTexts(content) {
   return out.filter(Boolean);
 }
 
+/** Split Markdown into prose and fenced code (Mermaid fences are dropped entirely). */
+export function splitProseAndCode(markdown) {
+  const prose = [];
+  const code = [];
+  let fence = null;
+  let lang = "";
+  for (const line of String(markdown ?? "").split(/\r?\n/)) {
+    const f = /^[ \t]{0,3}(`{3,}|~{3,})[ \t]*([\w-]*)/.exec(line);
+    if (f) {
+      if (!fence) {
+        fence = f[1][0];
+        lang = f[2].toLowerCase();
+      } else if (f[1][0] === fence) {
+        fence = null;
+        lang = "";
+      }
+      continue;
+    }
+    if (fence) {
+      if (lang !== "mermaid") code.push(line);
+    } else {
+      prose.push(line);
+    }
+  }
+  return { prose: prose.join("\n"), code: code.join("\n") };
+}
+
 /** Build one index entry from Markdown source. */
 export function textEntry(url, title, markdown, { excerptLength = 200 } = {}) {
-  const body = stripMarkdown(markdown);
+  const { prose, code } = splitProseAndCode(markdown);
+  const body = stripMarkdown(prose);
   return {
     url,
     title,
     headings: extractHeadingTexts(markdown),
     excerpt: body.slice(0, excerptLength),
     body: body.slice(0, MAX_BODY_CHARS),
+    // Searchable, but never used for snippets and scored low.
+    code: stripMarkdown(code).slice(0, 4000),
   };
 }
