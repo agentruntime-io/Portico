@@ -57,6 +57,10 @@ export const fr: Messages = {
     switchToLight: "Passer au thème clair",
     switchToDark: "Passer au thème sombre",
     switchToSystem: "Utiliser le thème du système",
+    label: "Thème de couleur",
+    light: "Clair",
+    dark: "Sombre",
+    system: "Système",
   },
   language: {
     label: "Langue de la documentation",

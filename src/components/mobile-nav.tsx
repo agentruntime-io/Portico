@@ -13,9 +13,9 @@ import { GlobalNavAnchors } from "@/components/global-nav-anchors";
 import { MainNavTabs } from "@/components/main-nav-tabs";
 import { DrawerSearchTrigger } from "@/components/search-control";
 import { SidebarNavGroup } from "@/components/sidebar-nav-group";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   LanguageSelector,
-  ThemeToggle,
 } from "@/components/site-controls";
 import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
@@ -233,9 +233,9 @@ export function MobileNavButton({
                   <PorticoAttribution compact />
                 </div>
               </nav>
-              <footer className="flex h-14 shrink-0 items-center bg-[var(--sidebar-bg)] px-4">
-                <div className="flex w-full items-center justify-end gap-1.5">
-                  <ThemeToggle compact />
+              <footer className="shrink-0 space-y-2 border-t border-[var(--panel-border)] bg-[var(--sidebar-bg)] p-3">
+                <ThemeToggle variant="segmented" />
+                <div className="flex items-center justify-between gap-2">
                   <FontScaleControls compact />
                   <LanguageSelector variant="drawer" compact />
                 </div>

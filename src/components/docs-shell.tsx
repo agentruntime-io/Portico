@@ -14,8 +14,8 @@ import { NavbarLinks, NavbarPrimaryCta } from "@/components/navbar-cta";
 import {
   AssistantLauncher,
   LanguageSelector,
-  ThemeToggle,
 } from "@/components/site-controls";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { SiteConfig } from "@/lib/site";
 import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";

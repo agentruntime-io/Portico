@@ -57,6 +57,10 @@ export const ja: Messages = {
     switchToLight: "ライトテーマに切り替え",
     switchToDark: "ダークテーマに切り替え",
     switchToSystem: "システムのテーマを使用",
+    label: "カラーテーマ",
+    light: "ライト",
+    dark: "ダーク",
+    system: "システム",
   },
   language: {
     label: "ドキュメントの言語",
