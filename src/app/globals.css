@@ -393,7 +393,7 @@ html[data-theme="light"] :focus-visible {
   color: var(--text-muted) !important;
 }
 
-.product-guide-section > h2 {
+.doc-prose .product-guide-section > h2 {
   margin-bottom: 1rem !important;
   font-size: 1.25rem;
   font-weight: 600;
@@ -1217,7 +1217,7 @@ html[data-theme="dark"] .shiki span {
 }
 
 /* Home: breathing room under "Common tasks", and a visible card edge in dark. */
-.product-guide-section > h2 {
+.doc-prose .product-guide-section > h2 {
   margin-bottom: 1.25rem !important;
 }
 
