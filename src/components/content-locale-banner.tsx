@@ -2,11 +2,17 @@
 
 import { useI18n } from "@/components/i18n-provider";
 import type { Locale } from "@/lib/i18n";
-import { locales } from "@/lib/i18n";
 
-const localeLabels = Object.fromEntries(
-  locales.map((l) => [l.code, l.label]),
-) as Record<Locale, string>;
+/** Language name in the UI language ("anglais", "inglés", "English"). */
+function languageName(code: Locale, uiLocale: Locale): string {
+  try {
+    const name = new Intl.DisplayNames([uiLocale], { type: "language" }).of(code);
+    if (name) return name;
+  } catch {
+    /* Intl.DisplayNames unavailable */
+  }
+  return code;
+}
 
 export function ContentLocaleBanner({
   requestedLocale,
@@ -15,16 +21,16 @@ export function ContentLocaleBanner({
   requestedLocale: Locale;
   contentLocale: Locale;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <div
       role="status"
-      className="mb-6 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-[var(--text-main)]"
+      className="mb-6 mt-6 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-[var(--text-main)] sm:mt-8"
     >
       {t("language.fallbackBanner", {
-        requested: localeLabels[requestedLocale],
-        available: localeLabels[contentLocale],
+        requested: languageName(requestedLocale, locale),
+        available: languageName(contentLocale, locale),
       })}
     </div>
   );

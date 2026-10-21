@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { MermaidDiagram } from "@/components/mermaid-diagram";
+import { useScrollRegions } from "@/lib/use-scroll-regions";
 
 function MermaidMount({ source }: { source: string }) {
   return <MermaidDiagram chart={source} />;
@@ -36,6 +37,8 @@ export function MdxProseEnhancer({
     });
     setMermaidMounts(mounts);
   }, [children]);
+
+  useScrollRegions(rootRef, children);
 
   return (
     <div ref={rootRef} className={className}>
