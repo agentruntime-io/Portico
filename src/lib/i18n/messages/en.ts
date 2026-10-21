@@ -92,6 +92,9 @@ export const en = {
     note: "Note",
     warning: "Warning",
     info: "Info",
+    tip: "Tip",
+    check: "Check",
+    danger: "Danger",
   },
   api: {
     sectionOverview: "Section overview",

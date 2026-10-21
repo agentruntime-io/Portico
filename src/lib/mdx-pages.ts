@@ -21,6 +21,7 @@ import { defaultLocale, locales, type Locale } from "@/lib/i18n";
 import { hasLocalizedMdx, resolveMdxFilePath } from "@/lib/locale-content";
 import { pagePathToHref } from "@/lib/locale-routing";
 import { excerptFromBody } from "@/lib/seo";
+import { HEADING_CUSTOM_ID_TEST, transformHeadingIds } from "@/lib/mdx-heading-ids.mjs";
 
 
 
@@ -58,16 +59,24 @@ export type LoadedMdxPage = {
 
   usesMdxComponents: boolean;
 
+  /** Lines of frontmatter before `rawBody` (for compile error line numbers). */
+
+  bodyLineOffset: number;
+
 };
 
 
 
 const MDX_COMPONENT_PATTERN =
-  /<(Card|CardGroup|Icon|Note|Warning|Info|Steps|Step|Tab|Tabs|CodeGroup|Accordion|AccordionGroup|Frame|Expandable)\b/;
+  /<(Card|CardGroup|Icon|Note|Warning|Info|Tip|Check|Danger|Steps|Step|Tab|Tabs|CodeGroup|Accordion|AccordionGroup|Frame|Expandable)\b/;
 
 /** Pages containing JSX components that require the RSC MDX compiler. */
 export function bodyUsesMdxComponents(body: string): boolean {
-  return MDX_COMPONENT_PATTERN.test(body) || /data-product-guide-index/.test(body);
+  return (
+    MDX_COMPONENT_PATTERN.test(body) ||
+    /data-product-guide-index/.test(body) ||
+    HEADING_CUSTOM_ID_TEST.test(body)
+  );
 }
 
 export function isMarketingHomePage(body: string): boolean {
@@ -266,6 +275,8 @@ export async function loadMdxPage(
 
     usesMdxComponents: bodyUsesMdxComponents(content),
 
+    bodyLineOffset: raw.slice(0, raw.length - content.length).split("\n").length - 1,
+
   };
 
 }
@@ -300,29 +311,43 @@ export async function compileMdxPage(
 
   if (page.usesMdxComponents) {
 
-    const { content } = await compileMDX({
+    try {
 
-      source: page.rawBody,
+      const { content } = await compileMDX({
 
-      components: createRscMdxComponents(page.locale),
+        source: transformHeadingIds(page.rawBody),
 
-      options: {
+        components: createRscMdxComponents(page.locale),
 
-        parseFrontmatter: false,
+        options: {
 
-        mdxOptions: {
+          parseFrontmatter: false,
 
-          remarkPlugins: [remarkGfm],
+          // Content repos are trusted, so JS-expression props (title={<span/>}) are
+          // allowed; blockDangerousJS still strips eval/Function/process/etc.
+          blockJS: false,
 
-          rehypePlugins: rehypeMdxPlugins as import("unified").Pluggable[],
+          blockDangerousJS: true,
+
+          mdxOptions: {
+
+            remarkPlugins: [remarkGfm],
+
+            rehypePlugins: rehypeMdxPlugins as import("unified").Pluggable[],
+
+          },
 
         },
 
-      },
+      });
 
-    });
+      return { kind: "mdx", content };
 
-    return { kind: "mdx", content };
+    } catch (error) {
+
+      throw new Error(describeMdxCompileError(page, error), { cause: error });
+
+    }
 
   }
 
@@ -335,3 +360,12 @@ export async function compileMdxPage(
 }
 
 
+
+
+function describeMdxCompileError(page: LoadedMdxPage, error: unknown): string {
+  const err = error as { message?: string; line?: number; column?: number };
+  const reason = String(err?.message ?? error).split("\n")[0];
+  const line = typeof err?.line === "number" ? err.line + page.bodyLineOffset : undefined;
+  const where = line ? `${page.filePath}:${line}${err.column ? `:${err.column}` : ""}` : page.filePath;
+  return `MDX compile failed in ${where}: ${reason}`;
+}

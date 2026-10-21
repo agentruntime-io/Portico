@@ -1,3 +1,5 @@
+import { splitHeadingCustomId } from "@/lib/mdx-heading-ids.mjs";
+
 export type PageHeading = {
   id: string;
   text: string;
@@ -21,8 +23,9 @@ export function extractHeadings(markdown: string): PageHeading[] {
     const match = /^(#{2,3})\s+(.+?)\s*#*$/.exec(line);
     if (!match) continue;
 
-    const text = match[2].replace(/\[(.*?)\]\(.*?\)/g, "$1").trim();
-    const base = slugifyHeading(text);
+    const custom = splitHeadingCustomId(match[2]);
+    const text = custom.text.replace(/\[(.*?)\]\(.*?\)/g, "$1").trim();
+    const base = custom.id ?? slugifyHeading(text);
     if (!base) continue;
 
     const seen = used.get(base) ?? 0;

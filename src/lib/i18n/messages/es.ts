@@ -94,6 +94,9 @@ export const es: Messages = {
     note: "Nota",
     warning: "Advertencia",
     info: "Información",
+    tip: "Consejo",
+    check: "Correcto",
+    danger: "Peligro",
   },
   api: {
     sectionOverview: "Resumen de la sección",

@@ -1,18 +1,23 @@
 import {
   AlertTriangle,
+  CheckCircle2,
   Info as InfoIcon,
   Lightbulb,
+  OctagonAlert,
+  Sparkles,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
 import { translate } from "@/lib/i18n";
+
+type CalloutKind = "note" | "warning" | "info" | "tip" | "check" | "danger";
 
 function Callout({
   kind,
   locale,
   children,
 }: {
-  kind: "note" | "warning" | "info";
+  kind: CalloutKind;
   locale: Locale;
   children: ReactNode;
 }) {
@@ -20,13 +25,26 @@ function Callout({
     note: "ds-callout ds-callout-note",
     warning: "ds-callout ds-callout-warning",
     info: "ds-callout ds-callout-info",
+    tip: "ds-callout ds-callout-tip",
+    check: "ds-callout ds-callout-check",
+    danger: "ds-callout ds-callout-danger",
   };
   const labelKeys = {
     note: "callout.note",
     warning: "callout.warning",
     info: "callout.info",
+    tip: "callout.tip",
+    check: "callout.check",
+    danger: "callout.danger",
   } as const;
-  const icons = { note: Lightbulb, warning: AlertTriangle, info: InfoIcon };
+  const icons = {
+    note: Lightbulb,
+    warning: AlertTriangle,
+    info: InfoIcon,
+    tip: Sparkles,
+    check: CheckCircle2,
+    danger: OctagonAlert,
+  };
   const Icon = icons[kind];
 
   return (
@@ -42,6 +60,21 @@ function Callout({
 
 export function createCalloutComponents(locale: Locale) {
   return {
+    Tip: ({ children }: { children: ReactNode }) => (
+      <Callout kind="tip" locale={locale}>
+        {children}
+      </Callout>
+    ),
+    Check: ({ children }: { children: ReactNode }) => (
+      <Callout kind="check" locale={locale}>
+        {children}
+      </Callout>
+    ),
+    Danger: ({ children }: { children: ReactNode }) => (
+      <Callout kind="danger" locale={locale}>
+        {children}
+      </Callout>
+    ),
     Note: ({ children }: { children: ReactNode }) => (
       <Callout kind="note" locale={locale}>
         {children}
