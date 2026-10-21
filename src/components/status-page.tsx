@@ -78,7 +78,7 @@ export function StatusPage({
   if (!standalone) return content;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--panel-bg)] text-[var(--text-main)]">
+    <div className="flex min-h-screen flex-1 flex-col bg-[var(--panel-bg)] text-[var(--text-main)]">
       <header className="flex items-center gap-3 border-b border-[var(--panel-border)] px-4 sm:px-8">
         <DocsBrand siteName={siteName} />
         <div className="ml-auto flex items-center gap-2">

@@ -52,7 +52,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full bg-[var(--background)] text-[var(--foreground)]">
+      <body className="flex min-h-full flex-col bg-[var(--background)] text-[var(--foreground)]">
         <AppProviders locale={lang} siteName={site.name}>{children}</AppProviders>
       </body>
     </html>
