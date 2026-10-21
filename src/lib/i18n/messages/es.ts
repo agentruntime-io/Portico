@@ -100,6 +100,11 @@ export const es: Messages = {
     searchDocs: "Buscar en la documentación",
     details: "Detalles del error (solo desarrollo)",
   },
+  diagram: {
+    expand: "Ampliar diagrama",
+    close: "Cerrar diagrama",
+    rendering: "Renderizando diagrama…",
+  },
   callout: {
     note: "Nota",
     warning: "Advertencia",
