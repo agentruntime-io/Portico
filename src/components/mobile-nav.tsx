@@ -233,9 +233,9 @@ export function MobileNavButton({
                   <PorticoAttribution compact />
                 </div>
               </nav>
-              <footer className="shrink-0 space-y-2 border-t border-[var(--panel-border)] bg-[var(--sidebar-bg)] p-3">
+              <footer className="drawer-footer shrink-0 space-y-2 border-t border-[var(--panel-border)] bg-[var(--sidebar-bg)] p-3">
                 <ThemeToggle variant="segmented" />
-                <div className="flex items-center justify-between gap-2">
+                <div className="drawer-footer-row flex items-center justify-between gap-2">
                   <FontScaleControls compact />
                   <LanguageSelector variant="drawer" compact />
                 </div>
