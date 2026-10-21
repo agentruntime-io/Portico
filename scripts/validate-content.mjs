@@ -229,6 +229,17 @@ async function main() {
       }
     });
 
+    // The layout renders frontmatter `title` as the page h1 (the home page is chrome-less and authors its own).
+    if (rel !== "index.mdx") {
+      for (const { text, line } of proseLines(content)) {
+        if (/^#[ \t]+\S/.test(text)) {
+          problems.push(
+            `${at(line)}: second h1 ("${text.slice(0, 40)}") — the frontmatter title already renders as the h1; use ## for sections`,
+          );
+        }
+      }
+    }
+
     for (const line of findSplitTables(content)) {
       problems.push(
         `${at(line)}: blank line between table rows — the table will render as raw text (is the file double-spaced?)`,
