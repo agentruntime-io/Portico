@@ -5,102 +5,12 @@ import { createPortal } from "react-dom";
 import {
   Bot,
   Globe2,
-  Monitor,
-  Moon,
   Send,
-  Sun,
   X,
 } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
-import {
-  isThemePreference,
-  themeTokens,
-  type ThemeName,
-  type ThemePreference,
-} from "@/lib/theme-tokens";
 import { locales, type Locale } from "@/lib/i18n";
-
-const themeVars = themeTokens;
-
-function readPreferenceFromDom(): ThemePreference {
-  if (typeof document === "undefined") return "system";
-  const fromDom = document.documentElement.dataset.themePref;
-  return isThemePreference(fromDom) ? fromDom : "system";
-}
-
-function resolveTheme(pref: ThemePreference): ThemeName {
-  if (pref !== "system") return pref;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
-function applyTheme(pref: ThemePreference) {
-  const theme = resolveTheme(pref);
-  const root = document.documentElement;
-  root.dataset.theme = theme;
-  root.dataset.themePref = pref;
-  for (const [name, value] of Object.entries(themeVars[theme])) {
-    root.style.setProperty(name, value);
-  }
-}
-
-const nextPreference: Record<ThemePreference, ThemePreference> = {
-  light: "dark",
-  dark: "system",
-  system: "light",
-};
-
-export function ThemeToggle({
-  compact = false,
-}: {
-  compact?: boolean;
-}) {
-  const { t } = useI18n();
-  const [pref, setPref] = useState<ThemePreference>("system");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setPref(readPreferenceFromDom());
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    applyTheme(pref);
-    window.localStorage.setItem("doc-theme", pref);
-    if (pref !== "system") return;
-    // Follow the OS while "system" is selected.
-    const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => applyTheme("system");
-    query.addEventListener("change", onChange);
-    return () => query.removeEventListener("change", onChange);
-  }, [mounted, pref]);
-
-  const next = nextPreference[pref];
-  const labelKey = {
-    light: "theme.switchToLight",
-    dark: "theme.switchToDark",
-    system: "theme.switchToSystem",
-  } as const;
-  const Icon = pref === "dark" ? Moon : pref === "light" ? Sun : Monitor;
-
-  return (
-    <button
-      type="button"
-      suppressHydrationWarning
-      aria-label={t(labelKey[next])}
-      title={t(labelKey[next])}
-      onClick={() => setPref(next)}
-      className={`ds-control inline-flex shrink-0 items-center justify-center ${
-        compact
-          ? "h-10 w-10 rounded-md"
-          : "h-11 w-11 rounded-lg xl:h-9 xl:w-9"
-      }`}
-    >
-      <Icon className="h-4 w-4" />
-    </button>
-  );
-}
 
 export function LanguageSelector({
   variant,
@@ -112,7 +22,7 @@ export function LanguageSelector({
   const { locale, setLocale, t } = useI18n();
   const visibility =
     variant === "drawer" ? "inline-flex" : "hidden md:inline-flex";
-  const size = compact ? "h-10" : variant === "drawer" ? "h-12" : "h-9";
+  const size = compact ? "h-11" : variant === "drawer" ? "h-12" : "h-9";
   const spacing = compact ? "gap-1.5 px-1.5" : "gap-2 px-2";
   const radius = compact ? "rounded-md" : "rounded-lg";
 
