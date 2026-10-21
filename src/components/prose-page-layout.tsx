@@ -38,9 +38,12 @@ export function ProsePageLayout({
   enhanceMdx?: boolean;
   bodyClassName?: string;
 }) {
-  const proseClass = bodyClassName
-    ? `${docProseClasses} ${bodyClassName}`
+  // Chrome-less pages (the marketing home) have no layout title, so the authored
+  // <h1> in the MDX is the page title and must stay visible.
+  const baseProse = hideChrome
+    ? docProseClasses.replace("prose-h1:hidden", "")
     : docProseClasses;
+  const proseClass = bodyClassName ? `${baseProse} ${bodyClassName}` : baseProse;
   const hasToc = headings.length > 0;
   const layoutClass = hideChrome
     ? "mx-auto w-full max-w-6xl"
