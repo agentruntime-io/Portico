@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { applyTheme, readStoredPreference } from "@/lib/theme-client";
 
 /**
@@ -9,7 +9,8 @@ import { applyTheme, readStoredPreference } from "@/lib/theme-client";
  * stored preference on mount, and follow the OS while "system" is selected.
  */
 export function ThemeSync() {
-  useEffect(() => {
+  // Layout effect: runs before the first paint of a client-rendered document.
+  useLayoutEffect(() => {
     const root = document.documentElement;
     if (!root.dataset.theme) applyTheme(readStoredPreference());
     const query = window.matchMedia("(prefers-color-scheme: dark)");

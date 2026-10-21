@@ -27,25 +27,6 @@
   --z-modal: 110;
 }
 
-/* SSR failures client-render the document without the inline theme script; keep the
-   OS dark preference working until ThemeSync applies the stored choice. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-    --background: #0b0f0e;
-    --foreground: #f2f5f3;
-    --app-bg: #0b0f0e;
-    --panel-bg: #101613;
-    --sidebar-bg: #0d1210;
-    --panel-border: #28332e;
-    --text-main: #f2f5f3;
-    --text-muted: #aeb9b3;
-    --surface-muted: #141b17;
-    --accent: #34d399;
-    --accent-strong: #6ee7b7;
-  }
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -359,6 +340,62 @@ body {
 .nav-item:hover {
   background: rgb(16 185 129 / 0.07);
   color: var(--accent-strong);
+}
+
+@media (min-width: 40rem) {
+  .ds-card-group-2 > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Home / marketing page. Self-contained: content repos are not scanned by Tailwind. */
+.product-guide-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2.5rem 0 1rem;
+}
+
+.doc-prose .product-guide-page :where(h1, h2, p, hr, .ds-card-group) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.product-guide-hero {
+  max-width: 34rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.product-guide-hero h1 {
+  font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: var(--text-main) !important;
+}
+
+.doc-prose .product-guide-hero .product-guide-subtitle {
+  max-width: 34rem;
+  margin: 0.75rem auto 0 !important;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-wrap: balance;
+  color: var(--text-muted) !important;
+}
+
+.product-guide-section > h2 {
+  margin-bottom: 1rem !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main) !important;
+}
+
+.product-guide-page hr {
+  border: 0;
+  border-top: 1px solid var(--panel-border);
 }
 
 /* Home / marketing card grids */
