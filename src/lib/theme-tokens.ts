@@ -29,6 +29,13 @@ export const themeTokens = {
 
 export type ThemeName = keyof typeof themeTokens;
 
+/** What the user picked; "system" follows prefers-color-scheme (the default). */
+export type ThemePreference = ThemeName | "system";
+
+export function isThemePreference(value: unknown): value is ThemePreference {
+  return value === "light" || value === "dark" || value === "system";
+}
+
 export const fontScaleLevels = [0.9, 1, 1.1, 1.2] as const;
 
 export function themeInitScriptSource(): string {
@@ -36,8 +43,12 @@ export function themeInitScriptSource(): string {
   const themes = ${JSON.stringify(themeTokens)};
   const fontScaleLevels = ${JSON.stringify(fontScaleLevels)};
   const stored = window.localStorage.getItem("doc-theme");
-  const theme = stored === "dark" ? "dark" : "light";
+  const pref = stored === "light" || stored === "dark" ? stored : "system";
+  const theme = pref === "system"
+    ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+    : pref;
   document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.themePref = pref;
   for (const [name, value] of Object.entries(themes[theme])) {
     document.documentElement.style.setProperty(name, value);
   }
