@@ -76,7 +76,12 @@ export function splitProseAndCode(markdown) {
 /** Build one index entry from Markdown source. */
 export function textEntry(url, title, markdown, { excerptLength = 200 } = {}) {
   const { prose, code } = splitProseAndCode(markdown);
-  const body = stripMarkdown(prose);
+  let body = stripMarkdown(prose);
+  // Pages that author their own h1 (the home page) would repeat the title in every snippet.
+  const plainTitle = stripMarkdown(title);
+  if (plainTitle && body.toLowerCase().startsWith(plainTitle.toLowerCase())) {
+    body = body.slice(plainTitle.length).trimStart();
+  }
   return {
     url,
     title,
