@@ -27,6 +27,25 @@
   --z-modal: 110;
 }
 
+/* SSR failures client-render the document without the inline theme script; keep the
+   OS dark preference working until ThemeSync applies the stored choice. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --background: #0b0f0e;
+    --foreground: #f2f5f3;
+    --app-bg: #0b0f0e;
+    --panel-bg: #101613;
+    --sidebar-bg: #0d1210;
+    --panel-border: #28332e;
+    --text-main: #f2f5f3;
+    --text-muted: #aeb9b3;
+    --surface-muted: #141b17;
+    --accent: #34d399;
+    --accent-strong: #6ee7b7;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
