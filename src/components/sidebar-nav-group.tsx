@@ -82,7 +82,7 @@ export function SidebarNavGroup({
             const active = isActiveItem(item.href);
             return (
               <li key={item.href}>
-                <Link
+                <Link prefetch={false}
                   href={item.href}
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}

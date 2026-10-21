@@ -184,7 +184,7 @@ export function MobileNavButton({
                             {content}
                           </a>
                         ) : (
-                          <Link
+                          <Link prefetch={false}
                             href={href}
                             onClick={closeDialog}
                             aria-current={active ? "page" : undefined}

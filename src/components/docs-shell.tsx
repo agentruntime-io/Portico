@@ -40,7 +40,7 @@ export function DocsBrand({
 }) {
   const { t, locale } = useI18n();
   return (
-    <Link
+    <Link prefetch={false}
       href={localizeHref("/", locale)}
       className={`flex min-h-11 min-w-0 items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--text-main)] ${className}`}
     >
@@ -203,7 +203,7 @@ export function DocsSidebar({
                         {content}
                       </a>
                     ) : (
-                      <Link
+                      <Link prefetch={false}
                         href={href}
                         aria-current={active ? "page" : undefined}
                         className={className}
