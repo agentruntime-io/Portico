@@ -58,7 +58,7 @@ function ApiReferenceNav({
   if (apiSpecs.length === 1) {
     const href = localizeHref(apiSpecs[0]!.href, locale);
     return (
-      <Link href={href} onClick={onNavigate} className={tabClass(active)}>
+      <Link prefetch={false} href={href} onClick={onNavigate} className={tabClass(active)}>
         {t("nav.apiReference")}
       </Link>
     );
@@ -91,7 +91,7 @@ function ApiReferenceNav({
           className="api-card absolute left-0 top-full z-50 mt-1 min-w-[14rem] overflow-hidden rounded-md border py-1 shadow-lg"
         >
           <li role="none">
-            <Link
+            <Link prefetch={false}
               href={menuHref}
               role="menuitem"
               onClick={() => {
@@ -109,7 +109,7 @@ function ApiReferenceNav({
             const isActive = spec.id === currentSpecId;
             return (
               <li key={spec.id} role="none">
-                <Link
+                <Link prefetch={false}
                   href={href}
                   role="menuitem"
                   onClick={() => {
@@ -154,7 +154,7 @@ export function MainNavTabs({
       className={className ?? "hidden min-w-0 items-center gap-1 lg:flex"}
       aria-label={t("nav.mainNav")}
     >
-      <Link
+      <Link prefetch={false}
         href={docsHref}
         onClick={onNavigate}
         className={tabClass(isDocumentationPath(activePath))}

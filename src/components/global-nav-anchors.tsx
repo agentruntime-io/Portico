@@ -53,7 +53,7 @@ export function GlobalNavAnchors({
                 {anchor.label}
               </a>
             ) : (
-              <Link href={href} onClick={onNavigate} className={itemClass}>
+              <Link prefetch={false} href={href} onClick={onNavigate} className={itemClass}>
                 {anchor.label}
               </Link>
             )}

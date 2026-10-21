@@ -75,7 +75,7 @@ function ApiSidebar({
                   </summary>
                   <ul className="api-divider mt-1 space-y-0.5 border-l pl-3">
                     <li>
-                      <Link
+                      <Link prefetch={false}
                         href={`/reference/${specId}/${tagSlug}`}
                         className="nav-item-muted api-faint block rounded-md px-2 py-1.5 text-sm"
                       >
@@ -86,7 +86,7 @@ function ApiSidebar({
                       const active = activeSlug === op.slug;
                       return (
                         <li key={op.slug}>
-                          <Link
+                          <Link prefetch={false}
                             href={apiOperationHref(specId, op)}
                             className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-tight ${
                               active ? "nav-active" : "nav-item-muted"
