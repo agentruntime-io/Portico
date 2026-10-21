@@ -3,6 +3,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { MarkdownBody } from "@/components/markdown-body";
 import type { ChangelogRelease, ChangelogSectionKey } from "@/lib/changelog";
 import { CHANGELOG_SECTIONS } from "@/lib/changelog";
+import { MarkdownText } from "@/components/markdown-text";
+import { formatReleaseDate } from "@/lib/format-date";
 
 const SECTION_LABELS: Record<ChangelogSectionKey, string> = {
   added: "Added",
@@ -64,7 +66,7 @@ export function ChangelogReleaseView({
         </h1>
         {release.summary ? (
           <p className="mt-3 text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
-            {release.summary}
+            <MarkdownText text={release.summary} inline />
           </p>
         ) : null}
       </header>
@@ -83,7 +85,7 @@ export function ChangelogReleaseView({
                   {items.map((item) => (
                     <li key={item} className="flex gap-3">
                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" aria-hidden />
-                      <span>{item}</span>
+                      <MarkdownText text={item} inline />
                     </li>
                   ))}
                 </ul>
@@ -139,13 +141,7 @@ export function ChangelogReleaseView({
 }
 
 function formatDisplayDate(iso: string): string {
-  const date = new Date(`${iso}T12:00:00`);
-  if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  return formatReleaseDate(iso);
 }
 
 function formatArea(value: string): string {

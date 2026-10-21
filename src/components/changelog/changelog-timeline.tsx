@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ChangelogRelease, ChangelogSectionKey } from "@/lib/changelog";
 import { CHANGELOG_SECTIONS } from "@/lib/changelog";
+import { MarkdownText } from "@/components/markdown-text";
+import { formatReleaseDate } from "@/lib/format-date";
 
 export function ChangelogTimeline({
   releases,
@@ -62,7 +64,7 @@ export function ChangelogTimeline({
             </h2>
             {release.summary ? (
               <p className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
-                {release.summary}
+                <MarkdownText text={release.summary} inline />
               </p>
             ) : null}
             <SectionPreview sections={release.sections} />
@@ -100,7 +102,7 @@ function SectionPreview({
           <span className="text-emerald-500" aria-hidden>
             •
           </span>
-          <span>{item}</span>
+          <MarkdownText text={item} inline />
         </li>
       ))}
     </ul>
@@ -108,13 +110,7 @@ function SectionPreview({
 }
 
 function formatDisplayDate(iso: string): string {
-  const date = new Date(`${iso}T12:00:00`);
-  if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  return formatReleaseDate(iso);
 }
 
 function formatArea(value: string): string {

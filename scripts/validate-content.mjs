@@ -257,6 +257,17 @@ async function main() {
       const { data } = matter(raw);
       if (!data.date) {
         problems.push(`Changelog ${name} is missing required frontmatter: date`);
+      } else {
+        // YAML turns an unquoted 2026-09-30 into a Date, which is fine; anything else must be ISO.
+        const iso =
+          data.date instanceof Date
+            ? !Number.isNaN(data.date.getTime())
+            : /^\d{4}-\d{2}-\d{2}$/.test(String(data.date).trim());
+        if (!iso) {
+          problems.push(
+            `Changelog ${name}: date "${data.date}" is not an ISO date (YYYY-MM-DD)`,
+          );
+        }
       }
     }
   }
