@@ -94,6 +94,9 @@ export const ja: Messages = {
     note: "メモ",
     warning: "警告",
     info: "情報",
+    tip: "ヒント",
+    check: "確認",
+    danger: "危険",
   },
   api: {
     sectionOverview: "セクション概要",

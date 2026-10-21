@@ -94,6 +94,9 @@ export const fr: Messages = {
     note: "Note",
     warning: "Avertissement",
     info: "Info",
+    tip: "Astuce",
+    check: "Validé",
+    danger: "Danger",
   },
   api: {
     sectionOverview: "Aperçu de la section",

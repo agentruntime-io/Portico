@@ -2,7 +2,35 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeSlug from "rehype-slug";
+import { visit } from "unist-util-visit";
 import { rehypeMermaid } from "@/lib/rehype-mermaid";
+
+type HastNode = {
+  type: string;
+  tagName?: string;
+  value?: string;
+  properties?: Record<string, unknown>;
+  children?: HastNode[];
+};
+
+/** Applies the id markers written by transformHeadingIds as heading ids. */
+export function rehypeCustomHeadingIds() {
+  return (tree: HastNode) => {
+    visit(tree, "element", (node: HastNode) => {
+      if (!node.tagName || !/^h[1-6]$/.test(node.tagName) || !node.children) return;
+      const idx = node.children.findIndex(
+        (c) => c.type === "mdxTextExpression" && /^\/\*#[\w-]+\*\/$/.test(c.value ?? ""),
+      );
+      if (idx === -1) return;
+      const id = (node.children[idx].value ?? "").slice(3, -2);
+      node.children.splice(idx, 1);
+      // trim whitespace left before the removed marker
+      const prev = node.children[idx - 1];
+      if (prev?.type === "text" && prev.value) prev.value = prev.value.replace(/\s+$/, "");
+      node.properties = { ...node.properties, id };
+    });
+  };
+}
 
 export const rehypeSanitizeSchema = {
   ...defaultSchema,
@@ -74,6 +102,7 @@ export const rehypePlugins = [
 
 /** Rehype plugins for RSC MDX pages (Cards/JSX) — no sanitize to preserve custom attrs. */
 export const rehypeMdxPlugins = [
+  rehypeCustomHeadingIds,
   rehypeSlug,
   rehypeMermaid,
   [

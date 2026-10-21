@@ -497,6 +497,24 @@ body {
   color: #dbeafe;
 }
 
+.ds-callout-tip {
+  border-color: rgb(168 85 247 / 0.4);
+  background: rgb(168 85 247 / 0.05);
+  color: #f3e8ff;
+}
+
+.ds-callout-check {
+  border-color: rgb(34 197 94 / 0.4);
+  background: rgb(34 197 94 / 0.05);
+  color: #dcfce7;
+}
+
+.ds-callout-danger {
+  border-color: rgb(239 68 68 / 0.4);
+  background: rgb(239 68 68 / 0.05);
+  color: #fee2e2;
+}
+
 .ds-kbd {
   border: 1px solid var(--panel-border);
   background: var(--sidebar-bg);
@@ -756,6 +774,18 @@ body {
 
 [data-theme="light"] .ds-callout-info {
   color: #1e3a8a;
+}
+
+[data-theme="light"] .ds-callout-tip {
+  color: #581c87;
+}
+
+[data-theme="light"] .ds-callout-check {
+  color: #14532d;
+}
+
+[data-theme="light"] .ds-callout-danger {
+  color: #7f1d1d;
 }
 
 [data-theme="light"] .ds-accent-text {
