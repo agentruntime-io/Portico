@@ -7,7 +7,7 @@ import { ApiMobileNav } from "@/components/api-mobile-nav";
 import { UrlText } from "@/components/url-text";
 import { ApiMethod } from "@/components/api-method";
 import { AuthenticatedClientSamples } from "@/components/api-reference-controls";
-import { DocsBrand, DocsHeader } from "@/components/docs-shell";
+import { DocsHeader } from "@/components/docs-shell";
 import { useI18n } from "@/components/i18n-provider";
 import type { NavFile } from "@/lib/nav";
 import type { SiteConfig } from "@/lib/site";
@@ -26,7 +26,6 @@ import { openApiDownloadUrl } from "@/lib/main-nav";
 import { PorticoAttribution } from "@/components/portico-attribution";
 
 function ApiSidebar({
-  siteName,
   specId,
   operations,
   apiSpecs,
@@ -34,7 +33,6 @@ function ApiSidebar({
   activeTag,
   activeSlug,
 }: {
-  siteName: string;
   specId: string;
   operations: ResolvedOperation[];
   apiSpecs: MainNavTargets["apiSpecs"];
@@ -50,9 +48,7 @@ function ApiSidebar({
       className="fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-hidden bg-[var(--sidebar-bg)] lg:flex"
       aria-label={t("nav.sectionNav")}
     >
-      <div className="flex h-16 shrink-0 items-center px-4">
-        <DocsBrand siteName={siteName} />
-      </div>
+      <div className="h-16 shrink-0" aria-hidden />
       <div className="flex min-h-0 flex-1 flex-col px-3 py-4">
         <ApiSpecSwitcher specs={apiSpecs} activeSpecId={specId} />
         <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
@@ -266,7 +262,6 @@ export function ApiReferenceShell({
         desktopSidebar="api"
       />
       <ApiSidebar
-        siteName={siteName}
         specId={specId}
         operations={operations}
         apiSpecs={mainNav.apiSpecs}

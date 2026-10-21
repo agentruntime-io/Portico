@@ -5,6 +5,7 @@ import type { ChangelogRelease, ChangelogSectionKey } from "@/lib/changelog";
 import { CHANGELOG_SECTIONS } from "@/lib/changelog";
 import { MarkdownText } from "@/components/markdown-text";
 import { formatReleaseDate } from "@/lib/format-date";
+import { formatArea } from "@/lib/format-area";
 
 const SECTION_LABELS: Record<ChangelogSectionKey, string> = {
   added: "Added",
@@ -142,11 +143,4 @@ export function ChangelogReleaseView({
 
 function formatDisplayDate(iso: string): string {
   return formatReleaseDate(iso);
-}
-
-function formatArea(value: string): string {
-  return value
-    .split(/[-_/]/)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { formatArea } from "@/lib/format-area";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Rss } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
@@ -40,7 +41,7 @@ export function ChangelogToolbar({
               <option value="">{t("changelog.allAreas")}</option>
               {areas.map((item) => (
                 <option key={item} value={item}>
-                  {formatLabel(item)}
+                  {formatArea(item)}
                 </option>
               ))}
             </select>
@@ -76,9 +77,3 @@ export function ChangelogToolbar({
   );
 }
 
-function formatLabel(value: string): string {
-  return value
-    .split(/[-_/]/)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}

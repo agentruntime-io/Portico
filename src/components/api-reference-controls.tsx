@@ -26,7 +26,7 @@ const labels: Record<SampleLanguage, string> = {
   ruby: "Ruby",
 };
 
-export function CopyButton({ value }: { value: string }) {
+export function CopyButton({ value, compact = false }: { value: string; compact?: boolean }) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
@@ -50,7 +50,9 @@ export function CopyButton({ value }: { value: string }) {
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1500);
       }}
-      className="api-control inline-flex min-h-11 items-center gap-1 rounded-md border px-3 py-2 text-xs font-medium"
+      className={`api-control inline-flex items-center gap-1 rounded-md border text-xs font-medium ${
+        compact ? "h-8 px-2.5" : "min-h-11 px-3 py-2"
+      }`}
     >
       {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
       {copied ? t("copy.copied") : t("copy.copy")}

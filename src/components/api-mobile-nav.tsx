@@ -193,7 +193,7 @@ export function ApiMobileNav({
 
   return (
     <>
-      <div className="sticky top-16 z-30 border-b border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-4 py-2 lg:hidden">
+      <div className="sticky top-16 z-30 border-b border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-4 py-2 sm:px-6 lg:hidden">
         <button
           type="button"
           aria-label={t("nav.apiEndpoints")}

@@ -77,11 +77,13 @@ export function DocsHeader({
       : desktopSidebar === "api"
         ? "lg:ml-[280px]"
         : "";
-  const brandVisibility =
+  // The logo stays in the header DOM (first tab stop after the skip link) but is
+  // pinned over the sidebar column where it visually belongs.
+  const brandPlacement =
     desktopSidebar === "docs"
-      ? "xl:hidden"
+      ? "xl:fixed xl:left-5 xl:top-0 xl:z-50 xl:h-16"
       : desktopSidebar === "api"
-        ? "lg:hidden"
+        ? "lg:fixed lg:left-4 lg:top-0 lg:z-50 lg:h-16"
         : "";
   const innerWidth = desktopSidebar
     ? "flex h-16 w-full items-center gap-4 px-4 sm:px-6"
@@ -94,7 +96,7 @@ export function DocsHeader({
       <div className={innerWidth}>
         <DocsBrand
           siteName={siteName}
-          className={`shrink ${brandVisibility}`}
+          className={`shrink ${brandPlacement}`}
           // Below 420px the wordmark is more useful than the DOCS chip, and it fits.
           badgeClassName="hidden min-[420px]:inline"
         />
@@ -130,11 +132,9 @@ export function DocsHeader({
 }
 
 export function DocsSidebar({
-  siteName,
   nav,
   activePath,
 }: {
-  siteName: string;
   nav: NavFile;
   activePath: string;
 }) {
@@ -173,9 +173,8 @@ export function DocsSidebar({
     <aside
       className="docs-sidebar fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-hidden bg-[var(--sidebar-bg)] xl:flex"
     >
-      <div className="flex h-16 shrink-0 items-center px-5">
-        <DocsBrand siteName={siteName} />
-      </div>
+      {/* Spacer: the logo itself lives in the header (tab order) and overlays this area. */}
+      <div className="h-16 shrink-0" aria-hidden />
       <div
         ref={sidebarRef}
         className="docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-5 pb-14"
@@ -268,7 +267,7 @@ export function DocsShell({
         desktopSidebar="docs"
       />
       <div className="flex w-full flex-1 xl:pl-[280px]">
-        <DocsSidebar siteName={siteName} nav={nav} activePath={activePath} />
+        <DocsSidebar nav={nav} activePath={activePath} />
         <main
           id="main-content"
           tabIndex={-1}

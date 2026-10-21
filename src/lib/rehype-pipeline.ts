@@ -32,6 +32,24 @@ export function rehypeCustomHeadingIds() {
   };
 }
 
+/** Wraps tables in a scroll container (markdownToHtml does the same by string replace). */
+export function rehypeWrapTables() {
+  return (tree: HastNode) => {
+    visit(tree, "element", (node: HastNode, index, parent) => {
+      if (node.tagName !== "table" || index == null || !parent) return;
+      const holder = parent as HastNode;
+      if (holder.properties && String(holder.properties.className ?? "").includes("doc-table-wrap")) return;
+      holder.children![index] = {
+        type: "element",
+        tagName: "div",
+        properties: { className: ["doc-table-wrap"] },
+        children: [node],
+      };
+      return "skip";
+    });
+  };
+}
+
 export const rehypeSanitizeSchema = {
   ...defaultSchema,
   clobberPrefix: "",
@@ -103,6 +121,7 @@ export const rehypePlugins = [
 /** Rehype plugins for RSC MDX pages (Cards/JSX) — no sanitize to preserve custom attrs. */
 export const rehypeMdxPlugins = [
   rehypeCustomHeadingIds,
+  rehypeWrapTables,
   rehypeSlug,
   rehypeMermaid,
   [
