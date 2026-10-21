@@ -12,6 +12,7 @@ import rehypeSanitize from "rehype-sanitize";
 
 import { assertContentRoot } from "@/lib/content-root";
 import { rehypeSanitizeSchema } from "@/lib/rehype-pipeline";
+import { stripMarkdown } from "../../scripts/search-text.mjs";
 
 export const CHANGELOG_SECTIONS = [
   "added",
@@ -38,6 +39,18 @@ export type ChangelogRelease = {
 };
 
 const SECTION_HEADING = /^##\s+(Added|Changed|Deprecated|Removed|Fixed|Security)\s*$/im;
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}/;
+
+/** gray-matter parses `date: 2026-09-30` into a Date; normalise to `YYYY-MM-DD`. */
+export function normalizeReleaseDate(raw: unknown, fallback: string): string {
+  if (raw instanceof Date && !Number.isNaN(raw.getTime())) {
+    return raw.toISOString().slice(0, 10);
+  }
+  const text = String(raw ?? "").trim();
+  if (ISO_DATE.test(text)) return text.slice(0, 10);
+  return ISO_DATE.test(fallback) ? fallback.slice(0, 10) : text.slice(0, 10);
+}
 
 function slugFromFilename(filename: string): string {
   return filename.replace(/\.(mdx?|markdown)$/i, "");
@@ -140,7 +153,7 @@ async function loadReleaseFile(
   const { data, content } = matter(raw);
 
   const dateRaw = data.date ?? data.released ?? slug;
-  const date = String(dateRaw).slice(0, 10);
+  const date = normalizeReleaseDate(dateRaw, slug);
 
   const fromBody = sectionsFromBody(content);
   const sections = mergeSections(sectionsFromFrontmatter(data), fromBody.sections);
@@ -235,10 +248,10 @@ export function changelogNeighbors(
 }
 
 export function releaseExcerpt(release: ChangelogRelease, maxLen = 200): string {
-  if (release.summary) return release.summary;
+  if (release.summary) return stripMarkdown(release.summary).slice(0, maxLen);
   for (const key of CHANGELOG_SECTIONS) {
     const items = release.sections[key];
-    if (items?.[0]) return items[0].slice(0, maxLen);
+    if (items?.[0]) return stripMarkdown(items[0]).slice(0, maxLen);
   }
-  return release.bodyMarkdown.replace(/\s+/g, " ").trim().slice(0, maxLen);
+  return stripMarkdown(release.bodyMarkdown).slice(0, maxLen);
 }
