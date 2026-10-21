@@ -12,4 +12,6 @@ export function textEntry(
   headings: string[];
   excerpt: string;
   body: string;
+  code: string;
 };
+export function splitProseAndCode(markdown: unknown): { prose: string; code: string };

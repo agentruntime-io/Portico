@@ -251,6 +251,7 @@ async function main() {
     headings: e.headings,
     excerpt: e.excerpt,
     body: e.body,
+    code: e.code || undefined,
   }));
   await fs.writeFile(outPath, JSON.stringify(forClient), "utf8");
   console.log(
