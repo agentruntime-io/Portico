@@ -25,7 +25,7 @@ export function NavbarLinks({
   const { t, locale } = useI18n();
   if (!navbar?.links?.length) return null;
   const linkClass =
-    "toolbar-nav-item inline-flex min-h-11 min-w-11 items-center justify-center font-medium text-[var(--text-muted)] transition hover:text-[var(--text-main)] xl:min-h-9 xl:min-w-0";
+    "toolbar-nav-item inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg font-medium text-[var(--text-muted)] transition hover:bg-[var(--surface-muted)] hover:text-[var(--text-main)] xl:min-h-9 xl:min-w-0 xl:px-2.5 xl:py-1.5";
 
   return (
     <nav className={className} aria-label={t("nav.siteLinks")}>

@@ -11,11 +11,11 @@ import { SchemaView } from "@/components/schema-view";
 function JsonBlock({ value }: { value: unknown }) {
   const body = JSON.stringify(value, null, 2);
   return (
-    <div className="api-code overflow-hidden rounded-lg">
-      <div className="api-divider flex justify-end border-b px-3 py-2">
-        <CopyButton value={body} />
+    <div className="api-code relative overflow-hidden rounded-lg">
+      <div className="absolute right-2 top-2 z-10">
+        <CopyButton value={body} compact />
       </div>
-      <pre className="api-scroll overflow-x-auto p-4 text-xs leading-relaxed">{body}</pre>
+      <pre className="api-scroll overflow-x-auto p-4 pr-24 text-xs leading-relaxed">{body}</pre>
     </div>
   );
 }

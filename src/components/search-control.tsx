@@ -186,7 +186,7 @@ export function SearchControl() {
     open && mounted
       ? createPortal(
           <div
-            className="fixed inset-0 z-[var(--z-modal)] flex items-start justify-center bg-black/50 p-3 pt-[12vh] sm:p-4 sm:pt-[10vh]"
+            className="search-backdrop fixed inset-0 z-[var(--z-modal)] flex items-start justify-center bg-black/55 p-3 pt-[12vh] sm:p-4 sm:pt-[10vh]"
             onClick={onClose}
           >
             <div
@@ -236,7 +236,7 @@ export function SearchControl() {
                     }
                   }}
                   placeholder={t("search.placeholder")}
-                  className="min-h-11 min-w-0 flex-1 border-0 bg-transparent py-2.5 text-sm text-[var(--text-main)] shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:text-[var(--text-muted)]"
+                  className="min-h-11 min-w-0 flex-1 border-0 bg-transparent py-2.5 text-base text-[var(--text-main)] md:text-sm shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:text-[var(--text-muted)]"
                 />
                 <button
                   type="button"

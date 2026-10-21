@@ -229,6 +229,13 @@ body {
   outline-offset: 2px;
 }
 
+/* Light theme: the emerald ring is only ~2.5:1 on white; use the dark accent (≥4.5:1)
+   with a white inner halo so it also separates from green-tinted selected rows. */
+html[data-theme="light"] :focus-visible {
+  outline-color: #047857;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.9);
+}
+
 .search-dialog input:focus,
 .search-dialog input:focus-visible,
 .search-dialog button:focus,
@@ -1118,30 +1125,102 @@ html[data-theme="dark"] .shiki span {
   color: inherit !important;
 }
 
-/* Themed thin scrollbars everywhere (no native arrow-button scrollbars). */
-* {
+/* Themed thin scrollbars for inner scrollers only; the page (root) scrollbar stays native. */
+*:not(html) {
   scrollbar-width: thin;
-  scrollbar-color: var(--panel-border) transparent;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 70%, transparent) transparent;
 }
 
 .api-code,
 .api-code * {
-  scrollbar-color: #52525b transparent;
+  scrollbar-color: #71717a transparent;
 }
 
-*::-webkit-scrollbar {
+*:not(html)::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-*::-webkit-scrollbar-thumb {
+*:not(html)::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   border-radius: 999px;
-  background: var(--panel-border);
+  background: color-mix(in srgb, var(--text-muted) 70%, transparent);
   background-clip: padding-box;
 }
 
-*::-webkit-scrollbar-corner,
-*::-webkit-scrollbar-track {
+*:not(html)::-webkit-scrollbar-corner,
+*:not(html)::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* Code blocks outside shiki figures (e.g. API overview): pad them and leave room for Copy. */
+.doc-prose :where(pre) {
+  padding: 0.75rem 1rem;
+}
+
+.code-copy-wrap > pre {
+  min-height: 3rem;
+  padding-right: 3.5rem;
+}
+
+/* Tables: scrollable region (role/label added by useScrollRegions) with wrapping code cells. */
+.doc-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.doc-prose :where(td, th) code {
+  overflow-wrap: anywhere;
+}
+
+/* Search dialog backdrop: dim plus a slight blur, in both themes. */
+.search-backdrop {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* Callout rhythm: tight title→body gap, no oversized prose margins. */
+.doc-prose .ds-callout {
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+
+.doc-prose .ds-callout > p:first-child {
+  margin: 0 0 0.5rem !important;
+}
+
+.doc-prose .ds-callout > div > :where(p, ul, ol) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.doc-prose .ds-callout > div > :first-child {
+  margin-top: 0;
+}
+
+.doc-prose .ds-callout > div > :last-child {
+  margin-bottom: 0;
+}
+
+/* Check has a 4px left border (vs 1px): shave padding so its content lines up. */
+.doc-prose .ds-callout-check {
+  padding-left: calc(1rem - 3px);
+}
+
+.doc-prose .ds-callout :where(ul, ol) {
+  --tw-prose-bullets: currentColor;
+  --tw-prose-counters: currentColor;
+}
+
+.doc-prose .ds-callout li::marker {
+  color: currentColor;
+}
+
+/* Home: breathing room under "Common tasks", and a visible card edge in dark. */
+.product-guide-section > h2 {
+  margin-bottom: 1.25rem !important;
+}
+
+html[data-theme="dark"] .ds-card {
+  border-color: var(--panel-border);
 }

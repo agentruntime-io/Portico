@@ -80,7 +80,7 @@ export function ProsePageLayout({
               {title}
             </h1>
             {description ? (
-              <p className="mt-4 max-w-[42rem] text-[1.0625rem] leading-8 text-[var(--text-muted)] sm:mt-5 sm:text-lg">
+              <p className="mt-4 max-w-[42rem] [text-wrap:pretty] text-[1.0625rem] leading-8 text-[var(--text-muted)] sm:mt-5 sm:text-lg">
                 {description}
               </p>
             ) : null}
