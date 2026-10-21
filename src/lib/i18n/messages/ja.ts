@@ -90,6 +90,16 @@ export const ja: Messages = {
     title: "このページの内容",
     empty: "セクションなし",
   },
+  errors: {
+    notFoundTitle: "ページが見つかりません",
+    notFoundBody: "ページが見つかりませんでした。移動または名前が変更された可能性があります。ドキュメントを検索してみてください。",
+    errorTitle: "問題が発生しました",
+    errorBody: "このページを読み込めませんでした。もう一度お試しいただくか、ドキュメントのホームに戻ってください。",
+    backHome: "ドキュメントのホームへ戻る",
+    tryAgain: "再試行",
+    searchDocs: "ドキュメントを検索",
+    details: "エラーの詳細（開発時のみ）",
+  },
   callout: {
     note: "メモ",
     warning: "警告",

@@ -90,6 +90,16 @@ export const fr: Messages = {
     title: "Sur cette page",
     empty: "Aucune section",
   },
+  errors: {
+    notFoundTitle: "Page introuvable",
+    notFoundBody: "Nous n'avons pas trouvé cette page. Elle a peut-être été déplacée ou renommée : essayez la recherche.",
+    errorTitle: "Une erreur s'est produite",
+    errorBody: "Cette page n'a pas pu se charger. Réessayez ou revenez à l'accueil de la documentation.",
+    backHome: "Retour à l'accueil de la documentation",
+    tryAgain: "Réessayer",
+    searchDocs: "Rechercher dans la documentation",
+    details: "Détails de l'erreur (développement uniquement)",
+  },
   callout: {
     note: "Note",
     warning: "Avertissement",
