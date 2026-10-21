@@ -75,7 +75,7 @@ export function DocsHeader({
     desktopSidebar === "docs"
       ? "xl:ml-[280px]"
       : desktopSidebar === "api"
-        ? "lg:ml-[340px]"
+        ? "lg:ml-[280px]"
         : "";
   const brandVisibility =
     desktopSidebar === "docs"

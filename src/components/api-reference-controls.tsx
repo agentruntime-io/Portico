@@ -1,8 +1,9 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { Check, Copy, Eye, EyeOff, Play, Trash2 } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
+import { MarkdownText } from "@/components/markdown-text";
 
 type SampleLanguage =
   | "shell"
@@ -104,9 +105,9 @@ function AuthPanel({
         <span className="api-faint ml-2">{t("api.auth.required")}</span>
         <span className="api-muted ml-auto">{securityName}</span>
       </div>
-      <p className="api-muted api-divider border-b px-4 py-3 text-sm">
-        {description ?? "Pass a bearer token in the Authorization header."}
-      </p>
+      <div className="api-muted api-divider border-b px-4 py-3 text-sm [&_p]:m-0">
+        <MarkdownText text={description ?? t("api.auth.defaultDescription")} />
+      </div>
       <div className="space-y-2 px-4 py-3">
         <label className="block text-sm font-medium" htmlFor={tokenId}>
           {t("api.auth.bearerToken")}
@@ -117,7 +118,7 @@ function AuthPanel({
             type={visible ? "text" : "password"}
             value={token}
             onChange={(event) => setToken(event.target.value)}
-            placeholder="Token"
+            placeholder={t("api.auth.tokenPlaceholder")}
             autoComplete="off"
             spellCheck={false}
             className="api-input min-h-11 min-w-0 flex-1 rounded-md border px-3 py-2 text-sm outline-none"
@@ -156,6 +157,24 @@ function ClientLibraryTabs({
 }) {
   const { t } = useI18n();
   const [active, setActive] = useState<SampleLanguage>("shell");
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const baseId = useId();
+  const keys = Object.keys(labels) as SampleLanguage[];
+
+  function onTabKeyDown(event: React.KeyboardEvent) {
+    const move: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1 };
+    if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      const next = event.key === "Home" ? 0 : keys.length - 1;
+      setActive(keys[next]);
+      tabsRef.current?.querySelectorAll<HTMLElement>('[role="tab"]')[next]?.focus();
+    } else if (event.key in move) {
+      event.preventDefault();
+      const next = (keys.indexOf(active) + move[event.key] + keys.length) % keys.length;
+      setActive(keys[next]);
+      tabsRef.current?.querySelectorAll<HTMLElement>('[role="tab"]')[next]?.focus();
+    }
+  }
   const samples = useMemo(
     () => buildSamples({ method, url, token }),
     [method, token, url],
@@ -166,11 +185,22 @@ function ClientLibraryTabs({
       <div className="api-card-header border-b px-4 py-2 text-sm font-semibold">
         {t("api.auth.clientLibraries")}
       </div>
-      <div className="api-divider flex flex-wrap gap-1 border-b px-3 py-2 text-sm">
-        {(Object.keys(labels) as SampleLanguage[]).map((key) => (
+      <div
+        ref={tabsRef}
+        role="tablist"
+        aria-label={t("api.auth.languages")}
+        onKeyDown={onTabKeyDown}
+        className="api-divider flex flex-wrap gap-1 border-b px-3 py-2 text-sm"
+      >
+        {keys.map((key) => (
           <button
             key={key}
+            id={`${baseId}-tab-${key}`}
             type="button"
+            role="tab"
+            aria-selected={active === key}
+            aria-controls={`${baseId}-panel`}
+            tabIndex={active === key ? 0 : -1}
             onClick={() => setActive(key)}
             className={`min-h-10 shrink-0 rounded-md px-2.5 py-1.5 font-medium ${
               active === key ? "nav-active" : "nav-item-muted api-faint"
@@ -184,7 +214,13 @@ function ClientLibraryTabs({
         <span className="text-sm font-medium">{labels[active]}</span>
         <CopyButton value={samples[active]} />
       </div>
-      <pre className="api-code max-h-72 overflow-auto px-4 py-3 text-sm leading-relaxed">
+      <pre
+        id={`${baseId}-panel`}
+        role="tabpanel"
+        aria-labelledby={`${baseId}-tab-${active}`}
+        tabIndex={0}
+        className="api-code api-scroll max-h-72 overflow-auto px-4 py-3 text-sm leading-relaxed"
+      >
         {samples[active]}
       </pre>
     </div>
@@ -217,12 +253,9 @@ function TestRequestPanel({
         {t("api.auth.testRequest")}
       </div>
       <div className="space-y-3 px-4 py-3">
-        <p className="api-faint text-xs">
-          Runs from your browser. Non-GET requests require explicit
-          confirmation and tokens are sent only when you click Send.
-        </p>
+        <p className="api-faint text-xs">{t("api.auth.testNote")}</p>
         <label className="api-muted block text-xs font-medium">
-          Request URL
+          {t("api.auth.requestUrl")}
           <input
             value={requestUrl}
             onChange={(event) => setRequestUrl(event.target.value)}
@@ -231,7 +264,7 @@ function TestRequestPanel({
         </label>
         {!isReadOnly ? (
           <label className="api-muted block text-xs font-medium">
-            JSON body
+            {t("api.auth.jsonBody")}
             <textarea
               value={body}
               onChange={(event) => setBody(event.target.value)}
@@ -249,8 +282,7 @@ function TestRequestPanel({
               onChange={(event) => setConfirmed(event.target.checked)}
               className="mt-0.5"
             />
-            I understand this {verb} request may change data or trigger workflow
-            execution.
+            {t("api.auth.confirmNonGet", { verb })}
           </label>
         ) : null}
         <button
@@ -295,9 +327,7 @@ function TestRequestPanel({
         </button>
         {!canRun ? (
           <p className="api-faint text-xs">
-            Enter a bearer token
-            {!isReadOnly ? " and confirm the non-GET request" : ""} to enable
-            testing.
+            {isReadOnly ? t("api.auth.needToken") : t("api.auth.needTokenConfirm")}
           </p>
         ) : null}
         {headers ? (
