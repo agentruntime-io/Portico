@@ -5,7 +5,8 @@ import { ContentLocaleBanner } from "@/components/content-locale-banner";
 import { ProsePageLayout } from "@/components/prose-page-layout";
 import { StructuredData } from "@/components/structured-data";
 import { extractHeadings } from "@/lib/headings";
-import type { Locale } from "@/lib/i18n";
+import { defaultLocale, type Locale } from "@/lib/i18n";
+import { pagePathToHref } from "@/lib/locale-routing";
 import { compileMdxPage, loadMdxPage, isMarketingHomePage, mdxNeedsProseEnhancements } from "@/lib/mdx-pages";
 import { getNavigation } from "@/lib/nav";
 import { githubEditUrl } from "@/lib/edit-url";
@@ -18,6 +19,16 @@ import {
   techArticleJsonLd,
 } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site";
+/**
+ * Untranslated locale pages serve the English content; point them at the English URL
+ * and keep them out of the index so they are not duplicate content.
+ */
+function seoTarget(page: { isContentFallback: boolean; pagePath: string; href: string; noindex: boolean }) {
+  return page.isContentFallback
+    ? { canonicalPath: pagePathToHref(page.pagePath, defaultLocale), noindex: true }
+    : { canonicalPath: page.href, noindex: page.noindex };
+}
+
 export async function docPageMetadata(
   contentSlug: string[],
   locale: Locale,
@@ -30,12 +41,12 @@ export async function docPageMetadata(
     site,
     title: page.title,
     description: page.description,
-    canonicalPath: page.href,
+    canonicalPath: seoTarget(page).canonicalPath,
     pagePath: page.pagePath,
     alternateLocales: page.alternateLocales,
     ogImage: page.ogImage,
     draft: page.draft,
-    noindex: page.noindex,
+    noindex: seoTarget(page).noindex,
   });
 }
 
@@ -69,8 +80,8 @@ export async function RenderDocPage({
       site,
       title: page.title,
       description: page.description,
-      canonicalPath: page.href,
-      locale: page.locale,
+      canonicalPath: seoTarget(page).canonicalPath,
+      locale: page.contentLocale,
     }),
     breadcrumbJsonLd(site, breadcrumbs),
   ];

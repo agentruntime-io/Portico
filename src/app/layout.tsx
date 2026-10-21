@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { AppProviders } from "@/components/app-providers";
+import { isLocale, type Locale } from "@/lib/i18n";
 import { buildSiteRootMetadata, webSiteJsonLd } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site";
 import { themeInitScriptSource } from "@/lib/theme-tokens";
@@ -32,7 +33,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [site, requestHeaders] = await Promise.all([getSiteConfig(), headers()]);
-  const lang = requestHeaders.get("x-doc-locale") ?? "en";
+  const headerLocale = requestHeaders.get("x-doc-locale") ?? "";
+  const lang: Locale = isLocale(headerLocale) ? headerLocale : "en";
 
   return (
     <html
@@ -51,7 +53,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)]">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders locale={lang}>{children}</AppProviders>
       </body>
     </html>
   );
