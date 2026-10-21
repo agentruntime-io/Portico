@@ -33,10 +33,12 @@ export function DocsBrand({
   siteName,
   className = "",
   nameClassName = "",
+  badgeClassName = "",
 }: {
   siteName: string;
   className?: string;
   nameClassName?: string;
+  badgeClassName?: string;
 }) {
   const { t, locale } = useI18n();
   return (
@@ -44,7 +46,7 @@ export function DocsBrand({
       href={localizeHref("/", locale)}
       className={`flex min-h-11 min-w-0 items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--text-main)] ${className}`}
     >
-      <span className="shrink-0 rounded-lg border border-[var(--panel-border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)]">
+      <span className={`shrink-0 rounded-lg border border-[var(--panel-border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)] ${badgeClassName}`}>
         {t("nav.docsBadge")}
       </span>
       <span className={`truncate text-[15px] ${nameClassName}`}>
@@ -93,7 +95,8 @@ export function DocsHeader({
         <DocsBrand
           siteName={siteName}
           className={`shrink ${brandVisibility}`}
-          nameClassName="hidden min-[420px]:inline"
+          // Below 420px the wordmark is more useful than the DOCS chip, and it fits.
+          badgeClassName="hidden min-[420px]:inline"
         />
         <MainNavTabs activePath={activePath} mainNav={mainNav} />
         <div className="flex min-w-0 flex-1 items-center justify-end gap-1 sm:gap-2">

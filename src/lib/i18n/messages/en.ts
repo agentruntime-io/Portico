@@ -108,6 +108,9 @@ export const en = {
     close: "Close diagram",
     rendering: "Rendering diagram…",
     region: "Diagram (scrollable)",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    fit: "Fit to width",
     error: "Diagram error",
   },
   callout: {

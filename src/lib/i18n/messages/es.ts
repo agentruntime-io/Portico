@@ -110,6 +110,9 @@ export const es: Messages = {
     close: "Cerrar diagrama",
     rendering: "Renderizando diagrama…",
     region: "Diagrama (desplazable)",
+    zoomIn: "Acercar",
+    zoomOut: "Alejar",
+    fit: "Ajustar al ancho",
     error: "Error en el diagrama",
   },
   callout: {
