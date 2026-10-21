@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Check, Copy, Eye, EyeOff, Play, Trash2 } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 
@@ -94,6 +94,8 @@ function AuthPanel({
 }) {
   const { t } = useI18n();
   const [visible, setVisible] = useState(false);
+  // The panel is rendered in both the desktop rail and the mobile rail.
+  const tokenId = useId();
 
   return (
     <div className="api-card overflow-hidden rounded-lg border">
@@ -106,12 +108,12 @@ function AuthPanel({
         {description ?? "Pass a bearer token in the Authorization header."}
       </p>
       <div className="space-y-2 px-4 py-3">
-        <label className="block text-sm font-medium" htmlFor="api-token">
+        <label className="block text-sm font-medium" htmlFor={tokenId}>
           {t("api.auth.bearerToken")}
         </label>
         <div className="flex gap-2">
           <input
-            id="api-token"
+            id={tokenId}
             type={visible ? "text" : "password"}
             value={token}
             onChange={(event) => setToken(event.target.value)}
@@ -164,13 +166,13 @@ function ClientLibraryTabs({
       <div className="api-card-header border-b px-4 py-2 text-sm font-semibold">
         {t("api.auth.clientLibraries")}
       </div>
-      <div className="api-divider flex gap-1 overflow-x-auto border-b px-3 py-2 text-sm">
+      <div className="api-divider flex flex-wrap gap-1 border-b px-3 py-2 text-sm">
         {(Object.keys(labels) as SampleLanguage[]).map((key) => (
           <button
             key={key}
             type="button"
             onClick={() => setActive(key)}
-            className={`min-h-11 min-w-11 rounded-md px-3 py-2 font-medium ${
+            className={`min-h-10 shrink-0 rounded-md px-2.5 py-1.5 font-medium ${
               active === key ? "nav-active" : "nav-item-muted api-faint"
             }`}
           >
