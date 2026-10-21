@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { MarkdownText } from "@/components/markdown-text";
 import type { OpenApiDocument, ResolvedOperation } from "@/lib/openapi/core";
 import { CopyButton } from "@/components/api-reference-controls";
 import { useI18n } from "@/components/i18n-provider";
@@ -78,7 +79,9 @@ function ParamsTable({ params }: { params: any[] }) {
               <td className="font-mono text-xs text-[var(--text-main)]">
                 {(p.schema as { type?: string })?.type ?? "-"}
               </td>
-              <td className="api-muted">{p.description ?? "-"}</td>
+              <td className="api-muted">
+                {p.description ? <MarkdownText text={p.description} inline /> : "-"}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -126,7 +129,7 @@ export function OperationDocView({
         </h1>
         {op.description ? (
           <div className="doc-prose prose prose-zinc max-w-none">
-            <p>{op.description}</p>
+            <MarkdownText text={op.description} />
           </div>
         ) : null}
       </header>
@@ -182,7 +185,9 @@ export function OperationDocView({
             <li key={code} className="api-card rounded-lg border">
               <div className="api-card-header flex items-center border-b px-4 py-2">
                 <span className="ds-status-code">{code}</span>
-                <span className="api-muted ml-3 text-sm">{res.description}</span>
+                <span className="api-muted ml-3 text-sm">
+                  <MarkdownText text={res.description} inline />
+                </span>
               </div>
               <div className="p-4">
                 {res.content
