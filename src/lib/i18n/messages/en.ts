@@ -88,6 +88,16 @@ export const en = {
     title: "On this page",
     empty: "No sections",
   },
+  errors: {
+    notFoundTitle: "Page not found",
+    notFoundBody: "We couldn't find that page. It may have been moved or renamed — try searching the docs.",
+    errorTitle: "Something went wrong",
+    errorBody: "This page failed to load. Try again, or head back to the docs home.",
+    backHome: "Back to docs home",
+    tryAgain: "Try again",
+    searchDocs: "Search the docs",
+    details: "Error details (development only)",
+  },
   callout: {
     note: "Note",
     warning: "Warning",

@@ -90,6 +90,16 @@ export const es: Messages = {
     title: "En esta página",
     empty: "Sin secciones",
   },
+  errors: {
+    notFoundTitle: "Página no encontrada",
+    notFoundBody: "No encontramos esa página. Puede que se haya movido o renombrado: prueba a buscar en la documentación.",
+    errorTitle: "Algo salió mal",
+    errorBody: "No se pudo cargar esta página. Inténtalo de nuevo o vuelve al inicio de la documentación.",
+    backHome: "Volver al inicio de la documentación",
+    tryAgain: "Reintentar",
+    searchDocs: "Buscar en la documentación",
+    details: "Detalles del error (solo desarrollo)",
+  },
   callout: {
     note: "Nota",
     warning: "Advertencia",
