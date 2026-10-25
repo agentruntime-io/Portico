@@ -80,18 +80,28 @@ export function MobileNavButton({
 
       const scrollerRect = scroller.getBoundingClientRect();
       const activeRect = activeItem.getBoundingClientRect();
-      const isVisible =
+      const activeGroup = activeItem.closest<HTMLElement>("[data-nav-group]");
+      const groupHeader = activeGroup?.firstElementChild as HTMLElement | null;
+      const groupHeaderRect = groupHeader?.getBoundingClientRect();
+      const itemIsVisible =
         activeRect.top >= scrollerRect.top + 16 &&
         activeRect.bottom <= scrollerRect.bottom - 16;
-      if (isVisible) return;
+      const groupContextIsPositioned =
+        !groupHeaderRect ||
+        (groupHeaderRect.top >= scrollerRect.top + 8 &&
+          groupHeaderRect.top <= scrollerRect.top + 32);
+      if (itemIsVisible && groupContextIsPositioned) return;
 
-      scroller.scrollTop = Math.max(
-        0,
-        scroller.scrollTop +
-          activeRect.top -
+      const groupAndItemFit =
+        groupHeaderRect &&
+        activeRect.bottom - groupHeaderRect.top <= scroller.clientHeight - 32;
+      const targetOffset = groupAndItemFit
+        ? groupHeaderRect.top - scrollerRect.top - 8
+        : activeRect.top -
           scrollerRect.top -
-          (scroller.clientHeight - activeItem.offsetHeight) / 2,
-      );
+          (scroller.clientHeight - activeItem.offsetHeight) / 2;
+
+      scroller.scrollTop = Math.max(0, scroller.scrollTop + targetOffset);
     });
     return () => window.cancelAnimationFrame(frame);
   }, [activePath, open]);
