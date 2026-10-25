@@ -25,16 +25,19 @@ export function SidebarNavGroup({
   const [expanded, setExpanded] = useState(group.defaultExpanded !== false);
   const open = !collapsible || hasActiveItem || expanded;
   const toggleable = collapsible && !hasActiveItem;
+  const drawerHeaderTone = hasActiveItem
+    ? "text-[var(--accent-strong)]"
+    : "text-[var(--text-main)]";
 
   const groupHeaderClass =
     variant === "drawer"
-      ? "docs-nav-label flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]"
+      ? `docs-nav-label flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left font-semibold uppercase tracking-[0.08em] ${drawerHeaderTone}`
       : "docs-nav-label flex min-h-7 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]";
 
   const itemClass = (active: boolean) =>
     variant === "drawer"
       ? `docs-nav-row flex min-h-11 items-center rounded-lg px-2.5 py-2 ${
-          active ? "docs-nav-active font-medium" : "docs-nav-item"
+          active ? "docs-nav-active font-medium" : "nav-item-muted"
         }`
       : `docs-nav-row flex min-h-8 items-center rounded-lg px-2.5 py-1.5 transition-colors ${
           active ? "docs-nav-active font-medium" : "docs-nav-item"
@@ -59,7 +62,11 @@ export function SidebarNavGroup({
   );
 
   return (
-    <div className={variant === "drawer" ? "mb-2" : undefined}>
+    <div
+      data-nav-group
+      data-active-group={hasActiveItem ? "true" : undefined}
+      className={variant === "drawer" ? "mb-2" : undefined}
+    >
       {toggleable ? (
         <button
           type="button"
@@ -76,7 +83,9 @@ export function SidebarNavGroup({
       {open ? (
         <ul
           id={listId}
-          className={variant === "drawer" ? "mt-0.5" : "mt-1 space-y-0.5"}
+          className={
+            variant === "drawer" ? "ml-6 mt-0.5" : "mt-1 space-y-0.5"
+          }
         >
           {group.items.map((item) => {
             const active = isActiveItem(item.href);
