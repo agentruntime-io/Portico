@@ -23,10 +23,6 @@ export const en = {
     externalLinks: "External links",
     siteLinks: "Site links",
     opensNewTab: "opens in new tab",
-    connectorCatalog: "Connector catalog",
-    showAllConnectors: "Show all {count} connectors",
-    showConnectors: "Show connectors",
-    hideConnectors: "Hide connectors",
     editPage: "Edit this page",
   },
   search: {
@@ -170,7 +166,7 @@ export const en = {
       testNote: "Runs from your browser. Non-GET requests require explicit confirmation and tokens are sent only when you click Send.",
       requestUrl: "Request URL",
       jsonBody: "JSON body",
-      confirmNonGet: "I understand this {verb} request may change data or trigger workflow execution.",
+      confirmNonGet: "I understand this {verb} request may change data or trigger actions.",
       needToken: "Enter a bearer token to enable testing.",
       needTokenConfirm: "Enter a bearer token and confirm the non-GET request to enable testing.",
       languages: "Client library language",
@@ -191,7 +187,7 @@ export const en = {
     eyebrow: "Product",
     title: "Changelog",
     description:
-      "Release notes for AgentRuntime — workflows, integrations, API, and platform updates.",
+      "Release notes for {name}: new features, fixes, and updates.",
     filterArea: "Filter by product area",
     filterVersion: "Filter by version",
     allAreas: "All areas",

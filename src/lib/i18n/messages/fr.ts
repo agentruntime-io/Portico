@@ -25,10 +25,6 @@ export const fr: Messages = {
     externalLinks: "Liens externes",
     siteLinks: "Liens du site",
     opensNewTab: "s'ouvre dans un nouvel onglet",
-    connectorCatalog: "Catalogue des connecteurs",
-    showAllConnectors: "Afficher les {count} connecteurs",
-    showConnectors: "Afficher les connecteurs",
-    hideConnectors: "Masquer les connecteurs",
     editPage: "Modifier cette page",
   },
   search: {
@@ -172,7 +168,7 @@ export const fr: Messages = {
       testNote: "S'exécute depuis votre navigateur. Les requêtes autres que GET nécessitent une confirmation explicite et le jeton n'est envoyé que lorsque vous cliquez sur Envoyer.",
       requestUrl: "URL de la requête",
       jsonBody: "Corps JSON",
-      confirmNonGet: "Je comprends que cette requête {verb} peut modifier des données ou déclencher l'exécution d'un workflow.",
+      confirmNonGet: "Je comprends que cette requête {verb} peut modifier des données ou déclencher des actions.",
       needToken: "Saisissez un jeton Bearer pour activer le test.",
       needTokenConfirm: "Saisissez un jeton Bearer et confirmez la requête non-GET pour activer le test.",
       languages: "Langage de la bibliothèque cliente",
@@ -193,7 +189,7 @@ export const fr: Messages = {
     eyebrow: "Produit",
     title: "Journal des modifications",
     description:
-      "Notes de version AgentRuntime — workflows, intégrations, API et plateforme.",
+      "Notes de version de {name} : nouveautés, correctifs et mises à jour.",
     filterArea: "Filtrer par domaine",
     filterVersion: "Filtrer par version",
     allAreas: "Tous les domaines",

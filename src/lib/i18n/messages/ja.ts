@@ -25,10 +25,6 @@ export const ja: Messages = {
     externalLinks: "外部リンク",
     siteLinks: "サイトリンク",
     opensNewTab: "新しいタブで開きます",
-    connectorCatalog: "コネクターカタログ",
-    showAllConnectors: "全{count}件のコネクターを表示",
-    showConnectors: "コネクターを表示",
-    hideConnectors: "コネクターを非表示",
     editPage: "このページを編集",
   },
   search: {
@@ -171,7 +167,7 @@ export const ja: Messages = {
       testNote: "ブラウザーから実行されます。GET 以外のリクエストは明示的な確認が必要で、トークンは送信をクリックしたときだけ送られます。",
       requestUrl: "リクエスト URL",
       jsonBody: "JSON ボディ",
-      confirmNonGet: "この {verb} リクエストがデータを変更したりワークフローの実行を開始したりする可能性があることを理解しました。",
+      confirmNonGet: "この {verb} リクエストがデータを変更したり処理を実行したりする可能性があることを理解しました。",
       needToken: "テストを有効にするには Bearer トークンを入力してください。",
       needTokenConfirm: "テストを有効にするには Bearer トークンを入力し、GET 以外のリクエストを確認してください。",
       languages: "クライアントライブラリの言語",
@@ -192,7 +188,7 @@ export const ja: Messages = {
     eyebrow: "プロダクト",
     title: "変更履歴",
     description:
-      "AgentRuntime のリリースノート — ワークフロー、連携、API、プラットフォームの更新。",
+      "{name} のリリースノート — 新機能、修正、更新。",
     filterArea: "領域で絞り込み",
     filterVersion: "バージョンで絞り込み",
     allAreas: "すべての領域",
