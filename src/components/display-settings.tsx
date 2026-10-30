@@ -8,6 +8,7 @@ import { LanguageSelector } from "@/components/site-controls";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NavbarLinks } from "@/components/navbar-cta";
 import type { SiteConfig } from "@/lib/site";
+import { useSiteUi } from "@/components/site-name-provider";
 
 /**
  * Header popover for reading preferences: theme, text size, and language.
@@ -15,6 +16,7 @@ import type { SiteConfig } from "@/lib/site";
  */
 export function DisplaySettings({ navbar }: { navbar?: SiteConfig["navbar"] }) {
   const { t } = useI18n();
+  const { appearance } = useSiteUi();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -63,12 +65,14 @@ export function DisplaySettings({ navbar }: { navbar?: SiteConfig["navbar"] }) {
           aria-label={t("settings.label")}
           className="absolute right-0 top-full z-[var(--z-modal)] mt-2.5 grid w-[304px] gap-3.5 rounded-2xl border border-[var(--line-2)] bg-[var(--surface)] p-3.5 shadow-[var(--shadow-pop)]"
         >
-          <div className="space-y-2">
-            <p className="px-1 font-mono text-[10.5px] font-medium uppercase tracking-[0.08em] text-[var(--ink-3)]">
-              {t("theme.label")}
-            </p>
-            <ThemeToggle variant="segmented" />
-          </div>
+          {appearance?.strict ? null : (
+            <div className="space-y-2">
+              <p className="px-1 font-mono text-[10.5px] font-medium uppercase tracking-[0.08em] text-[var(--ink-3)]">
+                {t("theme.label")}
+              </p>
+              <ThemeToggle variant="segmented" />
+            </div>
+          )}
           <div className="flex items-center justify-between gap-3 px-1">
             <p className="font-mono text-[10.5px] font-medium uppercase tracking-[0.08em] text-[var(--ink-3)]">
               {t("fontScale.group")}

@@ -5,7 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "@/components/i18n-provider";
-import { useSiteLogo, useSiteName } from "@/components/site-name-provider";
+import { useSiteLogo, useSiteName, useSiteUi } from "@/components/site-name-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
 import { FontScaleControls } from "@/components/font-scale-controls";
 import { NavbarLinks, NavbarPrimaryCta } from "@/components/navbar-cta";
@@ -111,9 +111,8 @@ export function MobileNavButton({
     return () => window.cancelAnimationFrame(frame);
   }, [activePath, open]);
 
-  const groupedNav = nav.groups.filter(
-    (group) => !(group.label === "Project" && group.items.length === 1),
-  );
+  const groupedNav = nav.groups;
+  const { appearance } = useSiteUi();
 
   // Documentation / API reference switch: one API spec links straight to it, several to the index.
   const docsHref = localizeHref(mainNav.docsHomeHref, locale);
@@ -250,7 +249,7 @@ export function MobileNavButton({
               </div>
               <footer className="drawer-footer grid shrink-0 gap-2.5 border-t border-[var(--line)] bg-[var(--canvas)] p-3">
                 <div className="mnav-prefs flex items-center gap-2">
-                  <ThemeToggle variant="segmented" iconOnly />
+                  {appearance?.strict ? null : <ThemeToggle variant="segmented" iconOnly />}
                   <FontScaleControls />
                   <LanguageSelector variant="drawer" />
                 </div>

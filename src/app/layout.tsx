@@ -29,7 +29,6 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const themeInitScript = themeInitScriptSource();
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteConfig();
@@ -44,6 +43,7 @@ export default async function RootLayout({
   const [site, requestHeaders] = await Promise.all([getSiteConfig(), headers()]);
   const headerLocale = requestHeaders.get("x-doc-locale") ?? "";
   const lang: Locale = isLocale(headerLocale) ? headerLocale : "en";
+  const themeInitScript = themeInitScriptSource(site.appearance);
 
   return (
     <html
@@ -66,7 +66,12 @@ export default async function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col bg-[var(--background)] text-[var(--foreground)]">
-        <AppProviders locale={lang} siteName={site.name} logo={site.logo}>{children}</AppProviders>
+        <AppProviders
+          locale={lang}
+          siteName={site.name}
+          logo={site.logo}
+          ui={{ support: site.support, footer: site.footer, appearance: site.appearance }}
+        >{children}</AppProviders>
       </body>
     </html>
   );
