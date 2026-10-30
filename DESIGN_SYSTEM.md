@@ -289,8 +289,11 @@ inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-700 text
 
 ### 5.2 Header toolbar
 
-Right cluster order (desktop `xl+`): `NavbarLinks` → `NavbarPrimaryCta` → `SearchControl` → `FontScaleControls` → `LanguageSelector` → `AssistantLauncher` → `ThemeToggle`.
+Right cluster order (desktop `xl+`): `NavbarLinks` → `NavbarPrimaryCta` → `SearchControl` → `AssistantLauncher` → `DisplaySettings`.
 Controls are 44px on touch layouts and 36px in the `xl` desktop toolbar.
+
+- **`DisplaySettings`** (`display-settings.tsx`) — one icon button opening a popover with theme (segmented), text size, and language. Reading preferences live here so the toolbar stays for navigation and search.
+- **Brand** (`DocsBrand`) — shows the `docs.json` `logo` (a string or `{ light, dark }`, paths relative to the content root) with the DOCS badge; falls back to badge + site name when no logo is set. Logos are inlined as data URIs (SVG, PNG, or WebP, at most 200 KB each) and swapped per theme with `.site-logo-light` / `.site-logo-dark`.
 
 Below `xl`, header shows: logo → primary navigation where space allows → `NavbarPrimaryCta` → compact search → `MobileNavButton`.
 
@@ -417,6 +420,42 @@ Fixed `bottom-4 right-4 top-20`, max width `min(420px, calc(100vw - 2rem))`. Inp
 
 Default icon stroke size matches Lucide defaults at these bounding boxes.
 
+### 6.1 Brand
+
+Portico's logo is the AgentRuntime "A" with an open green door in place of AgentRuntime's triangle. Assets live in `public/brand/`.
+
+| Asset | Use |
+|-------|-----|
+| `portico-mark-light.svg` / `portico-mark-dark.svg` | Mark alone |
+| `portico-logo-light.svg` / `portico-logo-dark.svg` | Horizontal: mark + "Portico" |
+| `portico-logo-stacked-light.svg` / `portico-logo-stacked-dark.svg` | Stacked: mark, "Portico", and "BY AGENTRUNTIME" |
+| `portico-icon.svg` | 32×32 favicon source; follows `prefers-color-scheme` |
+
+| Colour | Light | Dark |
+|--------|-------|------|
+| Ink | `#171715` | `#F5F5F2` |
+| Door | `#0F8A5F` | `#34D399` |
+
+**Geometry**
+
+- The A is copied exactly from AgentRuntime's mark. Do not redraw or re-proportion it.
+- The door replaces the triangle. Its top and bottom edges sit at 29°, square to the A's legs.
+- Its near edge dips below the legs, the way AgentRuntime's triangle does.
+
+**Type**
+
+- Horizontal logo: Inter 720 at -0.04em tracking, drawn as outlines and laid out like the AgentRuntime wordmark.
+- Tagline ("BY AGENTRUNTIME"): Inter 600, 9px, 0.16em tracking.
+
+**Usage**
+
+- Horizontal logo for headers.
+- Stacked logo for the README and social images.
+- Mark for the favicon (`src/app/favicon.ico` holds 16, 32 and 48 px) and the attribution line (`PorticoAttribution`, via `.site-logo-light` / `.site-logo-dark`).
+- Use the light assets on light backgrounds and the dark assets on dark backgrounds.
+
+The docs header (`DocsBrand`) shows the *content's* `docs.json` logo, not Portico's. The Portico logo identifies the portal itself and does not replace a site's own branding.
+
 ---
 
 ## 7. Motion & interaction
@@ -453,7 +492,23 @@ Interactive controls use a minimum 44×44px touch target on mobile (`min-h-11 mi
 
 ### 9.1 Marketing home (`/`)
 
-Uses `DocsShell` with a prominent reading-first hero, primary and secondary CTAs, a three-path starting section, and grouped task cards. The homepage remains full-width while article pages use the constrained reading column.
+Uses `DocsShell` with a prominent reading-first hero, a large search field, primary and secondary CTAs, a three-path starting section, and grouped task cards. The homepage remains full-width while article pages use the constrained reading column.
+
+Author it with the home components (`mdx-home.tsx`), which own all layout because content repos are not scanned by Tailwind:
+
+```mdx
+<HomePage>
+  <Hero eyebrow="Product docs" title="Headline" description="One or two sentences.">
+    <HeroAction href="/quickstart" primary>Start the quickstart</HeroAction>
+    <HeroAction href="/overview">Learn the platform</HeroAction>
+  </Hero>
+  <Section id="start-here" eyebrow="Start here" title="Choose a path">
+    <CardGroup cols={3}>…</CardGroup>
+  </Section>
+</HomePage>
+```
+
+`Hero` shows the search field by default (`search={false}` hides it). Mintlify-style home pages (`<div data-product-guide-index>` with Tailwind utility classes) still render: `globals.css` maps their `text-gray-*`, `bg-gray-50`, `font-serif`, and bare `border` cards onto Portico tokens so they match `Card`.
 
 ### 9.2 Prose content (`/docs`, `/guides`, `/changelog`)
 
@@ -462,7 +517,7 @@ Uses `DocsShell` with a prominent reading-first hero, primary and secondary CTAs
 1. Eyebrow (`text-sm font-medium text-[var(--text-muted)]`)
 2. Title
 3. Optional description
-4. `CopyPageButton`
+4. `PageActions` — quiet text buttons (`CopyPageButton`, `EditPageButton`): no border, 13px, surface tint on hover
 5. `MarkdownBody` (`.doc-prose.prose`)
 
 ### 9.3 API reference (`/reference`)
