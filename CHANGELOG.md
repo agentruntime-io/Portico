@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Visual redesign: one palette (`--canvas`, `--surface`, `--ink`, `--brand`, …) keyed on `data-theme`, with the previous token names kept as aliases; Instrument Sans, Bricolage Grotesque and JetBrains Mono replace Geist
-- Header is full width with underlined Documentation / API tabs, a search field and a primary CTA; under 640px those move into the drawer, and a "Group · Page" bottom bar opens it under 820px
+- Header is full width with underlined Documentation / API tabs, a search field and a primary CTA; under 820px the header is just brand, search and a menu button that opens the drawer
 - Sidebar is a tree with page counts and a brand rule on the current page; the right "On this page" rail starts at 1180px, with an inline disclosure below it
 - Doc page: breadcrumb row with Copy link, display-font title, restyled prose, callouts, tables, code blocks and steps; the pager now carries the Edit this page row
 - Home page: `Hero` search card, `Section` headers, four-column `CardGroup` and `Card` styling (Mintlify-style home markup gets the same look)

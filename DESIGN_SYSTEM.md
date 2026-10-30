@@ -43,7 +43,7 @@ One palette, defined only in `src/app/globals.css` and keyed on `html[data-theme
 | `--brand-soft` | `color-mix(--brand 9%, transparent)` | `10%` | Faint brand wash (hover, focus halo, icon tiles) |
 | `--brand-line` | `color-mix(--brand 35%, transparent)` | `30%` | Link underline, blockquote rule, marker underline |
 | `--glow` | `color-mix(--brand 13%, transparent)` | `8%` | Hero radial glow |
-| `--cta-bg` / `--cta-fg` | `#12201a` / `#f8faf8` | `#e6ede8` / `#0d1311` | Header call-to-action and mobile bottom bar. Neutral ink, deliberately not brand-coloured |
+| `--cta-bg` / `--cta-fg` | `#12201a` / `#f8faf8` | `#e6ede8` / `#0d1311` | Header call-to-action and the drawer CTA. Neutral ink, deliberately not brand-coloured |
 | `--warn-bg` / `--warn-ink` / `--warn-line` | `#fdf5e3` / `#7a4b05` / `#f0dcae` | `#1d180d` / `#e4bb70` / `#3a2f14` | Warning and Danger callouts |
 | `--info-bg` / `--info-ink` | `#e9f1fa` / `#244f7c` | `#101b27` / `#8fb8e3` | Reserved for info surfaces; the current callouts do not use them |
 | `--code-bg` / `--code-ink` | `#f1f5f2` / `#22332b` | `#0a100e` / `#cfddd5` | Code block surface and default code colour |
@@ -266,7 +266,7 @@ Page titles, descriptions, the shell and the home page do not scale. Persisted i
 │ 1180px)    │                               │                 │
 │ sticky     │                               │                 │
 └────────────┴───────────────────────────────┴─────────────────┘
-          Under 820px: no sidebar; a "Group · Page" bar floats at the bottom
+          Under 820px: no sidebar; the header menu button opens the drawer
 ```
 
 | Region | Key classes |
@@ -277,7 +277,6 @@ Page titles, descriptions, the shell and the home page do not scale. Persisted i
 | Sidebar | `sticky top-[58px] h-[calc(100vh-58px)] overflow-y-auto border-r border-[var(--line)]`, `hidden` until 820px |
 | Main | `px-5 pt-[22px]` → `px-6 pt-7` (640px) → `px-12 pt-9` (820px); `pb-12` |
 | Article column | `.doc-article`, `max-width: 44rem` |
-| Bottom bar | `sticky bottom-3`, 48px, hidden from 820px |
 
 Everything sits on one `--canvas`; structure comes from 1px `--line` hairlines (header bottom edge, sidebar right edge). Cards and popovers use `--surface`.
 
@@ -291,7 +290,7 @@ Everything sits on one `--canvas`; structure comes from 1px `--line` hairlines (
 | Right rail (server, samples) | `380px` | `xl:block` (1280px) |
 | Content max width | `max-w-[1520px]` | — |
 
-Below `lg` the hamburger in the header opens the API navigation drawer (`ApiMobileNav`) instead of the docs bottom bar.
+Below `lg` the hamburger in the header opens the API navigation drawer (`ApiMobileNav`).
 
 ### 4.3 Prose page grid
 
@@ -308,8 +307,8 @@ The docs shell uses arbitrary `min-[…]` values rather than the Tailwind defaul
 
 | Width | Applies to | What changes |
 |-------|-----------|--------------|
-| `640px` | Viewport | Header tabs, primary CTA and Display settings appear; the hamburger goes away (the drawer is reached from the bottom bar up to 820px). Header 56 → 58px; main padding 20 → 24px; prose 16 → 16.5px; page title 34 → 46px; unwrapped tables stop stacking; pager two columns; "Copy link" shows its label |
-| `820px` | Viewport | Sidebar (260px) appears; bottom bar and drawer retire; main padding 48px; heading hash anchors show; drawer auto-closes when resized past it |
+| `640px` | Viewport | Header 56 → 58px; main padding 20 → 24px; prose 16 → 16.5px; page title 34 → 46px; unwrapped tables stop stacking; pager two columns; "Copy link" shows its label |
+| `820px` | Viewport | Sidebar (260px) appears; header tabs, primary CTA and Display settings appear and the menu button goes away; main padding 48px; heading hash anchors show; drawer auto-closes when resized past it |
 | `960px` | Hero container | `HeroAside` appears; hero becomes two columns |
 | `1000px` | Card container | `cols={4}` card grids go four across (3-up from 760px, 2-up from 640px) |
 | `1180px` | Viewport | Right TOC rail replaces the inline TOC; sidebar widens to 268px; the hero title steps from 56 to 66px (measured on the hero width) |
@@ -327,10 +326,10 @@ Tailwind's `lg` (1024px) and `xl` (1280px) remain in use for the header search f
 | Hero buttons, drawer CTA | `12px` |
 | Inline TOC, images, sidebar toggle | `12px` / `8px` |
 | Callouts, tables, code blocks | `14px` |
-| Pager cards, display-settings popover, bottom bar | `16px` |
+| Pager cards, display-settings popover | `16px` |
 | Home cards, band, search card | `18px` |
 | Inline code | `6px` |
-| Cards at rest | `--shadow-1`; hovered card `--shadow-2`; popovers and bottom bar `--shadow-pop` |
+| Cards at rest | `--shadow-1`; hovered card `--shadow-2`; popovers `--shadow-pop` |
 
 ---
 
@@ -391,7 +390,7 @@ Under 640px the tabs, CTA and Display settings move into the drawer. The old *He
 - Scrolling body, auto-positioned so the current group header sits near the top: a *Documentation / API reference* switch (when API specs exist), a search trigger, the groups (`variant="drawer"`, 44px rows), global anchors, `navbar.links` and attribution.
 - Footer (hairline above): a preferences row (segmented icon-only theme, text size, language) and the full-width primary CTA (44px, `--cta-bg`). On short viewports (under 500px high) the footer collapses to one row.
 
-**Mobile bottom bar (`MobileLocationBar`, under 820px)** — a floating 48px pill, `sticky bottom-3`, on `--cta-bg` with `--shadow-pop`, showing `Group · Page` for the current page (hidden if the page is not in the nav) and a menu button. Tapping the button dispatches `OPEN_NAV_EVENT` to open the drawer.
+**Narrow screens (under 820px)** — the header shows only the brand, the search icon and a menu button (the standard docs pattern). The menu button opens the drawer, which holds the Documentation / API switch, search, the nav, preferences and the primary CTA.
 
 ### 5.3 Search
 
@@ -483,7 +482,7 @@ required: red asterisk text-red-600
 
 ### 5.8 Mobile navigation
 
-Covered in 5.2 (drawer and bottom bar). API reference uses `ApiMobileNav` below `lg`, with the same visual language.
+Covered in 5.2 (drawer). API reference uses `ApiMobileNav` below `lg`, with the same visual language.
 
 ### 5.9 Assistant panel
 
@@ -768,7 +767,7 @@ Content decides branding and structure: `docs.json` supplies `name`, `logo`, `co
 | `src/lib/theme-tokens.ts` | Theme names, font-scale levels, init script source |
 | `src/styles/doc.css` | Doc page: breadcrumb, title, prose, callouts, tables, code blocks, tabs, steps, pager, edit row, TOC |
 | `src/styles/home.css` | Home: hero, search card, sections, cards, band, task rows, Mintlify compatibility |
-| `src/components/docs-shell.tsx` | Header, brand, sidebar, bottom bar, main grid |
+| `src/components/docs-shell.tsx` | Header, brand, sidebar, main grid |
 | `src/components/sidebar-nav-group.tsx` | Tree group in the sidebar and drawer |
 | `src/components/mobile-nav.tsx` | Drawer and hamburger |
 | `src/components/display-settings.tsx` | Header settings popover |
