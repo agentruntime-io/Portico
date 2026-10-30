@@ -19,19 +19,13 @@ import {
 type Entry = SearchEntry;
 const OPEN_SEARCH_EVENT = "docs:open-search";
 
-function sectionKey(url: string): MessageKey {
-  if (url.startsWith("/reference")) return "search.sectionApiReference";
-  if (url.startsWith("/changelog")) return "search.sectionChangelog";
-  if (url === "/" || /^\/(es|fr|ja)\/?$/.test(url)) return "search.sectionHome";
-
-  const normalized = url.replace(/^\/(es|fr|ja)(\/|$)/, "/");
-  if (normalized.startsWith("/guides")) return "search.sectionGuides";
-  if (normalized.startsWith("/integrations")) return "search.sectionIntegrations";
-  if (normalized.startsWith("/platform")) return "search.sectionPlatform";
-  if (normalized.startsWith("/workflows")) return "search.sectionWorkflows";
-  if (normalized.startsWith("/connectors")) return "search.sectionConnectors";
-  if (normalized.startsWith("/api")) return "search.sectionApi";
-  return "search.sectionDocs";
+/** Result label: app routes get a fixed label; doc pages use their docs.json nav group. */
+function sectionLabel(entry: Entry, t: (key: MessageKey) => string): string {
+  const { url } = entry;
+  if (url.startsWith("/reference")) return t("search.sectionApiReference");
+  if (url.startsWith("/changelog")) return t("search.sectionChangelog");
+  if (url === "/" || /^\/(es|fr|ja)\/?$/.test(url)) return t("search.sectionHome");
+  return entry.group ?? t("search.sectionDocs");
 }
 
 function Highlighted({ text, tokens }: { text: string; tokens: string[] }) {
@@ -290,7 +284,7 @@ export function SearchControl() {
                   type="button"
                   aria-label={t("search.close")}
                   onClick={onClose}
-                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-[var(--text-muted)] outline-none ring-0 hover:bg-emerald-500/10 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-[var(--text-muted)] outline-none ring-0 hover:bg-[var(--sunk)] focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -343,13 +337,13 @@ export function SearchControl() {
                           onMouseMove={() => setActiveIndex((i) => (i === index ? i : index))}
                           className={`block px-4 py-2.5 transition-colors ${
                             index === activeIndex
-                              ? "bg-emerald-500/10"
-                              : "hover:bg-emerald-500/5"
+                              ? "bg-[var(--brand-soft)]"
+                              : "hover:bg-[var(--sunk)]"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <span className="shrink-0 whitespace-nowrap rounded bg-[var(--sidebar-bg)] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[var(--text-muted)]">
-                              {t(sectionKey(r.url))}
+                              {sectionLabel(r, t)}
                             </span>
                             <span className="min-w-0 truncate text-sm font-medium text-[var(--text-main)]">
                               <Highlighted text={r.title} tokens={queryTokens} />

@@ -17,6 +17,7 @@ import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";
 import { MainNavTabs } from "@/components/main-nav-tabs";
 import { SidebarNavGroup } from "@/components/sidebar-nav-group";
+import { SiteFooter } from "@/components/site-footer";
 import type { MainNavTargets } from "@/lib/main-nav";
 
 export function DocsBrand({
@@ -37,9 +38,11 @@ export function DocsBrand({
       {t("nav.docsBadge")}
     </span>
   );
+  // docs.json `logo.href` may point the brand at the product site instead of the docs home.
+  const href = logo?.href ?? localizeHref("/", locale);
   return (
     <Link prefetch={false}
-      href={localizeHref("/", locale)}
+      href={href}
       className={`flex min-h-11 min-w-0 items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--ink)] ${className}`}
     >
       {logo ? (
@@ -219,6 +222,7 @@ export function DocsShell({
           className="min-w-0 overflow-x-clip px-5 pb-12 pt-[22px] min-[640px]:px-6 min-[640px]:pt-7 min-[820px]:px-12 min-[820px]:pt-9"
         >
           {children}
+          <SiteFooter siteName={siteName} />
         </main>
       </div>
       <MobileLocationBar nav={nav} activePath={activePath} />

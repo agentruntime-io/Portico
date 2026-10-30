@@ -12,11 +12,20 @@ export function isThemePreference(value: unknown): value is ThemePreference {
 
 export const fontScaleLevels = [0.9, 1, 1.1, 1.2] as const;
 
-export function themeInitScriptSource(): string {
+/**
+ * Inline script that sets data-theme before paint. docs.json `appearance.default` is the
+ * starting theme; with `strict` the visitor's stored choice is ignored.
+ */
+export function themeInitScriptSource(appearance?: {
+  default?: ThemePreference;
+  strict?: boolean;
+}): string {
+  const fallback = isThemePreference(appearance?.default) ? appearance.default : "system";
+  const strict = appearance?.strict === true;
   return `(() => {
   const fontScaleLevels = ${JSON.stringify(fontScaleLevels)};
-  const stored = window.localStorage.getItem("doc-theme");
-  const pref = stored === "light" || stored === "dark" ? stored : "system";
+  const stored = ${strict} ? null : window.localStorage.getItem("doc-theme");
+  const pref = stored === "light" || stored === "dark" || stored === "system" ? stored : ${JSON.stringify(fallback)};
   const theme = pref === "system"
     ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
     : pref;
