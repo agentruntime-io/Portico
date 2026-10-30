@@ -25,10 +25,6 @@ export const es: Messages = {
     externalLinks: "Enlaces externos",
     siteLinks: "Enlaces del sitio",
     opensNewTab: "se abre en una pestaña nueva",
-    connectorCatalog: "Catálogo de conectores",
-    showAllConnectors: "Mostrar los {count} conectores",
-    showConnectors: "Mostrar conectores",
-    hideConnectors: "Ocultar conectores",
     editPage: "Editar esta página",
   },
   search: {
@@ -172,7 +168,7 @@ export const es: Messages = {
       testNote: "Se ejecuta desde tu navegador. Las solicitudes distintas de GET requieren confirmación explícita y el token solo se envía al pulsar Enviar.",
       requestUrl: "URL de la solicitud",
       jsonBody: "Cuerpo JSON",
-      confirmNonGet: "Entiendo que esta solicitud {verb} puede modificar datos o iniciar la ejecución de un flujo de trabajo.",
+      confirmNonGet: "Entiendo que esta solicitud {verb} puede modificar datos o desencadenar acciones.",
       needToken: "Introduce un token Bearer para habilitar la prueba.",
       needTokenConfirm: "Introduce un token Bearer y confirma la solicitud distinta de GET para habilitar la prueba.",
       languages: "Lenguaje de la biblioteca cliente",
@@ -193,7 +189,7 @@ export const es: Messages = {
     eyebrow: "Producto",
     title: "Registro de cambios",
     description:
-      "Notas de versión de AgentRuntime: flujos de trabajo, integraciones, API y plataforma.",
+      "Notas de versión de {name}: novedades, correcciones y actualizaciones.",
     filterArea: "Filtrar por área",
     filterVersion: "Filtrar por versión",
     allAreas: "Todas las áreas",
