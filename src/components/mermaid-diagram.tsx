@@ -135,6 +135,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
     // Keep the previous SVG while re-rendering for a theme change (no layout jump).
 
     async function render() {
+      const renderId = `mermaid-${id}-${theme}`;
       try {
         const mermaid = (await import("mermaid")).default;
         mermaid.initialize({
@@ -142,16 +143,20 @@ export function MermaidDiagram({ chart }: { chart: string }) {
           theme: theme === "light" ? "neutral" : "dark",
           securityLevel: "strict",
           fontFamily: "inherit",
+          // Mermaid 12 defaults to the neo look and the ELK layout; pin the classic look and the
+          // dagre layout so diagrams keep the appearance they had on Mermaid 11.
+          look: "classic",
+          layout: "dagre",
+          suppressErrorRendering: true,
         });
-        const { svg: rendered } = await mermaid.render(
-          `mermaid-${id}-${theme}`,
-          chart.trim(),
-        );
+        const { svg: rendered } = await mermaid.render(renderId, chart.trim());
         if (!cancelled) {
           setSvg(pinNaturalSize(rendered));
           setError(null);
         }
       } catch (err) {
+        // A failed render can leave Mermaid's scratch element in <body>; drop it.
+        document.getElementById(`d${renderId}`)?.remove();
         if (!cancelled) {
           setError(
             err instanceof Error ? err.message : "Failed to render diagram",
