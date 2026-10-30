@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Requires Node.js 22.12+** (mermaid 12); CI, the Docker example and `engines` move to Node 22
+- Mermaid 12 (classic look and dagre layout pinned, so diagrams look as before); clears the katex advisory. It adds `elkjs` (EPL-2.0), now allowed by the license check
+- Full CI runs on demand (`workflow_dispatch`); a lockfile-only `npm audit` workflow still runs automatically on dependency changes and weekly
+
+### Fixed
+
+- `npm run validate` no longer reports two adjacent tables (separated by a blank line) as one table split by a blank line
+
 ## [0.2.0] - 2026-10-30
 
 ### Added

@@ -1,0 +1,29 @@
+name: Security audit
+
+# Stays automatic while full CI (portico-ci.yml) is manual-only: a lockfile-only
+# `npm audit` (no install, no build) on dependency changes and once a week.
+on:
+  pull_request:
+    paths:
+      - package.json
+      - package-lock.json
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Dependency audit (high severity and above)
+        run: npm audit --package-lock-only --audit-level=high

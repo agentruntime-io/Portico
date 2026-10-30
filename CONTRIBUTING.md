@@ -10,7 +10,7 @@ Thank you for helping improve Portico. This repository is the **renderer** (Next
 
 ## Development setup
 
-Requirements: **Node.js 20+**, **npm**.
+Requirements: **Node.js 22.12+**, **npm**.
 
 ```bash
 git clone https://github.com/agentruntime-io/Portico.git

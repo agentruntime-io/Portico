@@ -115,7 +115,7 @@ Optional: set repository variable `CONTENT_GIT_REPO` to smoke-test the clone pat
 ## Docker (outline)
 
 ```dockerfile
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
@@ -127,7 +127,7 @@ ENV CONTENT_GIT_BRANCH=$CONTENT_GIT_BRANCH
 ENV SITE_URL=https://docs.example.com
 RUN npm run validate && npm run build
 
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/.next ./.next
