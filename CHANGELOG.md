@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-30
+
 ### Added
 
 - `Tip`, `Check` and `Danger` callouts; `## Heading {#custom-id}` heading ids
@@ -18,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Portico logo set in `public/brand/` (mark, horizontal and stacked logos, light and dark, plus a theme-aware `portico-icon.svg`); the favicon replaces Next.js's default icon, and the attribution line shows the mark
 - Home page components `Band`, `TaskList` and `Task`, and `HeroAside` (right-hand column of a `Hero`); `Hero` gains `highlight` and `suggestions` ("Try" chips under the search card); `Section` gains `description` and a heading link (`href` + `linkLabel`)
 - `docs.json` `colors` (`primary`, `light`, `dark`) override the brand tokens, and `docs.json` `fonts` replace the heading and body fonts (Google Fonts by family name, or a self-hosted `source`); tints derive from the brand colour
+- Content repos can carry their own `site.yaml`, redirects (`redirects.yaml` or `docs.json` `redirects`) and OpenAPI specs (`openapi/` or `site.yaml` `openapi.specs`)
+- `docs.json` `favicon`, `footer` (link groups and socials), `appearance` (`default` theme, `strict` hides the switch) and `logo.href`; a support contact (`site.yaml` `support`, or a Support/Help link in `docs.json`) shows Help
+- Search results are labelled with the page's `docs.json` navigation group
+- API reference contact, license and section links come from the spec (`info.contact`, `info.license`, `##` headings in `info.description`)
 
 ### Changed
 
@@ -29,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Shiki dual-theme colours apply to every highlighted code block
 - Removed the Help and Home utility links; site links come from `docs.json` (`anchors`, `navbar`)
 - Header: theme, text size and language move into one **Display settings** popover
-- Copy link / Edit this page are quiet text buttons; less space between the page header and the article
+- Copy link is a quiet text button on the breadcrumb row; less space between the page header and the article
 - Mintlify-style home pages render with Portico card styling instead of green link-coloured outlines and titles
 - `npm run validate` loads `.env.local`, prints the content root, compiles every MDX page, flags unknown components, broken internal links and tables split by blank lines
 - Search indexes headings and full stripped body text, matches every term (hyphen = space) and highlights hits; the index is regenerated on `npm run dev` and no longer committed
@@ -54,11 +60,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MDX prose rendering via dedicated enhancer and server-side callouts / steps
 - Open Graph image generation aligned with site branding
 - Updated dependencies (Next.js, React, ESLint, TypeScript, Tailwind, GitHub Actions)
+- No AgentRuntime defaults in the engine: no default site URL or edit-link repo, product-neutral changelog/API/OG copy, generic client samples (`callApi`)
+
+### Removed
+
+- Fallback to a sibling `agentruntime-docs` checkout when `CONTENT_ROOT` is unset (the bundled demo is used instead)
+- Portico's own `content/` folder (site config, redirects and the bundled spec moved into `examples/demo-docs`)
+
+### Security
+
+- Next.js 16.4.3 and patched `dompurify`, `brace-expansion`, `fast-uri`, `zod`, `source-map-js` and `postcss-selector-parser`; `npm audit --audit-level=high` is clean again
+
+### Upgrade notes
+
+- Move `site.yaml`, `redirects.yaml` and `openapi/` into your content repo, next to `docs.json`.
+- Set `SITE_URL` in production; without it (or `site.yaml` `url`) canonical URLs fall back to `http://localhost:3004`.
+- "Edit this page" appears only when `CONTENT_REPO_URL`, `CONTENT_GIT_REPO` or `site.yaml` `githubEditBase` is set.
+- Set `CONTENT_ROOT` (or `CONTENT_GIT_REPO`) explicitly; Portico no longer looks for a sibling checkout.
 
 ### Notes
 
 - Post-deploy hardening and CI license-check adjustments for Next.js `sharp` transitive deps.
 
+[0.2.0]: https://github.com/agentruntime-io/Portico/releases/tag/v0.2.0
 [0.1.1]: https://github.com/agentruntime-io/Portico/releases/tag/v0.1.1
 
 ## [0.1.0] - 2026-06-13
