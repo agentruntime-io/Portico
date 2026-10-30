@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Dependency audit (high severity and above)
         run: npm audit --package-lock-only --audit-level=high

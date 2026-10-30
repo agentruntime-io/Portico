@@ -9,7 +9,7 @@
 
 [![CI](https://github.com/agentruntime-io/Portico/actions/workflows/portico-ci.yml/badge.svg)](https://github.com/agentruntime-io/Portico/actions/workflows/portico-ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](package.json)
+[![Node](https://img.shields.io/badge/node-%3E%3D22.12-brightgreen)](package.json)
 
 **Self-hosted documentation portal** for teams who want docs-as-code: Git-backed `docs.json` + MDX, integrated OpenAPI reference, search, and SEO — without locking prose into this repository.
 
@@ -36,7 +36,7 @@ your-docs/          Portico (this repo)
 
 ## Quick start
 
-**Requirements:** Node.js 20+, npm.
+**Requirements:** Node.js 22.12+, npm.
 
 ```bash
 git clone https://github.com/agentruntime-io/Portico.git
