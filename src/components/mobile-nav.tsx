@@ -25,9 +25,6 @@ import {
 } from "@/lib/main-nav";
 import type { SiteConfig } from "@/lib/site";
 
-/** Dispatched by the docs bottom bar to open this drawer. */
-export const OPEN_NAV_EVENT = "docs:open-nav";
-
 export function MobileNavButton({
   nav,
   activePath,
@@ -39,7 +36,7 @@ export function MobileNavButton({
   activePath: string;
   navbar?: SiteConfig["navbar"];
   mainNav: MainNavTargets;
-  /** "docs": button under 640px (the bottom bar opens the drawer up to 820px); "lg": API reference. */
+  /** "docs": menu button while the docs sidebar is hidden (under 820px); "lg": API reference. */
   hideAt?: "lg" | "docs";
 }) {
   const { t, locale } = useI18n();
@@ -52,15 +49,12 @@ export function MobileNavButton({
   const navScrollRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const closeDialog = useCallback(() => setOpen(false), []);
-  const desktopVisibility = hideAt === "lg" ? "lg:hidden" : "min-[640px]:hidden";
+  const desktopVisibility = hideAt === "lg" ? "lg:hidden" : "min-[820px]:hidden";
 
   useDialog(open, closeDialog, dialogRef, closeRef);
 
   useEffect(() => {
     setMounted(true);
-    const openNav = () => setOpen(true);
-    window.addEventListener(OPEN_NAV_EVENT, openNav);
-    return () => window.removeEventListener(OPEN_NAV_EVENT, openNav);
   }, []);
 
   useEffect(() => {

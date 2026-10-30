@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Menu } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import { useI18n } from "@/components/i18n-provider";
 import { useSiteLogo } from "@/components/site-name-provider";
@@ -9,7 +8,7 @@ import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
 import { localizeHref } from "@/lib/locale-routing";
 import { DisplaySettings } from "@/components/display-settings";
-import { MobileNavButton, OPEN_NAV_EVENT } from "@/components/mobile-nav";
+import { MobileNavButton } from "@/components/mobile-nav";
 import { SearchControl } from "@/components/search-control";
 import { NavbarPrimaryCta } from "@/components/navbar-cta";
 import type { SiteConfig } from "@/lib/site";
@@ -67,7 +66,8 @@ export function DocsBrand({
 
 /**
  * Full-width sticky header: brand, Documentation / API tabs, search, the site's primary
- * CTA and display settings. Under 640px the tabs, CTA and settings move into the drawer.
+ * CTA and display settings. Below 820px (no sidebar) it is brand, search and a menu
+ * button; the tabs, CTA and settings live in the drawer.
  */
 export function DocsHeader({
   siteName,
@@ -88,13 +88,13 @@ export function DocsHeader({
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--canvas)]">
       <div className="flex h-14 w-full items-center gap-2 pl-4 pr-2.5 min-[640px]:h-[58px] min-[640px]:px-5">
         <DocsBrand siteName={siteName} className="shrink" />
-        <MainNavTabs activePath={activePath} mainNav={mainNav} className="ml-4 hidden h-full min-w-0 items-stretch gap-1 min-[640px]:flex" />
+        <MainNavTabs activePath={activePath} mainNav={mainNav} className={`ml-4 hidden h-full min-w-0 items-stretch gap-1 ${desktopSidebar === "api" ? "lg:flex" : "min-[820px]:flex"}`} />
         <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
           <SearchControl />
-          <div className="ml-1.5 hidden min-[640px]:block">
+          <div className={`ml-1.5 hidden ${desktopSidebar === "api" ? "lg:block" : "min-[820px]:block"}`}>
             <NavbarPrimaryCta navbar={navbar} />
           </div>
-          <div className="hidden min-[640px]:block">
+          <div className={`hidden ${desktopSidebar === "api" ? "lg:block" : "min-[820px]:block"}`}>
             <DisplaySettings navbar={navbar} />
           </div>
           <MobileNavButton
@@ -160,33 +160,6 @@ export function DocsSidebar({
   );
 }
 
-/** Under 820px: sticky pill showing "Group · Page" that opens the navigation drawer. */
-function MobileLocationBar({ nav, activePath }: { nav: NavFile; activePath: string }) {
-  const { t } = useI18n();
-  let label: string | undefined;
-  for (const group of nav.groups) {
-    const item = group.items.find((entry) => isActiveNavItem(entry.href, activePath));
-    if (item) {
-      label = `${group.label} · ${item.title}`;
-      break;
-    }
-  }
-  if (!label) return null;
-  return (
-    <div className="sticky bottom-3 z-30 m-3 flex h-12 items-center gap-2.5 rounded-2xl bg-[var(--cta-bg)] pl-3.5 pr-2 text-[13.5px] font-medium text-[var(--cta-fg)] shadow-[var(--shadow-pop)] min-[820px]:hidden">
-      <span className="min-w-0 flex-1 truncate">{label}</span>
-      <button
-        type="button"
-        aria-label={t("nav.openMenu")}
-        onClick={() => window.dispatchEvent(new Event(OPEN_NAV_EVENT))}
-        className="inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] transition-colors hover:bg-[rgb(127_127_127/0.2)]"
-      >
-        <Menu className="h-[17px] w-[17px]" aria-hidden />
-      </button>
-    </div>
-  );
-}
-
 export function DocsShell({
   siteName,
   nav,
@@ -225,7 +198,6 @@ export function DocsShell({
           <SiteFooter siteName={siteName} />
         </main>
       </div>
-      <MobileLocationBar nav={nav} activePath={activePath} />
     </div>
   );
 }

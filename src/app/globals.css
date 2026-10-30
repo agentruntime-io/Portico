@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "../styles/doc.css";
 @import "../styles/home.css";
+@import "../styles/controls.css";
 @plugin "@tailwindcss/typography";
 
 /* Match Tailwind `dark:` utilities to the site theme toggle, not OS preference. */
@@ -503,9 +504,9 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 .ds-callout-note {
-  border-color: rgb(16 185 129 / 0.4);
-  background: rgb(16 185 129 / 0.05);
-  color: #d1fae5;
+  border-color: var(--brand-line);
+  background: var(--brand-soft);
+  color: var(--ink);
 }
 
 .ds-callout-warning {
@@ -845,7 +846,7 @@ html[data-theme="dark"] .site-logo-dark {
 [data-theme="dark"] .prose {
   --tw-prose-body: #b8c2bd;
   --tw-prose-headings: #f2f5f3;
-  --tw-prose-links: #34d399;
+  --tw-prose-links: var(--brand-ink);
   --tw-prose-bold: #f2f5f3;
   --tw-prose-code: #f2f5f3;
   --tw-prose-quotes: #d6ded9;
@@ -859,7 +860,7 @@ html[data-theme="dark"] .site-logo-dark {
 [data-theme="light"] .prose {
   --tw-prose-body: #46534d;
   --tw-prose-headings: #18201c;
-  --tw-prose-links: #08734f;
+  --tw-prose-links: var(--brand-ink);
   --tw-prose-bold: #18201c;
   --tw-prose-code: #18201c;
   --tw-prose-quotes: #35423c;
@@ -927,13 +928,13 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 [data-theme="dark"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link):not(.ds-card) {
-  color: #34d399 !important;
+  color: var(--brand-ink) !important;
   text-decoration: underline;
   text-decoration-color: rgb(52 211 153 / 0.35) !important;
 }
 
 [data-theme="dark"] .doc-prose :where(p, li, td) a:not(.anchor-heading-link):not(.ds-card):hover {
-  color: #6ee7b7 !important;
+  color: var(--brand) !important;
 }
 
 [data-theme="light"] .doc-prose :where(:not(pre) > code) {
