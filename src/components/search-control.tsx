@@ -352,9 +352,9 @@ export function SearchControl() {
         aria-expanded={open}
         aria-controls={dialogId}
         onClick={() => setOpen(true)}
-        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 xl:hidden"
+        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-[var(--ink-2)] transition-colors hover:bg-[var(--sunk)] hover:text-[var(--ink)] sm:h-9 sm:w-9 lg:hidden"
       >
-        <Search className="h-4 w-4" />
+        <Search className="h-[18px] w-[18px]" />
       </button>
       <button
         type="button"
@@ -362,11 +362,11 @@ export function SearchControl() {
         aria-expanded={open}
         aria-controls={dialogId}
         onClick={() => setOpen(true)}
-        className="hidden h-9 w-full max-w-xs items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 text-left text-sm text-[var(--text-muted)] hover:bg-[var(--surface-muted)] xl:inline-flex xl:max-w-md"
+        className="hidden h-9 w-[230px] shrink-0 items-center gap-2 rounded-[10px] border border-[var(--line-2)] bg-[var(--surface)] pl-3 pr-2 text-left text-[13.5px] text-[var(--ink-3)] transition-colors hover:border-[var(--ink-3)] lg:inline-flex"
       >
         <Search className="h-4 w-4 shrink-0" aria-hidden />
         <span className="flex-1 truncate">{t("search.placeholderShort")}</span>
-        <kbd className="hidden rounded border border-[var(--panel-border)] px-1.5 py-0.5 font-mono text-[10px] xl:inline">
+        <kbd className="rounded-md border border-b-2 border-[var(--line-2)] px-1.5 font-mono text-[11px] text-[var(--ink-3)]">
           {t("search.shortcut")}
         </kbd>
       </button>

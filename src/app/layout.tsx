@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { AppProviders } from "@/components/app-providers";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -8,15 +8,24 @@ import { getSiteConfig } from "@/lib/site";
 import { themeInitScriptSource } from "@/lib/theme-tokens";
 import "./globals.css";
 
-const geistSans = Geist({
+// Portico's default type; a site's docs.json `fonts` override it (site-theme.ts).
+const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-instrument-sans",
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
+  variable: "--font-bricolage",
+  axes: ["opsz"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
@@ -40,11 +49,16 @@ export default async function RootLayout({
     <html
       lang={lang}
       data-doc-locale={lang}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${instrumentSans.variable} ${bricolage.variable} ${jetbrainsMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {site.theme.fontStylesheet ? (
+          // eslint-disable-next-line @next/next/no-page-custom-font -- per-site fonts from docs.json
+          <link rel="stylesheet" href={site.theme.fontStylesheet} />
+        ) : null}
+        {site.theme.css ? <style dangerouslySetInnerHTML={{ __html: site.theme.css }} /> : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

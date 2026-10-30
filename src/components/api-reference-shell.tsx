@@ -48,7 +48,7 @@ function ApiSidebar({
       className="fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-hidden bg-[var(--sidebar-bg)] lg:flex"
       aria-label={t("nav.sectionNav")}
     >
-      <div className="h-16 shrink-0" aria-hidden />
+      <div className="h-[58px] shrink-0" aria-hidden />
       <div className="flex min-h-0 flex-1 flex-col px-3 py-4">
         <ApiSpecSwitcher specs={apiSpecs} activeSpecId={specId} />
         <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
@@ -252,7 +252,7 @@ export function ApiReferenceShell({
     ? `/reference/${specId}/${activeTag}`
     : `/reference/${specId}`;
   return (
-    <div className="min-h-screen bg-[var(--sidebar-bg)] text-[var(--text-main)]">
+    <div className="min-h-screen bg-[var(--canvas)] text-[var(--text-main)]">
       <DocsHeader
         siteName={siteName}
         nav={nav}
@@ -286,7 +286,7 @@ export function ApiReferenceShell({
         id="main-content"
         tabIndex={-1}
         aria-label={t("a11y.mainContent")}
-        className="min-w-0 bg-[var(--panel-bg)] lg:ml-[280px] lg:rounded-tl-2xl"
+        className="min-w-0 bg-[var(--canvas)] lg:ml-[280px]"
       >
         <div className="mx-auto flex max-w-[1520px] flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:flex-row lg:gap-14 lg:px-10 lg:py-10 xl:px-16">
           <div className="min-w-0 flex-1">{contentChildren}</div>

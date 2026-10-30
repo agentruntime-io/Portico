@@ -1,33 +1,7 @@
-export const themeTokens = {
-  light: {
-    "--background": "#fbfcfa",
-    "--foreground": "#1a211d",
-    "--app-bg": "#f4f7f5",
-    "--panel-bg": "#ffffff",
-    "--sidebar-bg": "#f7f9f7",
-    "--panel-border": "#dce5df",
-    "--text-main": "#18201c",
-    "--text-muted": "#53615a",
-    "--surface-muted": "#f3f6f4",
-    "--accent": "#0f8a5f",
-    "--accent-strong": "#08734f",
-  },
-  dark: {
-    "--background": "#0b0f0e",
-    "--foreground": "#f2f5f3",
-    "--app-bg": "#0b0f0e",
-    "--panel-bg": "#101613",
-    "--sidebar-bg": "#0d1210",
-    "--panel-border": "#28332e",
-    "--text-main": "#f2f5f3",
-    "--text-muted": "#aeb9b3",
-    "--surface-muted": "#141b17",
-    "--accent": "#34d399",
-    "--accent-strong": "#6ee7b7",
-  },
-} as const;
+/** Colour tokens live in globals.css under html[data-theme]; this only names the themes. */
+export const themeNames = ["light", "dark"] as const;
 
-export type ThemeName = keyof typeof themeTokens;
+export type ThemeName = (typeof themeNames)[number];
 
 /** What the user picked; "system" follows prefers-color-scheme (the default). */
 export type ThemePreference = ThemeName | "system";
@@ -40,7 +14,6 @@ export const fontScaleLevels = [0.9, 1, 1.1, 1.2] as const;
 
 export function themeInitScriptSource(): string {
   return `(() => {
-  const themes = ${JSON.stringify(themeTokens)};
   const fontScaleLevels = ${JSON.stringify(fontScaleLevels)};
   const stored = window.localStorage.getItem("doc-theme");
   const pref = stored === "light" || stored === "dark" ? stored : "system";
@@ -49,9 +22,6 @@ export function themeInitScriptSource(): string {
     : pref;
   document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.themePref = pref;
-  for (const [name, value] of Object.entries(themes[theme])) {
-    document.documentElement.style.setProperty(name, value);
-  }
   const scaleStored = window.localStorage.getItem("doc-font-scale");
   const parsed = scaleStored ? Number(scaleStored) : 1;
   const scale = fontScaleLevels.includes(parsed) ? parsed : 1;

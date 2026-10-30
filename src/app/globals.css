@@ -1,80 +1,134 @@
 @import "tailwindcss";
+@import "../styles/doc.css";
+@import "../styles/home.css";
 @plugin "@tailwindcss/typography";
 
 /* Match Tailwind `dark:` utilities to the site theme toggle, not OS preference. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-:root {
+/*
+ * Theme tokens. Values live only here, keyed on html[data-theme] (set before paint by
+ * the init script); "system" resolves to light or dark there. A site's docs.json
+ * `colors` override --brand, --brand-ink and --btn via a generated <style> (site-theme.ts);
+ * the soft/line/glow tints derive from --brand, so they follow automatically.
+ */
+:root,
+html[data-theme="light"] {
   color-scheme: light;
-  --background: #fbfcfa;
-  --foreground: #1a211d;
+  --canvas: #f8faf8;
+  --surface: #ffffff;
+  --sunk: #eff3f0;
+  --ink: #12201a;
+  --ink-2: #465750;
+  --ink-3: #5f6f67;
+  --line: #e0e7e2;
+  --line-2: #cdd8d1;
+  --brand: #059669;
+  --brand-ink: #047857;
+  --btn: #047857;
+  --on-btn: #ffffff;
+  --btn-hover: color-mix(in srgb, var(--btn) 82%, #000);
+  --brand-soft: color-mix(in srgb, var(--brand) 9%, transparent);
+  --brand-line: color-mix(in srgb, var(--brand) 35%, transparent);
+  --glow: color-mix(in srgb, var(--brand) 13%, transparent);
+  --cta-bg: #12201a;
+  --cta-fg: #f8faf8;
+  --warn-bg: #fdf5e3;
+  --warn-ink: #7a4b05;
+  --warn-line: #f0dcae;
+  --info-bg: #e9f1fa;
+  --info-ink: #244f7c;
+  --code-bg: #f1f5f2;
+  --code-ink: #22332b;
+  --tok-key: #2a5d8c;
+  --tok-str: #0b6b4c;
+  --tok-num: #965a10;
+  --shadow-1: 0 1px 2px rgb(18 32 26 / 0.05);
+  --shadow-2: 0 1px 2px rgb(18 32 26 / 0.05), 0 12px 32px -14px rgb(18 32 26 / 0.18);
+  --shadow-pop: 0 2px 6px rgb(18 32 26 / 0.06), 0 24px 48px -12px rgb(18 32 26 / 0.22);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #0d1311;
+  --surface: #121a17;
+  --sunk: #172019;
+  --ink: #e6ede8;
+  --ink-2: #a3b3aa;
+  --ink-3: #86978e;
+  --line: #1d2824;
+  --line-2: #2b3a33;
+  --brand: #34c28e;
+  --brand-ink: #63d4a8;
+  --btn: #2fb583;
+  --on-btn: #04180f;
+  --btn-hover: color-mix(in srgb, var(--btn) 85%, #fff);
+  --brand-soft: color-mix(in srgb, var(--brand) 10%, transparent);
+  --brand-line: color-mix(in srgb, var(--brand) 30%, transparent);
+  --glow: color-mix(in srgb, var(--brand) 8%, transparent);
+  --cta-bg: #e6ede8;
+  --cta-fg: #0d1311;
+  --warn-bg: #1d180d;
+  --warn-ink: #e4bb70;
+  --warn-line: #3a2f14;
+  --info-bg: #101b27;
+  --info-ink: #8fb8e3;
+  --code-bg: #0a100e;
+  --code-ink: #cfddd5;
+  --tok-key: #8db7e0;
+  --tok-str: #7fd1ae;
+  --tok-num: #e0b878;
+  --shadow-1: none;
+  --shadow-2: 0 16px 40px -20px rgb(0 0 0 / 0.7);
+  --shadow-pop: 0 24px 56px -12px rgb(0 0 0 / 0.75);
+}
+
+/* Legacy names used across components; they resolve to the palette above. */
+:root {
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --app-bg: var(--canvas);
+  --panel-bg: var(--surface);
+  --sidebar-bg: var(--canvas);
+  --panel-border: var(--line);
+  --text-main: var(--ink);
+  --text-muted: var(--ink-2);
+  --surface-muted: var(--sunk);
+  --accent: var(--brand);
+  --accent-strong: var(--brand-ink);
   --doc-font-scale: 1;
   --font-size-toolbar-item: 0.8125rem;
   --font-size-sidebar-label: 0.6875rem;
   --line-height-sidebar-label: 1rem;
   --font-size-sidebar-item: 0.8125rem;
   --line-height-sidebar-item: 1.25rem;
-  --app-bg: #f4f7f5;
-  --panel-bg: #ffffff;
-  --sidebar-bg: #f7f9f7;
-  --panel-border: #dce5df;
-  --text-main: #18201c;
-  --text-muted: #53615a;
-  --surface-muted: #f3f6f4;
-  --accent: #0f8a5f;
-  --accent-strong: #08734f;
   --z-modal-backdrop: 100;
   --z-modal: 110;
+  --font-body: var(--font-instrument-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-heading: var(--font-bricolage), var(--font-instrument-sans), system-ui, sans-serif;
+  --font-code: var(--font-jetbrains-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-html[data-theme="light"] {
-  color-scheme: light;
-  --background: #fbfcfa;
-  --foreground: #1a211d;
-  --app-bg: #f4f7f5;
-  --panel-bg: #ffffff;
-  --sidebar-bg: #f7f9f7;
-  --panel-border: #dce5df;
-  --text-main: #18201c;
-  --text-muted: #53615a;
-  --surface-muted: #f3f6f4;
-  --accent: #0f8a5f;
-  --accent-strong: #08734f;
-}
-
-html[data-theme="dark"] {
-  color-scheme: dark;
-  --background: #0b0f0e;
-  --foreground: #f2f5f3;
-  --app-bg: #0b0f0e;
-  --panel-bg: #101613;
-  --sidebar-bg: #0d1210;
-  --panel-border: #28332e;
-  --text-main: #f2f5f3;
-  --text-muted: #aeb9b3;
-  --surface-muted: #141b17;
-  --accent: #34d399;
-  --accent-strong: #6ee7b7;
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+  --font-display: var(--font-heading);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  line-height: 1.5;
+  font-family: var(--font-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
   overflow-x: clip;
   text-rendering: optimizeLegibility;
 }
 
 :where(code, kbd, samp, pre) {
-  font-family: var(--font-geist-mono), Consolas, monospace;
+  font-family: var(--font-code);
 }
 
 ::selection {

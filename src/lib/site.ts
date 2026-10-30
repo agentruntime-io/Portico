@@ -3,6 +3,7 @@ import path from "path";
 import yaml from "js-yaml";
 import { assertContentRoot } from "@/lib/content-root";
 import { loadDocsJson, type DocsJsonConfig } from "@/lib/docs-config";
+import { siteTheme, type SiteTheme } from "@/lib/site-theme";
 
 export type OpenApiSpecEntry = {
   id: string;
@@ -23,6 +24,8 @@ export type SiteLogo = { light: string; dark: string };
 export type SiteConfig = {
   name: string;
   logo?: SiteLogo;
+  /** docs.json `colors` and `fonts` as CSS overrides. */
+  theme: SiteTheme;
   description: string;
   url: string;
   ogImage?: string;
@@ -147,6 +150,7 @@ export async function getSiteConfig(): Promise<SiteConfig> {
   cached = {
     name: docsJson.name,
     logo,
+    theme: siteTheme(docsJson.colors, docsJson.fonts),
     description:
       docsJson.description ??
       "Documentation for AgentRuntime.",
