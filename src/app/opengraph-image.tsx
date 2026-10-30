@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 
 import { getSiteConfig } from "@/lib/site";
 
-export const alt = "AgentRuntime documentation";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -10,13 +9,14 @@ function siteHostname(url: string): string {
   try {
     return new URL(url).hostname;
   } catch {
-    return "docs.agentruntime.io";
+    return url.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
   }
 }
 
 export default async function OpenGraphImage() {
   const site = await getSiteConfig();
   const host = siteHostname(site.url);
+  const initial = (Array.from(site.name.trim())[0] ?? "").toUpperCase();
 
   return new ImageResponse(
     (
@@ -49,7 +49,7 @@ export default async function OpenGraphImage() {
               color: "#042f2e",
             }}
           >
-            A
+            {initial}
           </div>
           <div
             style={{
