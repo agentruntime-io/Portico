@@ -21,11 +21,11 @@ type Props = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteConfig();
+  const changelogDescription = getMessages("en").changelog.description.replace("{name}", site.name);
   return buildPageMetadata({
     site,
     title: "Changelog",
-    description:
-      "Product release notes for AgentRuntime — workflows, integrations, API, and platform updates.",
+    description: changelogDescription,
     canonicalPath: "/changelog",
   });
 }
@@ -38,6 +38,7 @@ export default async function ChangelogPage({ searchParams }: Props) {
     listChangelogReleases(),
   ]);
   const messages = getMessages("en");
+  const changelogDescription = messages.changelog.description.replace("{name}", site.name);
   const filters = collectChangelogFilters(allReleases);
   const releases = filterChangelogReleases(allReleases, {
     area: params.area,
@@ -58,8 +59,7 @@ export default async function ChangelogPage({ searchParams }: Props) {
         data={webPageJsonLd({
           site,
           title: "Changelog",
-          description:
-            "Product release notes for AgentRuntime — workflows, integrations, API, and platform updates.",
+          description: changelogDescription,
           canonicalPath: "/changelog",
         })}
       />
@@ -79,7 +79,7 @@ export default async function ChangelogPage({ searchParams }: Props) {
               {messages.changelog.title}
             </h1>
             <p className="mt-3 text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
-              {messages.changelog.description}
+              {changelogDescription}
             </p>
           </header>
 

@@ -44,6 +44,8 @@ export function activeApiSpecId(
   return match?.id;
 }
 
-export function openApiDownloadUrl(file: string) {
-  return `/${file.replace(/^\/+/, "")}`;
+/** Raw spec download, served by src/app/openapi/[file]/route.ts. */
+export function openApiDownloadUrl(specId: string, file: string) {
+  const ext = /\.[a-z0-9]+$/i.exec(file)?.[0].toLowerCase() ?? ".yaml";
+  return `/openapi/${specId}${ext}`;
 }

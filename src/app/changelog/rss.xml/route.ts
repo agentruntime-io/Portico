@@ -1,4 +1,5 @@
 import { getSiteConfig } from "@/lib/site";
+import { getMessages } from "@/lib/i18n";
 import {
   listChangelogReleases,
   releaseExcerpt,
@@ -33,7 +34,7 @@ export async function GET() {
   <channel>
     <title>${escapeXml(`${site.name} Changelog`)}</title>
     <link>${base}/changelog</link>
-    <description>${escapeXml("Product release notes for AgentRuntime.")}</description>
+    <description>${escapeXml(getMessages("en").changelog.description.replace("{name}", site.name))}</description>
     ${items.join("\n")}
   </channel>
 </rss>`;

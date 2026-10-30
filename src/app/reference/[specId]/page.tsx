@@ -14,7 +14,8 @@ import { getNavigation } from "@/lib/nav";
 import { resolveMainNav } from "@/lib/main-nav";
 import { markdownToHtml } from "@/lib/markdown";
 import { buildPageMetadata, excerptFromBody, webPageJsonLd } from "@/lib/seo";
-import { flattenOperations, loadBundledSpec } from "@/lib/openapi/core";
+import { flattenOperations, getDescriptionSections } from "@/lib/openapi/core";
+import { loadBundledSpec } from "@/lib/openapi/load";
 import { openApiDownloadUrl } from "@/lib/main-nav";
 
 type Props = { params: Promise<{ specId: string }> };
@@ -76,6 +77,7 @@ export default async function SpecOverviewPage({ params }: Props) {
         mainNav={mainNav}
         openApiFile={meta.file}
         operations={ops}
+        sections={getDescriptionSections(doc.info?.description)}
         rightRail={<ApiRightRail doc={doc} />}
       >
         <article key="api-overview" className="max-w-3xl">
@@ -91,7 +93,7 @@ export default async function SpecOverviewPage({ params }: Props) {
           {doc.info?.title ?? meta.title}
         </h1>
         <a
-          href={openApiDownloadUrl(meta.file)}
+          href={openApiDownloadUrl(specId, meta.file)}
           className="ds-link ds-accent-text mt-4 inline-flex items-center border-b border-current text-base font-semibold"
         >
           Download OpenAPI Document
