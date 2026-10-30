@@ -13,5 +13,6 @@ export function textEntry(
   excerpt: string;
   body: string;
   code: string;
+  group?: string;
 };
 export function splitProseAndCode(markdown: unknown): { prose: string; code: string };

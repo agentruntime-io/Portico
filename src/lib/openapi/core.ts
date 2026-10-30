@@ -1,5 +1,4 @@
-import SwaggerParser from "@apidevtools/swagger-parser";
-import path from "path";
+import GithubSlugger from "github-slugger";
 
 export const HTTP_METHODS = [
   "get",
@@ -20,7 +19,13 @@ export type OpenApiDocument = {
     schemas?: Record<string, unknown>;
     securitySchemes?: Record<string, SecurityScheme>;
   };
-  info?: { title?: string; version?: string; description?: string };
+  info?: {
+    title?: string;
+    version?: string;
+    description?: string;
+    contact?: { name?: string; url?: string; email?: string };
+    license?: { name?: string; url?: string };
+  };
   servers?: { url?: string; description?: string }[];
   openapi?: string;
   security?: Record<string, unknown>[] | unknown[];
@@ -73,13 +78,6 @@ export function operationSlug(
 ): string {
   if (operationId) return slugifyOperationId(operationId);
   return fallbackSlug(method, pathKey);
-}
-
-export async function loadBundledSpec(
-  specFile: string,
-): Promise<OpenApiDocument> {
-  const full = path.join(process.cwd(), "content", specFile);
-  return SwaggerParser.validate(full) as Promise<OpenApiDocument>;
 }
 
 export function flattenOperations(
@@ -200,4 +198,37 @@ export function findTagBySlug(
   tagSlug: string,
 ): string | undefined {
   return [...grouped.keys()].find((tag) => slugifyTag(tag) === tagSlug);
+}
+
+export type ApiDescriptionSection = { id: string; title: string };
+
+/**
+ * `##` headings of an OpenAPI `info.description`, with the same ids the rendered
+ * description gets (github-slugger, as in rehype-slug), for the guide-section nav.
+ */
+export function getDescriptionSections(
+  description?: string,
+): ApiDescriptionSection[] {
+  if (!description) return [];
+  const slugger = new GithubSlugger();
+  const sections: ApiDescriptionSection[] = [];
+  let fence: string | null = null;
+  for (const line of description.split(/\r?\n/)) {
+    const marker = /^\s*(```+|~~~+)/.exec(line)?.[1];
+    if (marker) {
+      if (!fence) fence = marker[0];
+      else if (marker[0] === fence) fence = null;
+      continue;
+    }
+    if (fence) continue;
+    const match = /^##[ \t]+(.+?)[ \t]*#*[ \t]*$/.exec(line);
+    if (!match) continue;
+    const title = match[1]
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+      .replace(/[`*~]/g, "")
+      .trim();
+    if (!title) continue;
+    sections.push({ id: slugger.slug(title), title });
+  }
+  return sections;
 }

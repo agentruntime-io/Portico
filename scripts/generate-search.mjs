@@ -5,9 +5,14 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import matter from "gray-matter";
-import yaml from "js-yaml";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { assertContentRoot } from "./content-root.mjs";
+import {
+  loadOpenApiSpecs,
+  loadSiteYaml,
+  resolveContentFile,
+  resolveSiteUrl,
+} from "./content-config.mjs";
 import { stripMarkdown, textEntry } from "./search-text.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -127,7 +132,7 @@ async function hasLocalizedMdx(contentRoot, pagePath, locale) {
   }
 }
 
-async function indexMdxPage(contentRoot, pagePath, locale, origin) {
+async function indexMdxPage(contentRoot, pagePath, locale, origin, group) {
   const localized = localizedMdxPath(contentRoot, pagePath, locale);
   let file = localized;
   try {
@@ -145,11 +150,13 @@ async function indexMdxPage(contentRoot, pagePath, locale, origin) {
   if (data.draft === true || data.noindex === true) return null;
 
   const href = pagePathToHref(pagePath, locale);
-  return textEntry(
+  const entry = textEntry(
     `${origin}${href}`,
     String(data.sidebarTitle ?? data.title ?? pagePath),
     content,
   );
+  if (group) entry.group = group;
+  return entry;
 }
 
 async function main() {
@@ -158,19 +165,19 @@ async function main() {
     await fs.readFile(path.join(contentRoot, "docs.json"), "utf8"),
   );
 
-  const siteRaw = await fs.readFile(
-    path.join(root, "content", "site.yaml"),
-    "utf8",
-  );
-  const site = yaml.load(siteRaw);
-  const origin = (process.env.SITE_URL ?? site.url).replace(/\/$/, "");
+  const siteYaml = loadSiteYaml(contentRoot);
+  const origin = resolveSiteUrl(siteYaml);
+  const specs = loadOpenApiSpecs(siteYaml, contentRoot);
 
   const all = [];
 
   const pagePaths = new Set(["index"]);
+  // docs.json navigation group label per page, shown next to search results.
+  const groupByPage = new Map();
   for (const group of docsJson.navigation?.groups ?? []) {
     for (const p of flattenPages(group.pages)) {
       pagePaths.add(p);
+      if (!groupByPage.has(p) && group.group) groupByPage.set(p, String(group.group));
     }
   }
 
@@ -180,7 +187,13 @@ async function main() {
         const exists = await hasLocalizedMdx(contentRoot, pagePath, locale);
         if (!exists) continue;
       }
-      const entry = await indexMdxPage(contentRoot, pagePath, locale, origin);
+      const entry = await indexMdxPage(
+        contentRoot,
+        pagePath,
+        locale,
+        origin,
+        groupByPage.get(pagePath),
+      );
       if (entry) all.push(entry);
     }
   }
@@ -188,7 +201,7 @@ async function main() {
   const changelogDir = path.join(contentRoot, "changelog");
   try {
     const changelogFiles = await fs.readdir(changelogDir);
-    all.push(textEntry(`${origin}/changelog`, "Changelog", "Product release notes"));
+    all.push(textEntry(`${origin}/changelog`, "Changelog", "Release notes"));
     for (const name of changelogFiles) {
       if (!/\.mdx?$/i.test(name)) continue;
       const base = name.replace(/\.(mdx?|markdown)$/i, "");
@@ -205,10 +218,11 @@ async function main() {
     /* no changelog directory */
   }
 
-  if (site.openapi?.specs?.length) {
+  if (specs.length) {
     all.push(textEntry(`${origin}/reference`, "API reference", "OpenAPI reference overview"));
-    for (const spec of site.openapi.specs) {
-      const full = path.join(root, "content", spec.file);
+    for (const spec of specs) {
+      const full = resolveContentFile(spec.file, contentRoot);
+      if (!full) throw new Error(`OpenAPI file is outside the content root: ${spec.file}`);
       const doc = await SwaggerParser.validate(full);
       all.push(
         textEntry(
@@ -252,6 +266,7 @@ async function main() {
     excerpt: e.excerpt,
     body: e.body,
     code: e.code || undefined,
+    group: e.group || undefined,
   }));
   await fs.writeFile(outPath, JSON.stringify(forClient), "utf8");
   console.log(

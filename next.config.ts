@@ -1,51 +1,32 @@
 import type { NextConfig } from "next";
-import fs from "fs";
-import path from "path";
-import yaml from "js-yaml";
+import { loadRedirects } from "./src/lib/content-config";
 
-function loadRedirects(): { source: string; destination: string; permanent: boolean }[] {
+function loadContentRedirects() {
   try {
-    const file = path.join(process.cwd(), "content", "redirects.yaml");
-    const raw = fs.readFileSync(file, "utf8");
-    const list = yaml.load(raw) as {
-      from: string;
-      to: string;
-      permanent?: boolean;
-    }[];
-    if (!Array.isArray(list)) return [];
-    return list.map((r) => ({
-      source: r.from,
-      destination: r.to,
-      permanent: r.permanent ?? false,
-    }));
+    return loadRedirects();
   } catch {
     return [];
   }
 }
+
+const contentTrace = [".content/**/*", ".content-root"];
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@apidevtools/swagger-parser"],
   // Cloned docs live under .content/ (gitignored). Dynamic routes read MDX at
   // request time, so include the checkout in serverless traces on Vercel.
   outputFileTracingIncludes: {
-    "/*": [".content/**/*", ".content-root", "content/**/*"],
-    "/[...slug]": [".content/**/*", ".content-root", "content/**/*"],
-    "/changelog": [".content/**/*", ".content-root", "content/**/*"],
-    "/reference": [".content/**/*", ".content-root", "content/**/*"],
-    "/reference/[specId]": [".content/**/*", ".content-root", "content/**/*"],
-    "/reference/[specId]/[tagSlug]": [
-      ".content/**/*",
-      ".content-root",
-      "content/**/*",
-    ],
-    "/reference/[specId]/[tagSlug]/[operationSlug]": [
-      ".content/**/*",
-      ".content-root",
-      "content/**/*",
-    ],
+    "/*": contentTrace,
+    "/[...slug]": contentTrace,
+    "/changelog": contentTrace,
+    "/reference": contentTrace,
+    "/reference/[specId]": contentTrace,
+    "/reference/[specId]/[tagSlug]": contentTrace,
+    "/reference/[specId]/[tagSlug]/[operationSlug]": contentTrace,
+    "/openapi/[file]": contentTrace,
   },
   async redirects() {
-    return loadRedirects();
+    return loadContentRedirects();
   },
 };
 
