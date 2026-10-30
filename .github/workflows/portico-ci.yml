@@ -1,9 +1,13 @@
 name: Portico CI
 
+# Manual only for now, to save Actions runs: start it from the Actions tab
+# ("Run workflow") or `gh workflow run portico-ci.yml --ref <branch>`.
+# To run automatically again, add back:
+#   push:
+#     branches: [main, master]
+#   pull_request:
 on:
-  push:
-    branches: [main, master]
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   quality:
