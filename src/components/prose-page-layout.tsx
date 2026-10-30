@@ -1,4 +1,4 @@
-import { PageActions } from "@/components/page-actions";
+import { PageCrumbs } from "@/components/page-actions";
 import { DocPager } from "@/components/doc-pager";
 import { DocProse } from "@/components/doc-prose";
 import { MdxProseEnhancer } from "@/components/mdx-prose-enhancer";
@@ -10,7 +10,8 @@ import type { PageNeighbor } from "@/lib/pager";
 import type { ReactNode } from "react";
 
 export function ProsePageLayout({
-  eyebrow,
+  groupLabel,
+  repoLabel,
   title,
   description,
   html,
@@ -24,7 +25,10 @@ export function ProsePageLayout({
   enhanceMdx = false,
   bodyClassName,
 }: {
-  eyebrow: string;
+  /** docs.json nav group that contains this page (breadcrumb). */
+  groupLabel?: string;
+  /** Muted `owner/repo` label beside the edit link, derived from the edit URL. */
+  repoLabel?: string;
   title: string;
   description?: string;
   html?: string;
@@ -44,60 +48,56 @@ export function ProsePageLayout({
     ? docProseClasses.replace("prose-h1:hidden", "")
     : docProseClasses;
   const proseClass = bodyClassName ? `${baseProse} ${bodyClassName}` : baseProse;
-  const hasToc = headings.length > 0;
+  const hasToc = headings.length > 0 && !hideChrome;
+  // The TOC column sits in the main area's right padding (48px from 820px), so the
+  // grid pulls itself out by that amount and the article keeps the padding as a gutter.
   const layoutClass = hideChrome
     ? "mx-auto w-full max-w-6xl"
     : hasToc
-      ? "mx-auto grid w-full max-w-[68rem] grid-cols-1 gap-10 xl:grid-cols-[minmax(0,46rem)_220px] xl:gap-16"
-      : "mx-auto grid w-full max-w-[46rem] grid-cols-1";
+      ? "min-[1180px]:-mr-12 min-[1180px]:grid min-[1180px]:grid-cols-[minmax(0,1fr)_208px]"
+      : "";
 
   function renderMdxBody() {
     if (!mdx) return null;
     if (bareMdx) {
-      const inner = <div className={proseClass}>{mdx}</div>;
-      return enhanceMdx ? (
+      return enhanceMdx || !hideChrome ? (
         <MdxProseEnhancer className={proseClass}>{mdx}</MdxProseEnhancer>
       ) : (
-        inner
+        <div className={proseClass}>{mdx}</div>
       );
     }
     return <DocProse className={proseClass}>{mdx}</DocProse>;
   }
 
+  const body = (
+    <article className={hideChrome ? "min-w-0" : "doc-article min-w-0"}>
+      {hideChrome ? null : (
+        <header>
+          <PageCrumbs groupLabel={groupLabel} title={title} />
+          <h1 className="doc-title">{title}</h1>
+          {description ? <p className="doc-desc">{description}</p> : null}
+          <MobileTableOfContents headings={headings} />
+        </header>
+      )}
+      <div className={hideChrome ? undefined : "doc-body"}>
+        {mdx ? renderMdxBody() : html ? <MarkdownBody html={html} /> : null}
+      </div>
+      <DocPager
+        prev={prev}
+        next={next}
+        editUrl={hideChrome ? undefined : editUrl}
+        repoLabel={repoLabel}
+      />
+    </article>
+  );
+
+  if (hideChrome) return <div className={layoutClass}>{body}</div>;
+
   return (
     <div className={layoutClass}>
-      <article
-        className={
-          hideChrome ? "min-w-0" : "min-w-0 pt-8 sm:pt-10 lg:pt-14"
-        }
-      >
-        {hideChrome ? null : (
-          <>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
-              {eyebrow}
-            </p>
-            <h1 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.035em] text-[var(--text-main)] sm:text-4xl sm:leading-[1.15]">
-              {title}
-            </h1>
-            {description ? (
-              <p className="mt-4 max-w-[42rem] [text-wrap:pretty] text-[1.0625rem] leading-8 text-[var(--text-muted)] sm:mt-5 sm:text-lg">
-                {description}
-              </p>
-            ) : null}
-            <div className="mt-6 flex flex-col gap-5 sm:mt-7 sm:gap-6">
-              <PageActions editUrl={editUrl} />
-              <MobileTableOfContents headings={headings} />
-            </div>
-          </>
-        )}
-        <div className={hideChrome ? undefined : "mt-10 sm:mt-14"}>
-          {mdx ? renderMdxBody() : html ? <MarkdownBody html={html} /> : null}
-        </div>
-        <DocPager prev={prev} next={next} />
-      </article>
-
-      {hasToc && !hideChrome ? (
-        <aside className="hidden pt-14 xl:block">
+      <div className={hasToc ? "min-w-0 min-[1180px]:pr-12" : "min-w-0"}>{body}</div>
+      {hasToc ? (
+        <aside className="doc-toc-col">
           <OnThisPage headings={headings} />
         </aside>
       ) : null}

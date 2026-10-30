@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
-import { createElement, useId, useState } from "react";
+import { ChevronRight } from "lucide-react";
+import { useId, useState } from "react";
 import type { NavGroup } from "@/lib/nav";
-import { navIcon } from "@/lib/nav-icons";
 
-const COLLAPSE_THRESHOLD = 4;
-
+/**
+ * One docs.json navigation group: a toggle row (label, page count, chevron) over a
+ * tree-lined list. The current page gets a 2px brand rule on the guide line instead
+ * of a filled row; the group holding it is always open.
+ */
 export function SidebarNavGroup({
   group,
   isActiveItem,
@@ -21,81 +23,47 @@ export function SidebarNavGroup({
 }) {
   const listId = useId();
   const hasActiveItem = group.items.some((item) => isActiveItem(item.href));
-  const collapsible = group.items.length >= COLLAPSE_THRESHOLD;
   const [expanded, setExpanded] = useState(group.defaultExpanded !== false);
-  const open = !collapsible || hasActiveItem || expanded;
-  const toggleable = collapsible && !hasActiveItem;
-  const drawerHeaderTone = hasActiveItem
-    ? "text-[var(--accent-strong)]"
-    : "text-[var(--text-main)]";
-
-  const groupHeaderClass =
-    variant === "drawer"
-      ? `docs-nav-label flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left font-semibold uppercase tracking-[0.08em] ${drawerHeaderTone}`
-      : "docs-nav-label flex min-h-7 w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]";
-
-  const itemClass = (active: boolean) =>
-    variant === "drawer"
-      ? `docs-nav-row flex min-h-11 items-center rounded-lg px-2.5 py-2 ${
-          active ? "docs-nav-active font-medium" : "nav-item-muted"
-        }`
-      : `docs-nav-row flex min-h-8 items-center rounded-lg px-2.5 py-1.5 transition-colors ${
-          active ? "docs-nav-active font-medium" : "docs-nav-item"
-        }`;
-  const headerContent = (
-    <>
-      {createElement(navIcon(group.icon), {
-        className:
-          variant === "drawer"
-            ? "h-4 w-4 shrink-0"
-            : "h-3.5 w-3.5 shrink-0",
-        "aria-hidden": true,
-      })}
-      <span className="flex-1">{group.label}</span>
-      {toggleable ? (
-        <ChevronDown
-          className={`h-3.5 w-3.5 transition-transform ${open ? "" : "-rotate-90"}`}
-          aria-hidden
-        />
-      ) : null}
-    </>
-  );
+  const open = hasActiveItem || expanded;
+  const drawer = variant === "drawer";
 
   return (
-    <div
-      data-nav-group
-      data-active-group={hasActiveItem ? "true" : undefined}
-      className={variant === "drawer" ? "mb-2" : undefined}
-    >
-      {toggleable ? (
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-controls={listId}
-          onClick={() => setExpanded((value) => !value)}
-          className={`${groupHeaderClass} transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text-main)]`}
-        >
-          {headerContent}
-        </button>
-      ) : (
-        <div className={groupHeaderClass}>{headerContent}</div>
-      )}
+    <div data-nav-group data-active-group={hasActiveItem ? "true" : undefined} className="mb-0.5">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={listId}
+        disabled={hasActiveItem}
+        onClick={() => setExpanded((value) => !value)}
+        className={`flex w-full items-center gap-2 rounded-lg px-2 text-left text-[13.5px] font-semibold text-[var(--ink)] transition-colors enabled:hover:bg-[var(--sunk)] disabled:cursor-default ${
+          drawer ? "min-h-11" : "min-h-8 py-1.5"
+        }`}
+      >
+        <span className="min-w-0 flex-1 truncate">{group.label}</span>
+        <span className="font-mono text-[10.5px] font-normal text-[var(--ink-3)]">{group.items.length}</span>
+        <ChevronRight
+          className={`h-3.5 w-3.5 shrink-0 text-[var(--ink-3)] transition-transform duration-150 ${open ? "rotate-90" : ""}`}
+          aria-hidden
+        />
+      </button>
       {open ? (
-        <ul
-          id={listId}
-          className={
-            variant === "drawer" ? "ml-6 mt-0.5" : "mt-1 space-y-0.5"
-          }
-        >
+        <ul id={listId} className="mb-2 ml-[15px] mt-0.5 border-l border-[var(--line)]">
           {group.items.map((item) => {
             const active = isActiveItem(item.href);
             return (
               <li key={item.href}>
-                <Link prefetch={false}
+                <Link
+                  prefetch={false}
                   href={item.href}
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
-                  className={itemClass(active)}
+                  className={`-ml-px block border-l-2 pl-3.5 pr-2.5 text-[13.5px] leading-[1.4] transition-colors ${
+                    drawer ? "py-2.5" : "py-[5px]"
+                  } ${
+                    active
+                      ? "border-[var(--brand)] font-semibold text-[var(--brand-ink)]"
+                      : "border-transparent text-[var(--ink-2)] hover:text-[var(--ink)]"
+                  }`}
                 >
                   {item.title}
                 </Link>

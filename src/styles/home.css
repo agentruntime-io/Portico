@@ -1,0 +1,1069 @@
+/*
+ * Home page: hero, search card, section headers, cards, band, task rows, and the
+ * compatibility styling for Mintlify-authored home pages (data-product-guide-index).
+ *
+ * Content repos are not scanned by Tailwind, so everything here is plain CSS keyed on
+ * the theme tokens (--surface, --ink, --brand ...). Responsive behaviour uses container
+ * queries on each block, so it follows the content column, not the viewport.
+ *
+ * Specificity note: globals.css forces `color` with !important on p/li and h1-h6 inside
+ * .doc-prose. The `html[data-theme]` prefix on text colours below outranks those rules.
+ */
+
+/* ---------- buttons (hero actions, band) ---------- */
+.hm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.hm-btn svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  transition: transform 0.15s;
+}
+
+.hm-btn-primary,
+.hm-btn-primary:hover {
+  background: var(--btn);
+  color: var(--on-btn);
+}
+
+.hm-btn-primary:hover {
+  background: var(--btn-hover);
+}
+
+.hm-btn-primary:hover svg {
+  transform: translateX(2px);
+}
+
+.hm-btn-ghost,
+.hm-btn-ghost:hover {
+  border-color: var(--line-2);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.hm-btn-ghost:hover {
+  border-color: var(--ink-3);
+}
+
+.hm-btn-ghost:hover svg {
+  transform: translateX(2px);
+}
+
+.hm-btn-sm {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.hm-btn:focus-visible,
+.hm-sec-link:focus-visible,
+.hm-card:focus-visible,
+.hm-row:focus-visible,
+.hm-sbox-row:focus-visible,
+.hm-sbox-hints button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.hm-kbd {
+  flex: none;
+  padding: 1px 6px;
+  border: 1px solid var(--line-2);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink-3);
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ---------- home wrapper ---------- */
+.docs-home {
+  width: 100%;
+  padding-bottom: 64px;
+}
+
+/* ---------- hero ---------- */
+.hm-hero {
+  position: relative;
+  overflow: hidden;
+  container: hm-hero / inline-size;
+  border-bottom: 1px solid var(--line);
+}
+
+.hm-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--line-2) 1px, transparent 1.2px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 70% at 78% 28%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(ellipse 60% 70% at 78% 28%, #000 0%, transparent 72%);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.hm-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(55% 70% at 88% -10%, var(--glow), transparent 70%);
+  pointer-events: none;
+}
+
+.hm-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  padding: 76px 40px 60px;
+}
+
+.hm-hero-main {
+  min-width: 0;
+}
+
+.hm-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-3);
+  font-family: var(--font-code);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.hm-eyebrow i {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+.hm-hero .hm-title {
+  margin: 18px 0 0;
+  font-family: var(--font-heading);
+  font-size: 66px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.hm-hero .hm-title em {
+  font-style: normal;
+  background: linear-gradient(
+    transparent 84%,
+    var(--brand-line) 84%,
+    var(--brand-line) 94%,
+    transparent 94%
+  );
+}
+
+.hm-hero .hm-lead {
+  max-width: 34em;
+  margin: 20px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+html[data-theme] .hm-hero .hm-title {
+  color: var(--ink) !important;
+}
+
+html[data-theme] .hm-hero .hm-lead {
+  color: var(--ink-2) !important;
+}
+
+/* search card */
+.hm-sbox {
+  max-width: 640px;
+  margin-top: 32px;
+}
+
+.hm-sbox-card {
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.hm-sbox-card:hover {
+  border-color: var(--ink-3);
+}
+
+.hm-sbox-card:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px var(--brand-soft), var(--shadow-2);
+}
+
+.hm-sbox-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 62px;
+  padding: 0 16px 0 20px;
+  border-radius: 18px;
+  color: var(--ink-3);
+  font-size: 20px;
+  text-align: left;
+  cursor: text;
+}
+
+.hm-sbox-row svg {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+.hm-sbox-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hm-sbox-hints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 14px 20px;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.hm-sbox-hints button {
+  padding: 3px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--canvas);
+  color: var(--ink-2);
+  font-size: 12.5px;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.hm-sbox-hints button:hover {
+  border-color: var(--brand-line);
+  color: var(--brand-ink);
+}
+
+.hm-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* aside column */
+.hm-aside {
+  position: relative;
+  display: none;
+  min-width: 0;
+  place-items: center;
+}
+
+.hm-aside-in {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.hm-aside-in :where(img, video, svg) {
+  max-width: 100%;
+  height: auto;
+}
+
+.hm-aside-in :where(pre) {
+  margin: 0;
+  overflow-x: auto;
+}
+
+.hm-arch {
+  position: absolute;
+  inset: -30px -10px -30px 18%;
+  color: var(--line-2);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.hm-arch svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+
+@container hm-hero (min-width: 960px) {
+  .hm-hero-grid.has-aside {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    gap: 56px;
+  }
+
+  .hm-aside {
+    display: grid;
+  }
+}
+
+@container hm-hero (max-width: 1179px) {
+  .hm-hero .hm-title {
+    font-size: 56px;
+  }
+}
+
+@container hm-hero (max-width: 959px) {
+  .hm-hero-grid {
+    padding: 56px 32px 44px;
+  }
+}
+
+@container hm-hero (max-width: 639px) {
+  .hm-hero-grid {
+    padding: 36px 20px 34px;
+  }
+
+  .hm-hero .hm-title {
+    margin-top: 14px;
+    font-size: 40px;
+  }
+
+  .hm-hero .hm-lead {
+    margin-top: 14px;
+    font-size: 16px;
+  }
+
+  .hm-sbox {
+    margin-top: 24px;
+  }
+
+  .hm-sbox-row {
+    height: 56px;
+    font-size: 18px;
+  }
+
+  .hm-sbox-text {
+    font-size: 16px;
+  }
+
+  .hm-sbox-row .hm-kbd {
+    display: none;
+  }
+}
+
+/* ---------- sections ---------- */
+.hm-sec {
+  container: hm-sec / inline-size;
+}
+
+.hm-sec-in {
+  padding: 52px 40px 0;
+}
+
+.hm-sec-h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.hm-sec-heading {
+  min-width: 0;
+}
+
+.hm-sec-eyebrow {
+  margin-bottom: 8px;
+  color: var(--ink-3);
+  font-family: var(--font-code);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.hm-sec .hm-sec-title {
+  margin: 0;
+  scroll-margin-top: 6rem;
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+html[data-theme] .hm-sec .hm-sec-title {
+  color: var(--ink) !important;
+}
+
+.hm-sec-link {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  text-decoration: none;
+}
+
+.hm-sec-link:hover {
+  color: var(--brand-ink);
+}
+
+.hm-sec-link svg {
+  width: 1em;
+  height: 1em;
+}
+
+.hm-sec .hm-sec-desc {
+  max-width: 42rem;
+  margin: -8px 0 18px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+html[data-theme] .hm-sec .hm-sec-desc {
+  color: var(--ink-2) !important;
+}
+
+@container hm-sec (max-width: 819px) {
+  .hm-sec-in {
+    padding-inline: 24px;
+  }
+}
+
+@container hm-sec (max-width: 639px) {
+  .hm-sec-in {
+    padding-inline: 20px;
+  }
+
+  .hm-sec .hm-sec-title {
+    font-size: 22px;
+  }
+}
+
+/* ---------- icon tile ---------- */
+.hm-tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--sunk);
+  color: var(--ink-2);
+  transition: color 0.18s, background-color 0.18s, border-color 0.18s;
+}
+
+.hm-tile svg {
+  width: 19px;
+  height: 19px;
+}
+
+.hm-card:hover .hm-tile,
+.hm-row:hover .hm-tile,
+.hm-card:focus-visible .hm-tile,
+.hm-row:focus-visible .hm-tile {
+  border-color: var(--brand-line);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+}
+
+/* ---------- cards ---------- */
+.hm-cg {
+  container: hm-cg / inline-size;
+  margin: 28px 0;
+}
+
+.hm-sec .hm-cg {
+  margin: 0;
+}
+
+.hm-cg-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hm-cg-grid[data-cols="1"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@container hm-cg (min-width: 640px) {
+  /* A lone last card spans the row instead of leaving an empty slot. */
+  .hm-cg-grid[data-cols="2"] > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+@container hm-cg (min-width: 760px) {
+  .hm-cg-grid[data-cols="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container hm-cg (min-width: 1000px) {
+  .hm-cg-grid[data-cols="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* In a Section the 1000px breakpoint is the section width (cards sit inside its padding). */
+@container hm-sec (min-width: 1000px) {
+  .hm-cg-grid[data-cols="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@container hm-cg (max-width: 639px) {
+  .hm-cg-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.hm-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+}
+
+a.hm-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-2);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.hm-card-body {
+  min-width: 0;
+}
+
+.hm-card .hm-card-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+a.hm-card .hm-card-title {
+  padding-right: 24px;
+}
+
+.hm-card .hm-card-desc {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.hm-card .hm-card-desc :where(p) {
+  margin: 0;
+}
+
+.hm-card-go {
+  position: absolute;
+  top: 22px;
+  right: 20px;
+  width: 16px;
+  height: 16px;
+  color: var(--ink-3);
+  transition: transform 0.18s, color 0.18s;
+}
+
+a.hm-card:hover .hm-card-go,
+a.hm-card:focus-visible .hm-card-go {
+  transform: translate(2px, -2px);
+  color: var(--brand-ink);
+}
+
+html[data-theme] .hm-card .hm-card-title {
+  color: var(--ink) !important;
+}
+
+html[data-theme] .hm-card .hm-card-desc,
+html[data-theme] .hm-card .hm-card-desc :where(p, li, strong) {
+  color: var(--ink-2) !important;
+}
+
+/* ---------- band ---------- */
+.hm-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin: 14px 0;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--sunk);
+}
+
+.hm-sec .hm-band {
+  margin-bottom: 0;
+}
+
+.hm-band-t {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.hm-band .hm-band-title {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+
+.hm-band .hm-band-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.hm-band .hm-band-text :where(p) {
+  margin: 0;
+}
+
+html[data-theme] .hm-band .hm-band-title {
+  color: var(--ink) !important;
+}
+
+html[data-theme] .hm-band .hm-band-text,
+html[data-theme] .hm-band .hm-band-text :where(p) {
+  color: var(--ink-2) !important;
+}
+
+/* ---------- task rows ---------- */
+.hm-tasks {
+  container: hm-tasks / inline-size;
+  margin: 20px 0;
+}
+
+.hm-sec .hm-tasks {
+  margin: 0;
+}
+
+.hm-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 36px;
+}
+
+.hm-row-item {
+  border-top: 1px solid var(--line);
+}
+
+.hm-row-item:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.hm-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 4px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.hm-row:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.hm-row .hm-tile {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+.hm-row .hm-tile svg {
+  width: 17px;
+  height: 17px;
+}
+
+.hm-row-t {
+  min-width: 0;
+}
+
+.hm-row .hm-row-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.hm-row .hm-row-desc {
+  margin-top: 3px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.hm-row .hm-row-desc :where(p) {
+  margin: 0;
+}
+
+.hm-row-go {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  align-self: center;
+  color: var(--ink-3);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.18s, transform 0.18s, color 0.18s;
+}
+
+a.hm-row:hover .hm-row-go,
+a.hm-row:focus-visible .hm-row-go {
+  color: var(--brand-ink);
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  .hm-row-go {
+    opacity: 0.6;
+    transform: none;
+  }
+}
+
+html[data-theme] .hm-row .hm-row-title {
+  color: var(--ink) !important;
+}
+
+html[data-theme] .hm-row .hm-row-desc,
+html[data-theme] .hm-row .hm-row-desc :where(p) {
+  color: var(--ink-2) !important;
+}
+
+@container hm-tasks (min-width: 640px) {
+  .hm-rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The left cell of the last row needs its closing rule too. */
+  .hm-rows > .hm-row-item:nth-last-child(2) {
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-btn,
+  .hm-btn svg,
+  .hm-sbox-card,
+  .hm-sbox-hints button,
+  .hm-tile,
+  .hm-card,
+  .hm-card-go,
+  .hm-row-go {
+    transition: none;
+  }
+
+  .hm-btn-primary:hover svg,
+  .hm-btn-ghost:hover svg,
+  a.hm-card:hover,
+  a.hm-card:hover .hm-card-go,
+  a.hm-card:focus-visible .hm-card-go,
+  a.hm-row:hover .hm-row-go {
+    transform: none;
+  }
+}
+
+/* ---------- legacy product-guide classes (older content repos) ---------- */
+.product-guide-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2.5rem 0 1rem;
+}
+
+.doc-prose .product-guide-page :where(h1, h2, p, hr, .hm-cg) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.product-guide-hero {
+  max-width: 34rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.product-guide-hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: var(--text-main) !important;
+}
+
+.doc-prose .product-guide-hero .product-guide-subtitle {
+  max-width: 34rem;
+  margin: 0.75rem auto 0 !important;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-wrap: balance;
+  color: var(--text-muted) !important;
+}
+
+.doc-prose .product-guide-section > h2 {
+  margin-bottom: 1.25rem !important;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main) !important;
+}
+
+.product-guide-page hr {
+  border: 0;
+  border-top: 1px solid var(--panel-border);
+}
+
+/* ---------- Mintlify-authored home pages ---------- */
+/*
+ * Their Tailwind utilities (text-gray-*, bg-gray-50, font-serif, max-w-[540px]) are not
+ * generated for content repos, and a bare `border` falls back to the link colour. Map the
+ * patterns they rely on onto Portico tokens so the page matches <Card>.
+ */
+[data-product-guide-index] h2 {
+  margin-top: 0;
+}
+
+[data-product-guide-index] .my-6 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.doc-prose [data-product-guide-index] a,
+.doc-prose [data-product-guide-index] a:hover {
+  text-decoration: none;
+}
+
+.doc-prose [data-product-guide-index] h1:not(.hm-title) {
+  margin: 0 !important;
+  font-family: var(--font-heading);
+  font-size: clamp(2.25rem, 1.5rem + 2.6vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  color: var(--text-main) !important;
+}
+
+/* MDX wraps multi-line heading text in a <p>; make it transparent to the heading. */
+html[data-theme] .doc-prose [data-product-guide-index] :where(h1, h2) > p {
+  margin: 0;
+  color: inherit !important;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+html[data-theme] .doc-prose [data-product-guide-index] h1:not(.hm-title),
+html[data-theme] .doc-prose [data-product-guide-index] h2.font-serif {
+  color: var(--ink) !important;
+}
+
+/* Card grids: grid-cols-1 / sm:grid-cols-2 are not generated for content repos. */
+[data-product-guide-index] .grid {
+  display: grid;
+  gap: 14px;
+}
+
+[data-product-guide-index] .grid.grid-cols-1 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  [data-product-guide-index] .grid.sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.doc-prose [data-product-guide-index] .text-center {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+.doc-prose [data-product-guide-index] :where(.text-gray-600, .text-gray-500) {
+  color: var(--text-muted);
+}
+
+.doc-prose [data-product-guide-index] .text-center .text-gray-600 {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+.doc-prose [data-product-guide-index] .text-center .text-gray-600 > p {
+  margin: 0.5rem 0 0;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl {
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-1);
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-2);
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Same 38px icon tile as <Card>. */
+.doc-prose [data-product-guide-index] a.rounded-2xl > svg:first-child {
+  box-sizing: border-box;
+  width: 38px;
+  height: 38px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--sunk);
+  color: var(--ink-2);
+  transition: color 0.18s, background-color 0.18s, border-color 0.18s;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl:hover > svg:first-child,
+.doc-prose [data-product-guide-index] a.rounded-2xl:focus-visible > svg:first-child {
+  border-color: var(--brand-line);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+}
+
+/* Arrow top-right, drawn as a mask so it follows currentColor-like tokens. */
+.doc-prose [data-product-guide-index] a.rounded-2xl::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  right: 20px;
+  width: 16px;
+  height: 16px;
+  background: var(--ink-3);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 0.18s, background-color 0.18s;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl:hover::after,
+.doc-prose [data-product-guide-index] a.rounded-2xl:focus-visible::after {
+  transform: translate(2px, -2px);
+  background: var(--brand-ink);
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl > div {
+  gap: 6px;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl p {
+  margin: 0;
+}
+
+.doc-prose [data-product-guide-index] .font-serif {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl .font-serif {
+  padding-right: 24px;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl .text-gray-600 {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.doc-prose [data-product-guide-index] h2.font-serif {
+  margin: 0 !important;
+  font-size: 1.625rem;
+  letter-spacing: -0.025em;
+}
+
+.doc-prose [data-product-guide-index] hr {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--panel-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doc-prose [data-product-guide-index] a.rounded-2xl,
+  .doc-prose [data-product-guide-index] a.rounded-2xl > svg:first-child,
+  .doc-prose [data-product-guide-index] a.rounded-2xl::after {
+    transition: none;
+  }
+
+  .doc-prose [data-product-guide-index] a.rounded-2xl:hover,
+  .doc-prose [data-product-guide-index] a.rounded-2xl:hover::after {
+    transform: none;
+  }
+}
+
+/* Mintlify cards: the description's MDX <p> must match <Card> (muted, regular),
+   beating the article's `.doc-prose p { color: … !important }`. */
+html[data-theme] .doc-prose [data-product-guide-index] a.rounded-2xl :is(.text-gray-600, .text-gray-600 p) {
+  margin: 0;
+  color: var(--ink-2) !important;
+  font-weight: 400;
+  line-height: 1.55;
+}

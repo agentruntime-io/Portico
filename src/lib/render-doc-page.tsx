@@ -8,7 +8,7 @@ import { extractHeadings } from "@/lib/headings";
 import { defaultLocale, type Locale } from "@/lib/i18n";
 import { pagePathToHref } from "@/lib/locale-routing";
 import { compileMdxPage, loadMdxPage, isMarketingHomePage, mdxNeedsProseEnhancements } from "@/lib/mdx-pages";
-import { getNavigation } from "@/lib/nav";
+import { getNavigation, type NavFile } from "@/lib/nav";
 import { githubEditUrl } from "@/lib/edit-url";
 import { getPageNeighbors } from "@/lib/pager";
 import { resolveMainNav } from "@/lib/main-nav";
@@ -19,6 +19,26 @@ import {
   techArticleJsonLd,
 } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site";
+
+/** Nav group (docs.json) that contains the page, used as the breadcrumb prefix. */
+function navGroupLabel(nav: NavFile, href: string): string | undefined {
+  return nav.groups.find((group) => group.items.some((item) => item.href === href))
+    ?.label;
+}
+
+/** `owner/repo` from a git host edit URL (GitHub, GitLab, ...); undefined if unparseable. */
+function repoLabelFromEditUrl(editUrl: string | undefined): string | undefined {
+  if (!editUrl) return undefined;
+  try {
+    const match = /^\/([^/]+)\/([^/]+)\/(?:-\/)?(?:edit|blob|tree)\//.exec(
+      new URL(editUrl).pathname,
+    );
+    return match ? `${match[1]}/${match[2]}` : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Untranslated locale pages serve the English content; point them at the English URL
  * and keep them out of the index so they are not duplicate content.
@@ -103,11 +123,8 @@ export async function RenderDocPage({
         />
       ) : null}
       <ProsePageLayout
-        eyebrow={
-          page.pagePath === "index"
-            ? "Documentation"
-            : (page.pagePath.split("/")[0]?.replace(/-/g, " ") ?? "Docs")
-        }
+        groupLabel={navGroupLabel(nav, page.href)}
+        repoLabel={repoLabelFromEditUrl(editUrl)}
         title={page.title}
         description={page.description}
         mdx={compiled.kind === "mdx" ? compiled.content : undefined}

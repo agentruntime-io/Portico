@@ -1,4 +1,11 @@
-# Portico
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/brand/portico-logo-stacked-dark.svg">
+    <img src="public/brand/portico-logo-stacked-light.svg" alt="Portico by AgentRuntime" width="160">
+  </picture>
+</p>
+
+<h1 align="center">Portico</h1>
 
 [![CI](https://github.com/agentruntime-io/Portico/actions/workflows/portico-ci.yml/badge.svg)](https://github.com/agentruntime-io/Portico/actions/workflows/portico-ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -65,7 +72,7 @@ npm run start
 - **Search** across docs and API operations (build-time index)
 - **i18n** via `i18n/{locale}/…` content paths
 - **Changelog** route with RSS
-- **OpenAPI** reference UI from YAML in `content/openapi/`
+- **OpenAPI** reference UI from specs in your content repo (`openapi/`, or listed in `site.yaml`)
 
 ## Configuration
 
@@ -84,9 +91,9 @@ Optional:
 | `CONTENT_ROOT` | — | Local docs path (dev only; don’t use with `CONTENT_GIT_REPO` on Vercel) |
 | `CONTENT_REPO_URL` | derived from `CONTENT_GIT_REPO` | Override edit-link repo URL (without `.git`) |
 
-“Edit this page” uses `CONTENT_GIT_REPO` with `.git` stripped and the same branch as `CONTENT_GIT_BRANCH`. Override with `CONTENT_REPO_URL` or `githubEditBase` in `content/site.yaml` if needed.
+“Edit this page” uses `CONTENT_GIT_REPO` with `.git` stripped and the same branch as `CONTENT_GIT_BRANCH`. Override with `CONTENT_REPO_URL` or `githubEditBase` in your content repo’s `site.yaml`. With none of them set, there is no edit link.
 
-Renderer overrides: `content/site.yaml` (public URL, OpenAPI specs, verification tokens).
+Renderer config lives in your **content repo**, next to `docs.json`: `site.yaml` (public URL, support contact, OpenAPI specs, verification tokens), `redirects.yaml` (or `redirects` in `docs.json`) and `openapi/`. The site URL resolves from `SITE_URL`, then `site.yaml`, then `http://localhost:3004`.
 
 Full deployment guide: **[SELF_HOSTING.md](./SELF_HOSTING.md)**
 
@@ -95,9 +102,7 @@ Full deployment guide: **[SELF_HOSTING.md](./SELF_HOSTING.md)**
 | Path | What it is |
 |------|------------|
 | `src/` | Next.js app (routes, components, MDX pipeline) |
-| `examples/demo-docs/` | Minimal sample content for dev and CI |
-| `content/site.yaml` | Site URL, OpenAPI paths, SEO overrides |
-| `content/openapi/` | Bundled API specs (optional) |
+| `examples/demo-docs/` | Sample content for dev and CI, with its own `site.yaml`, `redirects.yaml` and `openapi/` |
 | `scripts/` | Content clone, validation, search index |
 
 ## Stack

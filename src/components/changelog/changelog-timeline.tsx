@@ -33,7 +33,7 @@ export function ChangelogTimeline({
             />
           ) : null}
           <span
-            className="changelog-timeline-dot absolute left-0 top-1.5 h-[22px] w-[22px] rounded-full border-2 border-emerald-500/60 bg-[var(--panel-bg)]"
+            className="changelog-timeline-dot absolute left-0 top-1.5 h-[22px] w-[22px] rounded-full border-2 border-[var(--brand)] bg-[var(--panel-bg)]"
             aria-hidden
           />
           <article className="changelog-card rounded-2xl border border-[var(--panel-border)] bg-[var(--panel-bg)] p-5 shadow-sm">
@@ -52,14 +52,14 @@ export function ChangelogTimeline({
               {release.areas.map((area) => (
                 <span
                   key={area}
-                  className="changelog-area rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300"
+                  className="changelog-area rounded-full bg-[var(--brand-soft)] px-2 py-0.5 text-xs font-medium text-[var(--brand-ink)]"
                 >
                   {formatArea(area)}
                 </span>
               ))}
             </div>
             <h2 className="mt-3 text-lg font-semibold tracking-tight text-[var(--text-main)] sm:text-xl">
-              <Link href={release.href} className="changelog-title-link hover:text-emerald-600 dark:hover:text-emerald-400">
+              <Link href={release.href} className="changelog-title-link hover:text-[var(--brand-ink)]">
                 {release.title}
               </Link>
             </h2>
@@ -71,7 +71,7 @@ export function ChangelogTimeline({
             <SectionPreview sections={release.sections} />
             <Link
               href={release.href}
-              className="changelog-read-more mt-4 inline-flex text-sm font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+              className="changelog-read-more mt-4 inline-flex text-sm font-medium text-[var(--brand-ink)] hover:underline"
             >
               {readMoreLabel} →
             </Link>
@@ -100,7 +100,7 @@ function SectionPreview({
     <ul className="mt-3 space-y-1.5 text-sm text-[var(--text-muted)]">
       {highlights.slice(0, 3).map((item) => (
         <li key={item} className="flex gap-2">
-          <span className="text-emerald-500" aria-hidden>
+          <span className="text-[var(--brand)]" aria-hidden>
             •
           </span>
           <MarkdownText text={item} inline />

@@ -19,19 +19,13 @@ import {
 type Entry = SearchEntry;
 const OPEN_SEARCH_EVENT = "docs:open-search";
 
-function sectionKey(url: string): MessageKey {
-  if (url.startsWith("/reference")) return "search.sectionApiReference";
-  if (url.startsWith("/changelog")) return "search.sectionChangelog";
-  if (url === "/" || /^\/(es|fr|ja)\/?$/.test(url)) return "search.sectionHome";
-
-  const normalized = url.replace(/^\/(es|fr|ja)(\/|$)/, "/");
-  if (normalized.startsWith("/guides")) return "search.sectionGuides";
-  if (normalized.startsWith("/integrations")) return "search.sectionIntegrations";
-  if (normalized.startsWith("/platform")) return "search.sectionPlatform";
-  if (normalized.startsWith("/workflows")) return "search.sectionWorkflows";
-  if (normalized.startsWith("/connectors")) return "search.sectionConnectors";
-  if (normalized.startsWith("/api")) return "search.sectionApi";
-  return "search.sectionDocs";
+/** Result label: app routes get a fixed label; doc pages use their docs.json nav group. */
+function sectionLabel(entry: Entry, t: (key: MessageKey) => string): string {
+  const { url } = entry;
+  if (url.startsWith("/reference")) return t("search.sectionApiReference");
+  if (url.startsWith("/changelog")) return t("search.sectionChangelog");
+  if (url === "/" || /^\/(es|fr|ja)\/?$/.test(url)) return t("search.sectionHome");
+  return entry.group ?? t("search.sectionDocs");
 }
 
 function Highlighted({ text, tokens }: { text: string; tokens: string[] }) {
@@ -75,6 +69,49 @@ export function DrawerSearchTrigger({
   );
 }
 
+/** Ask the search dialog to open, optionally prefilled with a query. */
+function requestSearch(query?: string) {
+  window.dispatchEvent(
+    new CustomEvent<{ query?: string }>(OPEN_SEARCH_EVENT, { detail: { query } }),
+  );
+}
+
+/**
+ * Search card for the home hero: opens the same dialog as the header button.
+ * Each suggestion renders as a "Try" chip that opens the dialog prefilled with it.
+ */
+export function HeroSearchTrigger({ suggestions }: { suggestions?: string[] }) {
+  const { t } = useI18n();
+  const chips = (suggestions ?? []).filter((s) => s.trim().length > 0);
+
+  return (
+    <div className="hm-sbox">
+      <div className="hm-sbox-card">
+        <button
+          type="button"
+          aria-label={t("search.label")}
+          onClick={() => requestSearch()}
+          className="hm-sbox-row"
+        >
+          <Search aria-hidden />
+          <span className="hm-sbox-text">{t("search.placeholder")}</span>
+          <kbd className="hm-kbd">{t("search.shortcut")}</kbd>
+        </button>
+        {chips.length ? (
+          <div className="hm-sbox-hints">
+            <span>{t("search.try")}</span>
+            {chips.map((chip) => (
+              <button key={chip} type="button" onClick={() => requestSearch(chip)}>
+                {chip}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export function SearchControl() {
   const { t, locale } = useI18n();
   const dialogId = useId();
@@ -105,7 +142,12 @@ export function SearchControl() {
         setOpen(true);
       }
     };
-    const onOpenRequest = () => setOpen(true);
+    // The open-search event may carry `detail.query` to prefill the input.
+    const onOpenRequest = (e: Event) => {
+      const query = (e as CustomEvent<{ query?: string } | undefined>).detail?.query;
+      if (typeof query === "string") setQ(query);
+      setOpen(true);
+    };
     window.addEventListener("keydown", onKey);
     window.addEventListener(OPEN_SEARCH_EVENT, onOpenRequest);
     return () => {
@@ -242,7 +284,7 @@ export function SearchControl() {
                   type="button"
                   aria-label={t("search.close")}
                   onClick={onClose}
-                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-[var(--text-muted)] outline-none ring-0 hover:bg-emerald-500/10 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-[var(--text-muted)] outline-none ring-0 hover:bg-[var(--sunk)] focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -295,13 +337,13 @@ export function SearchControl() {
                           onMouseMove={() => setActiveIndex((i) => (i === index ? i : index))}
                           className={`block px-4 py-2.5 transition-colors ${
                             index === activeIndex
-                              ? "bg-emerald-500/10"
-                              : "hover:bg-emerald-500/5"
+                              ? "bg-[var(--brand-soft)]"
+                              : "hover:bg-[var(--sunk)]"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <span className="shrink-0 whitespace-nowrap rounded bg-[var(--sidebar-bg)] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[var(--text-muted)]">
-                              {t(sectionKey(r.url))}
+                              {sectionLabel(r, t)}
                             </span>
                             <span className="min-w-0 truncate text-sm font-medium text-[var(--text-main)]">
                               <Highlighted text={r.title} tokens={queryTokens} />
@@ -332,9 +374,9 @@ export function SearchControl() {
         aria-expanded={open}
         aria-controls={dialogId}
         onClick={() => setOpen(true)}
-        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 xl:hidden"
+        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-[var(--ink-2)] transition-colors hover:bg-[var(--sunk)] hover:text-[var(--ink)] sm:h-9 sm:w-9 lg:hidden"
       >
-        <Search className="h-4 w-4" />
+        <Search className="h-[18px] w-[18px]" />
       </button>
       <button
         type="button"
@@ -342,11 +384,11 @@ export function SearchControl() {
         aria-expanded={open}
         aria-controls={dialogId}
         onClick={() => setOpen(true)}
-        className="hidden h-9 w-full max-w-xs items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 text-left text-sm text-[var(--text-muted)] hover:bg-[var(--surface-muted)] xl:inline-flex xl:max-w-md"
+        className="hidden h-9 w-[230px] shrink-0 items-center gap-2 rounded-[10px] border border-[var(--line-2)] bg-[var(--surface)] pl-3 pr-2 text-left text-[13.5px] text-[var(--ink-3)] transition-colors hover:border-[var(--ink-3)] lg:inline-flex"
       >
         <Search className="h-4 w-4 shrink-0" aria-hidden />
         <span className="flex-1 truncate">{t("search.placeholderShort")}</span>
-        <kbd className="hidden rounded border border-[var(--panel-border)] px-1.5 py-0.5 font-mono text-[10px] xl:inline">
+        <kbd className="rounded-md border border-b-2 border-[var(--line-2)] px-1.5 font-mono text-[11px] text-[var(--ink-3)]">
           {t("search.shortcut")}
         </kbd>
       </button>

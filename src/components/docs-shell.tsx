@@ -3,31 +3,21 @@
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import { useI18n } from "@/components/i18n-provider";
-import { CircleHelp, FileClock, Home } from "lucide-react";
+import { useSiteLogo } from "@/components/site-name-provider";
 import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
 import { localizeHref } from "@/lib/locale-routing";
-import { FontScaleControls } from "@/components/font-scale-controls";
+import { DisplaySettings } from "@/components/display-settings";
 import { MobileNavButton } from "@/components/mobile-nav";
 import { SearchControl } from "@/components/search-control";
-import { NavbarLinks, NavbarPrimaryCta } from "@/components/navbar-cta";
-import {
-  AssistantLauncher,
-  LanguageSelector,
-} from "@/components/site-controls";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { NavbarPrimaryCta } from "@/components/navbar-cta";
 import type { SiteConfig } from "@/lib/site";
 import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";
 import { MainNavTabs } from "@/components/main-nav-tabs";
 import { SidebarNavGroup } from "@/components/sidebar-nav-group";
+import { SiteFooter } from "@/components/site-footer";
 import type { MainNavTargets } from "@/lib/main-nav";
-
-const utilityLinks = [
-  { titleKey: "nav.home" as const, href: "/", icon: Home },
-  { titleKey: "nav.changelog" as const, href: "/changelog", icon: FileClock },
-  { titleKey: "nav.help" as const, href: "mailto:hello@agentruntime.io", icon: CircleHelp },
-];
 
 export function DocsBrand({
   siteName,
@@ -41,21 +31,44 @@ export function DocsBrand({
   badgeClassName?: string;
 }) {
   const { t, locale } = useI18n();
+  const logo = useSiteLogo();
+  const badge = (
+    <span className={`shrink-0 rounded-md border border-[var(--line)] bg-[var(--sunk)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--brand-ink)] ${badgeClassName}`}>
+      {t("nav.docsBadge")}
+    </span>
+  );
+  // docs.json `logo.href` may point the brand at the product site instead of the docs home.
+  const href = logo?.href ?? localizeHref("/", locale);
   return (
     <Link prefetch={false}
-      href={localizeHref("/", locale)}
-      className={`flex min-h-11 min-w-0 items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--text-main)] ${className}`}
+      href={href}
+      className={`flex min-h-11 min-w-0 items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--ink)] ${className}`}
     >
-      <span className={`shrink-0 rounded-lg border border-[var(--panel-border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)] ${badgeClassName}`}>
-        {t("nav.docsBadge")}
-      </span>
-      <span className={`truncate text-[15px] ${nameClassName}`}>
-        {siteName}
-      </span>
+      {logo ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element -- inline data URI */}
+          <img src={logo.light} alt={siteName} className="site-logo-light h-5 w-auto min-w-0 max-w-[32vw] object-contain object-left sm:h-6 sm:max-w-[200px]" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- inline data URI */}
+          <img src={logo.dark} alt={siteName} className="site-logo-dark h-5 w-auto min-w-0 max-w-[32vw] object-contain object-left sm:h-6 sm:max-w-[200px]" />
+          {badge}
+        </>
+      ) : (
+        <>
+          <span className={`truncate font-display text-[17px] font-bold tracking-[-0.02em] ${nameClassName}`}>
+            {siteName}
+          </span>
+          {badge}
+        </>
+      )}
     </Link>
   );
 }
 
+/**
+ * Full-width sticky header: brand, Documentation / API tabs, search, the site's primary
+ * CTA and display settings. Below 820px (no sidebar) it is brand, search and a menu
+ * button; the tabs, CTA and settings live in the drawer.
+ */
 export function DocsHeader({
   siteName,
   nav,
@@ -71,59 +84,25 @@ export function DocsHeader({
   mainNav: MainNavTargets;
   desktopSidebar?: "docs" | "api";
 }) {
-  const headerOffset =
-    desktopSidebar === "docs"
-      ? "xl:ml-[280px]"
-      : desktopSidebar === "api"
-        ? "lg:ml-[280px]"
-        : "";
-  // The logo stays in the header DOM (first tab stop after the skip link) but is
-  // pinned over the sidebar column where it visually belongs.
-  const brandPlacement =
-    desktopSidebar === "docs"
-      ? "xl:fixed xl:left-5 xl:top-0 xl:z-50 xl:h-16"
-      : desktopSidebar === "api"
-        ? "lg:fixed lg:left-4 lg:top-0 lg:z-50 lg:h-16"
-        : "";
-  const innerWidth = desktopSidebar
-    ? "flex h-16 w-full items-center gap-4 px-4 sm:px-6"
-    : "mx-auto flex h-16 max-w-[1680px] items-center gap-4 px-4 sm:px-6";
-
   return (
-    <header
-      className={`sticky top-0 z-40 bg-[var(--sidebar-bg)] ${headerOffset}`}
-    >
-      <div className={innerWidth}>
-        <DocsBrand
-          siteName={siteName}
-          className={`shrink ${brandPlacement}`}
-          // Below 420px the wordmark is more useful than the DOCS chip, and it fits.
-          badgeClassName="hidden min-[420px]:inline"
-        />
-        <MainNavTabs activePath={activePath} mainNav={mainNav} />
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-1 sm:gap-2">
-          <NavbarLinks
-            navbar={navbar}
-            className="hidden shrink-0 items-center gap-3 xl:flex"
-          />
-          <NavbarPrimaryCta navbar={navbar} />
+    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--canvas)]">
+      <div className="flex h-14 w-full items-center gap-2 pl-4 pr-2.5 min-[640px]:h-[58px] min-[640px]:px-5">
+        <DocsBrand siteName={siteName} className="shrink" />
+        <MainNavTabs activePath={activePath} mainNav={mainNav} className={`ml-4 hidden h-full min-w-0 items-stretch gap-1 ${desktopSidebar === "api" ? "lg:flex" : "min-[820px]:flex"}`} />
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
           <SearchControl />
-          <div className="hidden items-center gap-2 xl:flex">
-            <FontScaleControls />
-            <LanguageSelector />
+          <div className={`ml-1.5 hidden ${desktopSidebar === "api" ? "lg:block" : "min-[820px]:block"}`}>
+            <NavbarPrimaryCta navbar={navbar} />
           </div>
-          <div className="hidden xl:block">
-            <AssistantLauncher />
-          </div>
-          <div className="hidden xl:block">
-            <ThemeToggle />
+          <div className={`hidden ${desktopSidebar === "api" ? "lg:block" : "min-[820px]:block"}`}>
+            <DisplaySettings navbar={navbar} />
           </div>
           <MobileNavButton
             nav={nav}
             activePath={activePath}
             navbar={navbar}
             mainNav={mainNav}
-            hideAt={desktopSidebar === "api" ? "lg" : "xl"}
+            hideAt={desktopSidebar === "api" ? "lg" : "docs"}
           />
         </div>
       </div>
@@ -139,104 +118,45 @@ export function DocsSidebar({
   activePath: string;
 }) {
   const { t, locale } = useI18n();
-  const sidebarRef = useRef<HTMLDivElement>(null);
-
-  const groupedNav = nav.groups.filter(
-    (group) => !(group.label === "Project" && group.items.length === 1),
-  );
+  const sidebarRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
     const sidebar = sidebarRef.current;
-    const activeItem = sidebar?.querySelector<HTMLElement>(
-      '[aria-current="page"]',
-    );
+    const activeItem = sidebar?.querySelector<HTMLElement>('[aria-current="page"]');
     if (!sidebar || !activeItem) return;
-
     const sidebarRect = sidebar.getBoundingClientRect();
     const activeRect = activeItem.getBoundingClientRect();
     const visibleInset = 32;
-    const isVisible =
+    if (
       activeRect.top >= sidebarRect.top + visibleInset &&
-      activeRect.bottom <= sidebarRect.bottom - visibleInset;
-
-    if (isVisible) return;
-
-    const centeredTop =
-      sidebar.scrollTop +
-      activeRect.top -
-      sidebarRect.top -
-      (sidebar.clientHeight - activeItem.offsetHeight) / 2;
-    sidebar.scrollTop = Math.max(0, centeredTop);
+      activeRect.bottom <= sidebarRect.bottom - visibleInset
+    ) {
+      return;
+    }
+    sidebar.scrollTop = Math.max(
+      0,
+      sidebar.scrollTop + activeRect.top - sidebarRect.top - (sidebar.clientHeight - activeItem.offsetHeight) / 2,
+    );
   }, [activePath]);
 
   return (
-    <aside
-      className="docs-sidebar fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-hidden bg-[var(--sidebar-bg)] xl:flex"
+    <nav
+      ref={sidebarRef}
+      aria-label={t("nav.documentation")}
+      className="docs-sidebar-scroll sticky top-[58px] hidden h-[calc(100vh-58px)] overflow-y-auto border-r border-[var(--line)] pb-8 pl-5 pr-3.5 pt-6 min-[820px]:block"
     >
-      {/* Spacer: the logo itself lives in the header (tab order) and overlays this area. */}
-      <div className="h-16 shrink-0" aria-hidden />
-      <div
-        ref={sidebarRef}
-        className="docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-5 pb-14"
-      >
-        <div className="space-y-5 pt-7">
-          <nav aria-label={t("nav.utilityNav")}>
-            <ul className="space-y-1">
-              {utilityLinks.map((item) => {
-                const href = item.href.startsWith("mailto:")
-                  ? item.href
-                  : localizeHref(item.href, locale);
-                const active = isActiveNavItem(href, activePath);
-                const Icon = item.icon;
-                const content = (
-                  <>
-                    <Icon className="h-3.5 w-3.5 shrink-0" />
-                    <span>{t(item.titleKey)}</span>
-                  </>
-                );
-                const className = `docs-nav-row flex min-h-8 items-center gap-3 rounded-lg px-2.5 py-1.5 transition-colors ${
-                  active ? "docs-nav-active font-medium" : "docs-nav-item"
-                }`;
-
-                return (
-                  <li key={item.href}>
-                    {item.href.startsWith("mailto:") ? (
-                      <a href={href} className={className}>
-                        {content}
-                      </a>
-                    ) : (
-                      <Link prefetch={false}
-                        href={href}
-                        aria-current={active ? "page" : undefined}
-                        className={className}
-                      >
-                        {content}
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-
-          {groupedNav.map((group) => (
-            <SidebarNavGroup
-              key={group.label}
-              group={group}
-              isActiveItem={(href) => isActiveNavItem(href, activePath)}
-            />
-          ))}
-          <div className="pt-2">
-            <GlobalNavAnchors
-              nav={nav}
-              locale={locale}
-              className="space-y-1"
-            />
-          </div>
-          <PorticoAttribution />
-        </div>
+      <GlobalNavAnchors nav={nav} locale={locale} className="mb-4 space-y-0.5" />
+      {nav.groups.map((group) => (
+        <SidebarNavGroup
+          key={group.label}
+          group={group}
+          isActiveItem={(href) => isActiveNavItem(href, activePath)}
+        />
+      ))}
+      <div className="mt-6">
+        <PorticoAttribution />
       </div>
-    </aside>
+    </nav>
   );
 }
 
@@ -257,7 +177,7 @@ export function DocsShell({
 }) {
   const { t } = useI18n();
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-[var(--sidebar-bg)] text-[var(--text-main)]">
+    <div className="flex min-h-0 flex-1 flex-col bg-[var(--canvas)] text-[var(--ink)]">
       <DocsHeader
         siteName={siteName}
         nav={nav}
@@ -266,15 +186,16 @@ export function DocsShell({
         mainNav={mainNav}
         desktopSidebar="docs"
       />
-      <div className="flex w-full flex-1 xl:pl-[280px]">
+      <div className="grid w-full flex-1 grid-cols-1 min-[820px]:grid-cols-[260px_minmax(0,1fr)] min-[1180px]:grid-cols-[268px_minmax(0,1fr)]">
         <DocsSidebar nav={nav} activePath={activePath} />
         <main
           id="main-content"
           tabIndex={-1}
           aria-label={t("a11y.mainContent")}
-          className="min-w-0 flex-1 overflow-x-clip bg-[var(--panel-bg)] px-5 pb-12 sm:px-8 sm:pb-16 lg:px-12 xl:rounded-tl-2xl xl:px-14"
+          className="min-w-0 overflow-x-clip px-5 pb-12 pt-[22px] min-[640px]:px-6 min-[640px]:pt-7 min-[820px]:px-12 min-[820px]:pt-9"
         >
           {children}
+          <SiteFooter siteName={siteName} />
         </main>
       </div>
     </div>

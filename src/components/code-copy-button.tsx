@@ -1,18 +1,27 @@
 "use client";
 
 import { Check, Copy } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/components/i18n-provider";
 
-export function CodeCopyButton({ code }: { code: string }) {
+/**
+ * Copy button for a code block header. `code` may be a function so the text is read
+ * from the DOM at click time (tabbed groups, enhanced blocks).
+ */
+export function CodeCopyButton({ code }: { code: string | (() => string) }) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
   const onCopy = useCallback(async () => {
+    const value = typeof code === "function" ? code() : code;
     try {
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(value);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setCopied(false), 2000);
     } catch {
       /* ignore */
     }
@@ -23,13 +32,14 @@ export function CodeCopyButton({ code }: { code: string }) {
       type="button"
       onClick={() => void onCopy()}
       aria-label={copied ? t("copy.copiedCode") : t("copy.copyCode")}
-      className="code-copy-btn inline-flex h-8 w-8 items-center justify-center rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)]/90 text-[var(--text-muted)] backdrop-blur transition hover:text-[var(--text-main)]"
+      className="code-copy-btn"
     >
       {copied ? (
-        <Check className="h-3.5 w-3.5 text-emerald-500" aria-hidden />
+        <Check className="code-copy-icon code-copy-done" aria-hidden />
       ) : (
-        <Copy className="h-3.5 w-3.5" aria-hidden />
+        <Copy className="code-copy-icon" aria-hidden />
       )}
+      <span aria-hidden>{copied ? t("copy.copied") : t("copy.copy")}</span>
     </button>
   );
 }

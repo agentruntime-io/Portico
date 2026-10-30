@@ -132,6 +132,19 @@ function verificationMetadata(
   };
 }
 
+/** Content-repo favicon (per color scheme when light and dark differ), else Portico's own. */
+function iconsMetadata(site: SiteConfig): Metadata["icons"] {
+  const { favicon } = site;
+  if (!favicon) return { icon: "/favicon.ico" };
+  if (favicon.light === favicon.dark) return { icon: favicon.light };
+  return {
+    icon: [
+      { url: favicon.light, media: "(prefers-color-scheme: light)" },
+      { url: favicon.dark, media: "(prefers-color-scheme: dark)" },
+    ],
+  };
+}
+
 export function buildSiteRootMetadata(site: SiteConfig): Metadata {
   const ogImageUrl = resolveOgImageUrl(site);
   const images = ogImageUrl ? [{ url: ogImageUrl, alt: site.name }] : undefined;
@@ -143,6 +156,7 @@ export function buildSiteRootMetadata(site: SiteConfig): Metadata {
       template: `%s - ${site.name}`,
     },
     description: site.description,
+    icons: iconsMetadata(site),
     verification: verificationMetadata(site.verification),
     openGraph: {
       title: site.name,

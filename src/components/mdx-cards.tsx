@@ -1,54 +1,165 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
+  Activity,
   ArrowUpRight,
   BookOpen,
+  Bell,
+  Bot,
   Brain,
   Cable,
   CalendarClock,
+  Calendar,
+  ChartColumn,
+  Check,
+  CircleCheck,
+  CircleHelp,
+  Clock,
+  Cloud,
+  Cpu,
   CreditCard,
+  Database,
+  Download,
   Eye,
+  FileText,
+  FlaskConical,
+  Folder,
+  GitBranch,
   GitPullRequest,
+  Globe,
   Inbox,
   Info as InfoIcon,
   KeyRound,
   Layers,
+  Lightbulb,
+  Link as LinkIcon,
+  Lock,
+  Mail,
+  MessageSquare,
+  Package,
+  Play,
   Plug,
+  Puzzle,
   Rocket,
+  Search,
+  Server,
+  Settings,
   Shield,
+  ShieldCheck,
   ShoppingBag,
+  SlidersHorizontal,
+  Sparkles,
+  Star,
+  Terminal,
+  TriangleAlert,
+  Upload,
+  User,
   UserPlus,
+  Users,
   Webhook,
   Workflow,
   Wrench,
+  Zap,
 } from "lucide-react";
 import { isValidElement, type ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
 import { defaultLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/locale-routing";
+import { navIconMap } from "@/lib/nav-icons";
 
+/**
+ * Icon names authors can use in MDX (`icon="rocket"`). Starts from the docs.json
+ * navigation icons, then adds the common Lucide names. Imported one by one so the
+ * bundle does not carry the whole Lucide set. Names are kebab-case Lucide names.
+ */
 const iconMap: Record<string, LucideIcon> = {
-  rocket: Rocket,
-  workflow: Workflow,
-  plug: Plug,
-  cable: Cable,
-  brain: Brain,
-  "key-round": KeyRound,
-  "credit-card": CreditCard,
-  inbox: Inbox,
-  webhook: Webhook,
-  eye: Eye,
-  wrench: Wrench,
-  shield: Shield,
-  layers: Layers,
-  "shopping-bag": ShoppingBag,
-  "git-pull-request": GitPullRequest,
-  "calendar-clock": CalendarClock,
-  "user-plus": UserPlus,
+  ...navIconMap,
+  activity: Activity,
+  bell: Bell,
+  book: BookOpen,
   "book-open": BookOpen,
+  bot: Bot,
+  brain: Brain,
+  cable: Cable,
+  calendar: Calendar,
+  "calendar-clock": CalendarClock,
+  "chart-column": ChartColumn,
+  check: Check,
+  "circle-check": CircleCheck,
+  "circle-help": CircleHelp,
+  clock: Clock,
+  cloud: Cloud,
+  cpu: Cpu,
+  card: CreditCard,
+  "credit-card": CreditCard,
+  database: Database,
+  download: Download,
+  eye: Eye,
+  "file-text": FileText,
+  "flask-conical": FlaskConical,
+  folder: Folder,
+  "git-branch": GitBranch,
+  "git-pull-request": GitPullRequest,
+  globe: Globe,
+  inbox: Inbox,
+  info: InfoIcon,
+  key: KeyRound,
+  "key-round": KeyRound,
+  layers: Layers,
+  lightbulb: Lightbulb,
+  link: LinkIcon,
+  lock: Lock,
+  mail: Mail,
+  "message-square": MessageSquare,
+  package: Package,
+  play: Play,
+  plug: Plug,
+  puzzle: Puzzle,
+  rocket: Rocket,
+  search: Search,
+  server: Server,
+  settings: Settings,
+  shield: Shield,
+  "shield-check": ShieldCheck,
+  "shopping-bag": ShoppingBag,
+  "sliders-horizontal": SlidersHorizontal,
+  sparkles: Sparkles,
+  star: Star,
+  terminal: Terminal,
+  "triangle-alert": TriangleAlert,
+  upload: Upload,
+  user: User,
+  "user-plus": UserPlus,
+  users: Users,
+  webhook: Webhook,
+  workflow: Workflow,
+  wrench: Wrench,
+  zap: Zap,
 };
 
-function unwrapSingleParagraph(children: ReactNode): ReactNode {
+/** Authored icon name to its iconMap key (case and `_`/space insensitive). */
+function iconKey(name?: string): string | undefined {
+  if (!name) return undefined;
+  const key = name.trim().toLowerCase().replace(/[_\s]+/g, "-");
+  return key in iconMap ? key : undefined;
+}
+
+/** Renders a named icon, or `fallback` (default: nothing) when the name is unknown. */
+function NamedIcon({
+  name,
+  className,
+  fallback,
+}: {
+  name?: string;
+  className?: string;
+  fallback?: LucideIcon;
+}) {
+  const key = iconKey(name);
+  const Lucide = key ? iconMap[key] : fallback;
+  return Lucide ? <Lucide className={className} aria-hidden /> : null;
+}
+
+export function unwrapSingleParagraph(children: ReactNode): ReactNode {
   if (
     isValidElement<{ children?: ReactNode }>(children) &&
     children.type === "p"
@@ -56,6 +167,16 @@ function unwrapSingleParagraph(children: ReactNode): ReactNode {
     return children.props.children;
   }
   return children;
+}
+
+/** Square icon tile shared by cards, bands and task rows. Renders nothing for an unknown icon. */
+export function IconTile({ icon }: { icon?: string }) {
+  if (!iconKey(icon)) return null;
+  return (
+    <span className="hm-tile" aria-hidden>
+      <NamedIcon name={icon} />
+    </span>
+  );
 }
 
 export function Card({
@@ -74,37 +195,20 @@ export function Card({
   size?: number;
   locale?: Locale;
 }) {
-  const Icon = icon ? iconMap[icon] : undefined;
   const inner = (
     <>
-      {Icon ? (
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)]">
-          <Icon className="h-[18px] w-[18px] text-emerald-700 dark:text-emerald-400" aria-hidden />
-        </span>
-      ) : null}
-      <div className="min-w-0 flex-1">
-        {title ? (
-          <span className="block text-[15px] font-semibold leading-6 text-[var(--text-main)]">
-            {title}
-          </span>
-        ) : null}
+      <IconTile icon={icon} />
+      <div className="hm-card-body">
+        {title ? <h3 className="hm-card-title">{title}</h3> : null}
         {children ? (
-          <div className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-            {unwrapSingleParagraph(children)}
-          </div>
+          <div className="hm-card-desc">{unwrapSingleParagraph(children)}</div>
         ) : null}
       </div>
-      {href ? (
-        <ArrowUpRight
-          className="mt-1 h-4 w-4 shrink-0 text-[var(--text-muted)] transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--accent-strong)]"
-          aria-hidden
-        />
-      ) : null}
+      {href ? <ArrowUpRight className="hm-card-go" aria-hidden /> : null}
     </>
   );
-  const cls =
-    `ds-card group flex h-full flex-row items-start gap-4 rounded-xl border border-transparent bg-[var(--surface-muted)] p-5 no-underline transition hover:border-emerald-500/35 hover:bg-[var(--sidebar-bg)] hover:shadow-sm ` +
-    (className ?? "");
+  // `ds-card` stays as a stable hook: prose link rules exclude it.
+  const cls = `hm-card ds-card not-prose${className ? ` ${className}` : ""}`;
   if (href) {
     return (
       <Link href={localizeHref(href, locale)} className={cls}>
@@ -122,17 +226,12 @@ export function CardGroup({
   cols?: number;
   children: ReactNode;
 }) {
-  const grid =
-    cols === 3
-      ? "sm:grid-cols-2 lg:grid-cols-3"
-      : cols === 2
-        ? "sm:grid-cols-2"
-        : "sm:grid-cols-2";
-  // Two-column grids: a lone last card spans the row instead of leaving an empty slot.
-  const twoCol = cols !== 3 ? "ds-card-group-2" : "";
+  const n = cols === 1 || cols === 3 || cols === 4 ? cols : 2;
   return (
-    <div className={`ds-card-group not-prose my-7 grid grid-cols-1 gap-3 ${grid} ${twoCol}`}>
-      {children}
+    <div className="hm-cg not-prose">
+      <div className="hm-cg-grid" data-cols={n}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -146,11 +245,11 @@ export function Icon({
   size?: number;
   className?: string;
 }) {
-  const Lucide = iconMap[icon] ?? InfoIcon;
   return (
-    <Lucide
-      className={className ?? "h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400"}
-      aria-hidden
+    <NamedIcon
+      name={icon}
+      fallback={InfoIcon}
+      className={className ?? "h-5 w-5 shrink-0 text-[var(--brand-ink)]"}
     />
   );
 }

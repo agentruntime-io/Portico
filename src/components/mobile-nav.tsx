@@ -1,56 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { CircleHelp, FileClock, Home, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "@/components/i18n-provider";
+import { useSiteLogo, useSiteName, useSiteUi } from "@/components/site-name-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
 import { FontScaleControls } from "@/components/font-scale-controls";
 import { NavbarLinks, NavbarPrimaryCta } from "@/components/navbar-cta";
 import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";
-import { MainNavTabs } from "@/components/main-nav-tabs";
 import { DrawerSearchTrigger } from "@/components/search-control";
 import { SidebarNavGroup } from "@/components/sidebar-nav-group";
 import { ThemeToggle } from "@/components/theme-toggle";
-import {
-  LanguageSelector,
-} from "@/components/site-controls";
+import { LanguageSelector } from "@/components/site-controls";
 import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
 import { localizeHref } from "@/lib/locale-routing";
-import type { MainNavTargets } from "@/lib/main-nav";
+import {
+  isApiReferencePath,
+  isDocumentationPath,
+  type MainNavTargets,
+} from "@/lib/main-nav";
 import type { SiteConfig } from "@/lib/site";
-
-const utilityLinks = [
-  { titleKey: "nav.home" as const, href: "/", icon: Home },
-  { titleKey: "nav.changelog" as const, href: "/changelog", icon: FileClock },
-  { titleKey: "nav.help" as const, href: "mailto:hello@agentruntime.io", icon: CircleHelp },
-];
 
 export function MobileNavButton({
   nav,
   activePath,
   navbar,
   mainNav,
-  hideAt = "xl",
+  hideAt = "docs",
 }: {
   nav: NavFile;
   activePath: string;
   navbar?: SiteConfig["navbar"];
   mainNav: MainNavTargets;
-  hideAt?: "lg" | "xl";
+  /** "docs": menu button while the docs sidebar is hidden (under 820px); "lg": API reference. */
+  hideAt?: "lg" | "docs";
 }) {
   const { t, locale } = useI18n();
+  const siteName = useSiteName();
+  const logo = useSiteLogo();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const panelId = useId();
   const dialogRef = useRef<HTMLElement>(null);
-  const navScrollRef = useRef<HTMLElement>(null);
+  const navScrollRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const closeDialog = useCallback(() => setOpen(false), []);
-  const desktopVisibility = hideAt === "lg" ? "lg:hidden" : "xl:hidden";
+  const desktopVisibility = hideAt === "lg" ? "lg:hidden" : "min-[820px]:hidden";
 
   useDialog(open, closeDialog, dialogRef, closeRef);
 
@@ -60,7 +59,7 @@ export function MobileNavButton({
 
   useEffect(() => {
     const desktopQuery = window.matchMedia(
-      hideAt === "lg" ? "(min-width: 1024px)" : "(min-width: 1280px)",
+      hideAt === "lg" ? "(min-width: 1024px)" : "(min-width: 820px)",
     );
     const closeAtDesktop = (event: MediaQueryListEvent) => {
       if (event.matches) closeDialog();
@@ -106,9 +105,17 @@ export function MobileNavButton({
     return () => window.cancelAnimationFrame(frame);
   }, [activePath, open]);
 
-  const groupedNav = nav.groups.filter(
-    (group) => !(group.label === "Project" && group.items.length === 1),
-  );
+  const groupedNav = nav.groups;
+  const { appearance } = useSiteUi();
+
+  // Documentation / API reference switch: one API spec links straight to it, several to the index.
+  const docsHref = localizeHref(mainNav.docsHomeHref, locale);
+  const apiHref = mainNav.apiSpecs.length
+    ? localizeHref(
+        mainNav.apiSpecs.length === 1 ? mainNav.apiSpecs[0]!.href : "/reference",
+        locale,
+      )
+    : null;
 
   const drawer =
     mounted
@@ -132,82 +139,80 @@ export function MobileNavButton({
               id={panelId}
               inert={!open}
               data-state={open ? "open" : "closed"}
-              className={`absolute inset-y-0 left-0 flex w-[min(20rem,100vw)] flex-col bg-[var(--sidebar-bg)] transition-[transform,box-shadow]  duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none sm:rounded-r-2xl ${
+              className={`absolute inset-y-0 left-0 flex w-[min(20rem,100vw)] flex-col bg-[var(--canvas)] transition-[transform,box-shadow]  duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none sm:rounded-r-2xl ${
                 open ? "translate-x-0 shadow-2xl" : "-translate-x-full shadow-none"
               }`}
               role="dialog"
               aria-modal="true"
               aria-label={t("nav.menuTitle")}
             >
-              <div className="flex h-14 shrink-0 items-center justify-between px-4">
-                <p className="text-sm font-semibold text-[var(--text-main)]">
-                  {t("nav.menuTitle")}
-                </p>
+              <header className="flex h-[54px] shrink-0 items-center gap-2 border-b border-[var(--line)] pl-4 pr-3.5">
+                <Link
+                  prefetch={false}
+                  href={localizeHref("/", locale)}
+                  onClick={closeDialog}
+                  className="flex min-w-0 items-center gap-2.5 text-[var(--ink)]"
+                >
+                  {logo ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element -- inline data URI */}
+                      <img src={logo.light} alt={siteName} className="site-logo-light h-5 w-auto min-w-0 max-w-[180px] object-contain object-left" />
+                      {/* eslint-disable-next-line @next/next/no-img-element -- inline data URI */}
+                      <img src={logo.dark} alt={siteName} className="site-logo-dark h-5 w-auto min-w-0 max-w-[180px] object-contain object-left" />
+                    </>
+                  ) : (
+                    <span className="truncate font-display text-[17px] font-bold tracking-[-0.02em]">
+                      {siteName}
+                    </span>
+                  )}
+                  <span className="shrink-0 text-[13px] font-medium text-[var(--ink-3)]">
+                    {t("nav.docsBadge")}
+                  </span>
+                </Link>
+                <span className="flex-1" />
                 <button
                   ref={closeRef}
                   type="button"
                   aria-label={t("nav.closeMenu")}
                   onClick={closeDialog}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-emerald-500/10"
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-[var(--ink-2)] transition-colors hover:bg-[var(--sunk)] hover:text-[var(--ink)]"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-[18px] w-[18px]" aria-hidden />
                 </button>
-              </div>
-              <div className="shrink-0 px-4 pb-2">
-                <DrawerSearchTrigger onActivate={closeDialog} />
-                <MainNavTabs
-                  activePath={activePath}
-                  mainNav={mainNav}
-                  onNavigate={closeDialog}
-                  className="mt-2 flex flex-wrap gap-2"
-                />
-              </div>
-              <nav
+              </header>
+              <div
                 ref={navScrollRef}
-                className="docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-4 pb-3 pt-1"
-                aria-label={t("nav.utilityNav")}
+                className="docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-3 pb-2 pt-3"
               >
-                <ul className="space-y-1">
-                  {utilityLinks.map((item) => {
-                    const href = item.href.startsWith("mailto:")
-                      ? item.href
-                      : localizeHref(item.href, locale);
-                    const active = isActiveNavItem(href, activePath);
-                    const Icon = item.icon;
-                    const className = `flex min-h-11 items-center gap-3 rounded-md px-2 py-2 text-sm ${
-                      active ? "docs-nav-active font-medium" : "docs-nav-item"
-                    }`;
-                    const content = (
-                      <>
-                        <Icon className="h-4 w-4 shrink-0" aria-hidden />
-                        <span>{t(item.titleKey)}</span>
-                      </>
-                    );
-                    return (
-                      <li key={item.href}>
-                        {item.href.startsWith("mailto:") ? (
-                          <a
-                            href={href}
-                            aria-current={active ? "page" : undefined}
-                            className={className}
-                          >
-                            {content}
-                          </a>
-                        ) : (
-                          <Link prefetch={false}
-                            href={href}
-                            onClick={closeDialog}
-                            aria-current={active ? "page" : undefined}
-                            className={className}
-                          >
-                            {content}
-                          </Link>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <div className="mt-3">
+                {apiHref ? (
+                  <nav
+                    aria-label={t("nav.mainNav")}
+                    className="pref-seg pref-seg-fill mnav-switch mb-3"
+                  >
+                    <Link
+                      prefetch={false}
+                      href={docsHref}
+                      onClick={closeDialog}
+                      aria-current={isDocumentationPath(activePath) ? "true" : undefined}
+                      className="pref-seg-btn"
+                    >
+                      {t("nav.documentation")}
+                    </Link>
+                    <Link
+                      prefetch={false}
+                      href={apiHref}
+                      onClick={closeDialog}
+                      aria-current={isApiReferencePath(activePath) ? "true" : undefined}
+                      className="pref-seg-btn"
+                    >
+                      {t("nav.apiReference")}
+                    </Link>
+                  </nav>
+                ) : null}
+                <div className="mnav-search mb-3.5">
+                  <DrawerSearchTrigger onActivate={closeDialog} />
+                </div>
+                <div>
                   {groupedNav.map((group) => (
                     <SidebarNavGroup
                       key={group.label}
@@ -227,28 +232,26 @@ export function MobileNavButton({
                     variant="drawer"
                   />
                 </div>
-                <div className="mt-2 flex min-h-11 items-center gap-5 px-2.5">
-                  <NavbarPrimaryCta
-                    navbar={navbar}
-                    className="toolbar-nav-item inline-flex min-h-11 items-center font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--accent-strong)]"
-                    onNavigate={closeDialog}
-                  />
-                  <NavbarLinks
-                    navbar={navbar}
-                    className="flex items-center gap-5"
-                    onNavigate={closeDialog}
-                  />
-                </div>
+                <NavbarLinks
+                  navbar={navbar}
+                  className="mt-2 flex flex-wrap gap-x-1 px-1 text-[13px] [&_a]:min-w-0 [&_a]:px-1.5 [&_a]:font-normal [&_a]:text-[var(--ink-2)] [&_a:hover]:bg-transparent [&_a:hover]:text-[var(--brand-ink)]"
+                  onNavigate={closeDialog}
+                />
                 <div className="mt-3">
                   <PorticoAttribution compact />
                 </div>
-              </nav>
-              <footer className="drawer-footer shrink-0 space-y-2 border-t border-[var(--panel-border)] bg-[var(--sidebar-bg)] p-3">
-                <ThemeToggle variant="segmented" />
-                <div className="drawer-footer-row flex items-center justify-between gap-2">
-                  <FontScaleControls compact />
-                  <LanguageSelector variant="drawer" compact />
+              </div>
+              <footer className="drawer-footer grid shrink-0 gap-2.5 border-t border-[var(--line)] bg-[var(--canvas)] p-3">
+                <div className="mnav-prefs flex items-center gap-2">
+                  {appearance?.strict ? null : <ThemeToggle variant="segmented" iconOnly />}
+                  <FontScaleControls />
+                  <LanguageSelector variant="drawer" />
                 </div>
+                <NavbarPrimaryCta
+                  navbar={navbar}
+                  className="mnav-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[var(--cta-bg)] text-[14.5px] font-semibold text-[var(--cta-fg)] transition-opacity hover:opacity-90"
+                  onNavigate={closeDialog}
+                />
               </footer>
             </aside>
           </div>,
@@ -264,9 +267,9 @@ export function MobileNavButton({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen(true)}
-        className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] text-[var(--text-muted)] hover:bg-emerald-500/10 ${desktopVisibility}`}
+        className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-[var(--ink-2)] transition-colors hover:bg-[var(--sunk)] hover:text-[var(--ink)] ${desktopVisibility}`}
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-[18px] w-[18px]" />
       </button>
       {drawer}
     </>

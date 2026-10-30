@@ -25,19 +25,12 @@ Invoke a tool on an MCP instance.
 
 
 | Field | Description |
-
 |-------|-------------|
-
 | `server_url` | **Portable** system `canonical_url` — use when sharing graphs across workspaces |
-
 | `instance_id` | Tenant MCP instance UUID — optional override; Studio sets this when you pick an instance |
-
 | `tool_name` | Tool to call on the server |
-
 | `tool_args` | JSON arguments; supports template variables |
-
 | `timeout_s` | Step timeout in seconds |
-
 | `retry_count` | Number of retries on failure |
 
 
@@ -63,17 +56,11 @@ Call a large language model with a prompt.
 
 
 | Field | Description |
-
 |-------|-------------|
-
 | `model` | Wire model name (for example `gpt-4o`). Required if `model_ref` is omitted. |
-
 | `model_ref` | Providers catalog reference (for example `direct.openai.gpt-4o`). Required if `model` is omitted. |
-
 | `prompt` | Prompt text with template variables |
-
 | `llm_params` | Temperature, max tokens, and other provider params |
-
 | `llm_credential_id` / `llm_credential_scope` | Optional explicit tenant or system API key from **Providers** |
 
 
@@ -91,11 +78,8 @@ Pause the run until a human approves, rejects, or provides input.
 
 
 | Field | Description |
-
 |-------|-------------|
-
 | `task_type` | Task category (for example, `approval`) |
-
 | `task_payload` | Data shown in Command Center (title, description, editable fields) |
 
 
@@ -113,9 +97,7 @@ Run inline Lua to transform upstream data.
 
 
 | Field | Description |
-
 |-------|-------------|
-
 | `script` | Lua source (max 64 KB). Access upstream via `steps.<id>.result` and trigger input via `input.<field>`. Must return a table. |
 
 
@@ -133,13 +115,9 @@ Fan out over a list with controlled parallelism.
 
 
 | Field | Description |
-
 |-------|-------------|
-
 | `for_each_items` | Template or path to an array, e.g. `{{steps.gen.result.items}}` |
-
 | `for_each_max_parallel` | Max concurrent body runs (default 10, max 100) |
-
 | `for_each_body` | Nested step (`mcp_call`, `llm_call`, or `lua_script`) executed per item |
 
 
@@ -153,19 +131,12 @@ All step types support:
 
 
 | Field | Description |
-
 |-------|-------------|
-
 | `depends_on` | Array of step IDs that must complete first |
-
 | `enabled` | When `false`, step is skipped with a synthetic completion |
-
 | `retry_count` | Retries after failure |
-
 | `timeout_s` | Per-step timeout |
-
 | `no_auto_start` | When `true` on a root, block auto-start until `trigger_steps` grants entry |
-
 | `terminal` | When `true`, completing this step may close an autonomous/mixed episode |
 
 

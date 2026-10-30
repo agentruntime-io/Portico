@@ -68,7 +68,7 @@ export type LoadedMdxPage = {
 
 
 const MDX_COMPONENT_PATTERN =
-  /<(Card|CardGroup|Icon|Note|Warning|Info|Tip|Check|Danger|Steps|Step|Tab|Tabs|CodeGroup|Accordion|AccordionGroup|Frame|Expandable)\b/;
+  /<(Card|CardGroup|Icon|Note|Warning|Info|Tip|Check|Danger|Steps|Step|Tab|Tabs|CodeGroup|Accordion|AccordionGroup|Frame|Expandable|Hero|HeroAction|HeroAside|HomePage|Section|Band|TaskList|Task)\b/;
 
 /** Pages containing JSX components that require the RSC MDX compiler. */
 export function bodyUsesMdxComponents(body: string): boolean {
@@ -80,7 +80,7 @@ export function bodyUsesMdxComponents(body: string): boolean {
 }
 
 export function isMarketingHomePage(body: string): boolean {
-  return /data-product-guide-index/.test(body);
+  return /data-product-guide-index|<HomePage\b/.test(body);
 }
 
 export function mdxNeedsProseEnhancements(body: string): boolean {

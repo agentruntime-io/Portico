@@ -14,8 +14,7 @@ Open [http://localhost:3004](http://localhost:3004). Content resolves automatica
 
 1. `CONTENT_ROOT` env (if set)
 2. `.content-root` pointer (after `CONTENT_GIT_REPO` clone)
-3. Sibling `agentruntime/agentruntime-docs` (AgentRuntime dev checkout)
-4. **`examples/demo-docs`** ← OSS default
+3. **`examples/demo-docs`** ← bundled demo
 
 ## Use your own docs locally
 
@@ -173,4 +172,4 @@ See [`examples/demo-docs/`](./examples/demo-docs/) for a working minimal site.
 | `Content root not found` | Set `CONTENT_ROOT` or ensure `examples/demo-docs` exists |
 | Vercel build OK but stale content | Trigger deploy hook after docs push |
 | Private docs repo on Vercel | Use HTTPS URL with token or Vercel’s git integration + submodule |
-| Edit link 404 or wrong branch | Set `CONTENT_GIT_BRANCH`, or override `githubEditBase` in `content/site.yaml` |
+| Edit link 404 or wrong branch | Set `CONTENT_GIT_BRANCH`, or override `githubEditBase` in your content repo's `site.yaml` |

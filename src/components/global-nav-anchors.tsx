@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useI18n } from "@/components/i18n-provider";
+import { useSiteUi } from "@/components/site-name-provider";
 import type { NavFile } from "@/lib/nav";
 import { localizeHref } from "@/lib/locale-routing";
 import type { Locale } from "@/lib/i18n";
@@ -26,10 +28,17 @@ export function GlobalNavAnchors({
   className?: string;
   variant?: "sidebar" | "drawer";
 }) {
-  const anchors = nav.globalAnchors?.filter(
-    (a) => a.href !== "/" && a.href !== "/changelog",
-  );
-  if (!anchors?.length) return null;
+  const { t } = useI18n();
+  const { support } = useSiteUi();
+  // The brand already links home; every other anchor comes from docs.json, plus Help
+  // when the site configures a support contact.
+  const fromDocs = nav.globalAnchors?.filter((a) => a.href !== "/") ?? [];
+  // support may itself come from a docs.json Support/Help anchor; don't list it twice.
+  const anchors =
+    support && !fromDocs.some((a) => a.href === support.href)
+      ? [...fromDocs, { label: support.label ?? t("nav.help"), href: support.href }]
+      : fromDocs;
+  if (!anchors.length) return null;
 
   return (
     <ul className={className ?? "mt-2 space-y-1"}>

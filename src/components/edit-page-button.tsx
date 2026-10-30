@@ -11,9 +11,9 @@ export function EditPageButton({ url }: { url: string }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition-colors hover:border-emerald-500/40 hover:text-[var(--text-main)]"
+      className="doc-edit-link"
     >
-      <SquarePen className="h-4 w-4" aria-hidden />
+      <SquarePen className="doc-edit-link-icon" aria-hidden />
       {t("nav.editPage")}
     </a>
   );

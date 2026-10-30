@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useCodeBlocks } from "@/components/doc-prose";
 import { MermaidDiagram } from "@/components/mermaid-diagram";
 import { useScrollRegions } from "@/lib/use-scroll-regions";
 
@@ -9,7 +10,7 @@ function MermaidMount({ source }: { source: string }) {
   return <MermaidDiagram chart={source} />;
 }
 
-/** Client hydration for mermaid blocks in RSC-compiled MDX pages. */
+/** Client hydration for RSC-compiled MDX pages: mermaid blocks and code block headers. */
 export function MdxProseEnhancer({
   children,
   className,
@@ -38,6 +39,7 @@ export function MdxProseEnhancer({
     setMermaidMounts(mounts);
   }, [children]);
 
+  const copyPortals = useCodeBlocks(rootRef, children);
   useScrollRegions(rootRef, children);
 
   return (
@@ -46,6 +48,7 @@ export function MdxProseEnhancer({
       {mermaidMounts.map(({ id, source, el }) =>
         createPortal(<MermaidMount source={source} />, el, id),
       )}
+      {copyPortals}
     </div>
   );
 }

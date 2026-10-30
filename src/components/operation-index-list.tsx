@@ -19,7 +19,7 @@ export function OperationIndexList({
         <li key={operation.slug}>
           <Link prefetch={false}
             href={apiOperationHref(specId, operation)}
-            className="group flex items-start gap-4 px-4 py-4 transition-colors hover:bg-emerald-500/5 sm:px-5"
+            className="group flex items-start gap-4 px-4 py-4 transition-colors hover:bg-[var(--brand-soft)] sm:px-5"
           >
             <ApiMethod method={operation.method} />
             <span className="min-w-0 flex-1">

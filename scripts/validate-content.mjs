@@ -1,5 +1,5 @@
 /**
- * Validates agentruntime-docs content + portal OpenAPI bundles.
+ * Validates a content repository (docs.json + MDX) and its OpenAPI specs.
  *
  * Checks: docs.json nav, every MDX page compiles (same remark plugins as the app),
  * only registered JSX components are used, internal links resolve, GFM tables are
@@ -8,7 +8,6 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import yaml from "js-yaml";
 import matter from "gray-matter";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { compile } from "@mdx-js/mdx";
@@ -18,6 +17,12 @@ import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { assertContentRoot } from "./content-root.mjs";
+import {
+  loadOpenApiSpecs,
+  loadRedirects,
+  loadSiteYaml,
+  resolveContentFile,
+} from "./content-config.mjs";
 import { transformHeadingIds } from "../src/lib/mdx-heading-ids.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -43,6 +48,14 @@ const KNOWN_COMPONENTS = new Set([
   "Card",
   "CardGroup",
   "Icon",
+  "Hero",
+  "HeroAction",
+  "HeroAside",
+  "HomePage",
+  "Section",
+  "Band",
+  "TaskList",
+  "Task",
 ]);
 
 /** Route prefixes rendered by the app rather than from an MDX file. */
@@ -135,7 +148,7 @@ async function main() {
 
   if (!(await exists(docsJsonPath))) {
     console.error(`Missing docs.json at ${contentRoot}`);
-    console.error("Set CONTENT_ROOT to your agentruntime-docs clone.");
+    console.error("Set CONTENT_ROOT to the folder that holds your docs.json.");
     process.exit(1);
   }
 
@@ -167,11 +180,8 @@ async function main() {
     const route = "/" + file.replace(/\\/g, "/").replace(/\.mdx$/i, "");
     routes.add(route === "/index" ? "/" : route.replace(/\/index$/, ""));
   }
-  const redirectsFile = path.join(portalRoot, "content", "redirects.yaml");
-  if (await exists(redirectsFile)) {
-    for (const r of yaml.load(await fs.readFile(redirectsFile, "utf8")) ?? []) {
-      if (r?.from) routes.add(String(r.from).replace(/\/+$/, "") || "/");
-    }
+  for (const r of loadRedirects(contentRoot)) {
+    routes.add(r.source.replace(/\/+$/, "") || "/");
   }
 
   // Per-page MDX checks.
@@ -247,14 +257,19 @@ async function main() {
     }
   }
 
-  const siteYaml = yaml.load(
-    await fs.readFile(path.join(portalRoot, "content", "site.yaml"), "utf8"),
-  );
-
-  for (const spec of siteYaml.openapi?.specs ?? []) {
-    const file = path.join(portalRoot, "content", spec.file);
-    if (!(await exists(file))) problems.push(`Missing OpenAPI file: ${file}`);
-    else await SwaggerParser.validate(file);
+  for (const spec of loadOpenApiSpecs(loadSiteYaml(contentRoot), contentRoot)) {
+    const file = resolveContentFile(spec.file, contentRoot);
+    if (!file || !(await exists(file))) {
+      problems.push(`Missing OpenAPI file: ${spec.file}`);
+      continue;
+    }
+    try {
+      await SwaggerParser.validate(file);
+    } catch (error) {
+      problems.push(
+        `Invalid OpenAPI file ${spec.file}: ${String(error.message).split("\n")[0]}`,
+      );
+    }
   }
 
   const changelogDir = path.join(contentRoot, "changelog");

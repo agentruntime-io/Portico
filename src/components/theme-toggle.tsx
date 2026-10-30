@@ -40,10 +40,19 @@ function useThemePreference() {
  */
 export function ThemeToggle({
   variant = "menu",
+  iconOnly = false,
+  className = "",
 }: {
   variant?: "menu" | "segmented";
+  /** Segmented only: hide the text labels (the buttons keep their aria-labels). */
+  iconOnly?: boolean;
+  className?: string;
 }) {
-  return variant === "segmented" ? <ThemeSegmented /> : <ThemeMenu />;
+  return variant === "segmented" ? (
+    <ThemeSegmented iconOnly={iconOnly} className={className} />
+  ) : (
+    <ThemeMenu />
+  );
 }
 
 function ThemeMenu() {
@@ -124,8 +133,8 @@ function ThemeMenu() {
                   setOpen(false);
                   triggerRef.current?.focus();
                 }}
-                className={`flex min-h-10 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-sm transition-colors hover:bg-emerald-500/10 ${
-                  checked ? "font-semibold text-[var(--accent-strong)]" : "text-[var(--text-main)]"
+                className={`flex min-h-10 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-sm transition-colors hover:bg-[var(--brand-soft)] ${
+                  checked ? "font-semibold text-[var(--brand-ink)]" : "text-[var(--text-main)]"
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" aria-hidden />
@@ -140,7 +149,13 @@ function ThemeMenu() {
   );
 }
 
-function ThemeSegmented() {
+function ThemeSegmented({
+  iconOnly,
+  className,
+}: {
+  iconOnly: boolean;
+  className: string;
+}) {
   const { t } = useI18n();
   const [pref, setPref] = useThemePreference();
   const groupRef = useRef<HTMLDivElement>(null);
@@ -164,7 +179,7 @@ function ThemeSegmented() {
       role="radiogroup"
       aria-label={t("theme.label")}
       onKeyDown={onKeyDown}
-      className="theme-segmented grid w-full grid-cols-3 gap-1 rounded-xl border border-[var(--panel-border)] bg-[var(--panel-bg)] p-1"
+      className={`pref-seg pref-seg-fill theme-segmented ${className}`}
     >
       {OPTIONS.map(({ value, icon: Icon, labelKey }) => {
         const checked = value === pref;
@@ -176,14 +191,12 @@ function ThemeSegmented() {
             aria-checked={checked}
             tabIndex={checked ? 0 : -1}
             onClick={() => setPref(value)}
-            className={`flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-medium transition-colors ${
-              checked
-                ? "bg-emerald-500/15 text-[var(--accent-strong)]"
-                : "text-[var(--text-muted)] hover:bg-emerald-500/10"
-            }`}
+            aria-label={t(labelKey)}
+            title={iconOnly ? t(labelKey) : undefined}
+            className="pref-seg-btn"
           >
-            <Icon className="h-4 w-4 shrink-0" aria-hidden />
-            <span className="theme-segmented-label">{t(labelKey)}</span>
+            <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+            {iconOnly ? null : <span className="theme-segmented-label">{t(labelKey)}</span>}
           </button>
         );
       })}

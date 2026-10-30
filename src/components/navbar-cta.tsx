@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 import { localizeHref } from "@/lib/locale-routing";
 import type { SiteConfig } from "@/lib/site";
@@ -79,10 +80,11 @@ export function NavbarPrimaryCta({
       onClick={onNavigate}
       className={
         className ??
-        "toolbar-nav-item inline-flex min-h-11 shrink-0 items-center rounded-lg bg-emerald-700 px-3 py-2 font-semibold text-white transition hover:bg-emerald-600 xl:min-h-9"
+        "inline-flex h-[34px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[10px] bg-[var(--cta-bg)] px-3.5 text-[13px] font-semibold text-[var(--cta-fg)] transition-opacity hover:opacity-90"
       }
     >
       {navbar.primary.label}
+      {external ? <ArrowUpRight className="h-3.5 w-3.5" aria-hidden /> : null}
       {external ? <span className="sr-only"> ({t("nav.opensNewTab")})</span> : null}
     </a>
   );
