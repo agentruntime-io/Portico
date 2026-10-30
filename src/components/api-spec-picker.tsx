@@ -32,7 +32,7 @@ export function ApiSpecPicker({
             <li key={spec.id}>
               <Link
                 href={`/reference/${spec.id}`}
-                className="api-card group flex items-start gap-4 rounded-xl border p-5 transition hover:border-emerald-500/40 hover:bg-emerald-500/5"
+                className="api-card group flex items-start gap-4 rounded-xl border p-5 transition hover:border-[var(--brand-line)] hover:bg-[var(--brand-soft)]"
               >
                 <div className="min-w-0 flex-1">
                   <h2 className="text-lg font-semibold text-[var(--text-main)]">
@@ -44,7 +44,7 @@ export function ApiSpecPicker({
                     </p>
                   ) : null}
                 </div>
-                <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-sm font-medium text-emerald-500">
+                <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[var(--brand-ink)]">
                   {labels.viewReference}
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                 </span>

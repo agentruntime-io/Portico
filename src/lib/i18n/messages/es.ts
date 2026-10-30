@@ -30,6 +30,7 @@ export const es: Messages = {
     showConnectors: "Mostrar conectores",
     hideConnectors: "Ocultar conectores",
     editPage: "Editar esta página",
+    breadcrumb: "Ruta de navegación",
   },
   search: {
     label: "Buscar en la documentación",
@@ -40,6 +41,7 @@ export const es: Messages = {
     loading: "Cargando índice de búsqueda…",
     suggested: "Sugeridos",
     shortcut: "Ctrl K",
+    try: "Prueba",
     sectionApiReference: "Referencia API",
     sectionChangelog: "Registro de cambios",
     sectionHome: "Inicio",
@@ -71,8 +73,10 @@ export const es: Messages = {
   },
   fontScale: {
     group: "Tamaño del texto",
-    decrease: "Reducir tamaño del texto",
-    increase: "Aumentar tamaño del texto",
+    smaller: "Más pequeño",
+    default: "Predeterminado",
+    larger: "Más grande",
+    largest: "El más grande",
   },
   settings: {
     label: "Ajustes de visualización",

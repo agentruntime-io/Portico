@@ -132,7 +132,7 @@ body {
 }
 
 ::selection {
-  background: rgb(16 185 129 / 0.22);
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
   color: var(--text-main);
 }
 
@@ -263,7 +263,7 @@ body {
   z-index: 200;
   transform: translateY(-200%);
   border-radius: 0.5rem;
-  border: 2px solid rgb(16 185 129);
+  border: 2px solid var(--brand);
   background: var(--panel-bg);
   padding: 0.625rem 1rem;
   font-size: 0.875rem;
@@ -279,14 +279,14 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid rgb(16 185 129);
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
 
 /* Light theme: the emerald ring is only ~2.5:1 on white; use the dark accent (≥4.5:1)
    with a white inner halo so it also separates from green-tinted selected rows. */
 html[data-theme="light"] :focus-visible {
-  outline-color: #047857;
+  outline-color: var(--brand-ink);
   box-shadow: 0 0 0 4px rgb(255 255 255 / 0.9);
 }
 
@@ -386,7 +386,7 @@ html[data-theme="light"] :focus-visible {
 
 .docs-nav-active,
 .nav-active {
-  background: rgb(16 185 129 / 0.1);
+  background: var(--brand-soft);
   box-shadow: inset 2px 0 0 var(--accent);
   color: var(--text-main);
 }
@@ -399,7 +399,7 @@ html[data-theme="light"] :focus-visible {
 
 .docs-nav-item:hover,
 .nav-item:hover {
-  background: rgb(16 185 129 / 0.07);
+  background: var(--brand-soft);
   color: var(--accent-strong);
 }
 
@@ -407,165 +407,6 @@ html[data-theme="light"] :focus-visible {
   .ds-card-group-2 > :last-child:nth-child(odd) {
     grid-column: 1 / -1;
   }
-}
-
-/* Home / marketing page. Self-contained: content repos are not scanned by Tailwind. */
-.product-guide-page {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 2.5rem 0 1rem;
-}
-
-.doc-prose .product-guide-page :where(h1, h2, p, hr, .ds-card-group) {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-.product-guide-hero {
-  max-width: 34rem;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.product-guide-hero h1 {
-  font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.035em;
-  color: var(--text-main) !important;
-}
-
-.doc-prose .product-guide-hero .product-guide-subtitle {
-  max-width: 34rem;
-  margin: 0.75rem auto 0 !important;
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  text-wrap: balance;
-  color: var(--text-muted) !important;
-}
-
-.doc-prose .product-guide-section > h2 {
-  margin-bottom: 1rem !important;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-main) !important;
-}
-
-.product-guide-page hr {
-  border: 0;
-  border-top: 1px solid var(--panel-border);
-}
-
-/* Home / marketing card grids */
-[data-product-guide-index] h2 {
-  margin-top: 0;
-}
-
-[data-product-guide-index] .my-6 {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.doc-prose [data-product-guide-index] a {
-  text-decoration: none;
-}
-
-.doc-prose [data-product-guide-index] a:hover {
-  text-decoration: none;
-}
-
-/*
- * Mintlify-authored home pages. Their Tailwind utilities (text-gray-*, bg-gray-50,
- * font-serif, max-w-[540px]) are not generated for content repos, and a bare
- * `border` falls back to the green link colour. Map the patterns they rely on
- * onto Portico tokens so the page matches <Card> and the docs theme.
- */
-.doc-prose [data-product-guide-index] h1 {
-  margin: 0 !important;
-  font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.04em;
-  text-wrap: balance;
-  color: var(--text-main) !important;
-}
-
-.doc-prose [data-product-guide-index] .text-center {
-  max-width: 42rem;
-  margin-inline: auto;
-}
-
-.doc-prose [data-product-guide-index] :where(.text-gray-600, .text-gray-500) {
-  color: var(--text-muted);
-}
-
-.doc-prose [data-product-guide-index] .text-center .text-gray-600 {
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  text-wrap: balance;
-}
-
-.doc-prose [data-product-guide-index] .text-center .text-gray-600 > p {
-  margin: 0.5rem 0 0;
-}
-
-.doc-prose [data-product-guide-index] a.rounded-2xl {
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.25rem;
-  border-color: transparent;
-  border-radius: 0.75rem;
-  background: var(--surface-muted);
-  color: var(--text-main);
-  box-shadow: none;
-}
-
-.doc-prose [data-product-guide-index] a.rounded-2xl:hover {
-  border-color: rgb(16 185 129 / 0.35);
-  background: var(--sidebar-bg);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
-}
-
-/* Same 40px icon tile as <Card>. */
-.doc-prose [data-product-guide-index] a.rounded-2xl > svg:first-child {
-  box-sizing: content-box;
-  width: 18px;
-  height: 18px;
-  padding: 10px;
-  border: 1px solid var(--panel-border);
-  border-radius: 0.5rem;
-  background: var(--panel-bg);
-}
-
-.doc-prose [data-product-guide-index] a.rounded-2xl p {
-  margin: 0;
-}
-
-.doc-prose [data-product-guide-index] .font-serif {
-  font-family: inherit;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.doc-prose [data-product-guide-index] a.rounded-2xl .font-serif {
-  font-size: 15px;
-  line-height: 1.5rem;
-}
-
-.doc-prose [data-product-guide-index] h2.font-serif {
-  margin: 0 !important;
-  font-size: 1.5rem;
-  letter-spacing: -0.025em;
-}
-
-.doc-prose [data-product-guide-index] hr {
-  margin: 0;
-  border: 0;
-  border-top: 1px solid var(--panel-border);
 }
 
 .doc-prose a.ds-card {
@@ -576,46 +417,6 @@ html[data-theme="light"] :focus-visible {
 .doc-prose a.ds-card:hover {
   color: inherit;
   text-decoration: none;
-}
-
-.docs-home-hero {
-  border: 1px solid var(--panel-border);
-  background:
-    radial-gradient(circle at 12% 8%, rgb(16 185 129 / 0.13), transparent 38%),
-    var(--surface-muted);
-}
-
-[data-theme="light"] .docs-home-hero {
-  background:
-    radial-gradient(circle at 12% 8%, rgb(16 185 129 / 0.11), transparent 40%),
-    linear-gradient(145deg, #f5faf7 0%, #f8faf8 58%, #f1f7f3 100%);
-}
-
-.docs-home-primary,
-.docs-home-secondary {
-  text-decoration: none !important;
-}
-
-.docs-home-primary {
-  background: #0f8a5f;
-  color: #ffffff !important;
-  box-shadow: 0 8px 20px -12px rgb(4 120 87 / 0.8);
-}
-
-.docs-home-primary:hover {
-  background: #08734f;
-  color: #ffffff !important;
-}
-
-.docs-home-secondary {
-  border: 1px solid var(--panel-border);
-  background: var(--panel-bg);
-  color: var(--text-main) !important;
-}
-
-.docs-home-secondary:hover {
-  border-color: rgb(16 185 129 / 0.45);
-  background: var(--surface-muted);
 }
 
 /* Theme-specific images (docs.json logo, Portico mark): one per theme. */
@@ -629,29 +430,6 @@ html[data-theme="dark"] .site-logo-light {
 
 html[data-theme="dark"] .site-logo-dark {
   display: block;
-}
-
-.docs-home-search {
-  border: 1px solid var(--panel-border);
-  background: var(--panel-bg);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 32px -20px rgb(4 120 87 / 0.45);
-  transition: border-color 150ms, box-shadow 150ms;
-}
-
-.docs-home-search:hover {
-  border-color: rgb(16 185 129 / 0.45);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 14px 36px -18px rgb(4 120 87 / 0.55);
-}
-
-.docs-home-search:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Cards inside a home section sit under the section heading, not a prose block. */
-.docs-home-section > .ds-card-group {
-  margin-top: 1.75rem;
-  margin-bottom: 0;
 }
 
 .docs-sidebar-scroll {
@@ -687,8 +465,8 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 .nav-item-muted:hover {
-  background: rgb(16 185 129 / 0.08);
-  color: #34d399;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
 }
 
 /* Shared surfaces & controls (docs + API) */
@@ -700,7 +478,7 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 .ds-control:hover {
-  background: rgb(16 185 129 / 0.08);
+  background: var(--brand-soft);
   color: var(--text-main);
 }
 
@@ -810,11 +588,11 @@ html[data-theme="dark"] .site-logo-dark {
 
 .ds-tab-active-accent {
   background: rgb(6 78 59 / 0.4);
-  color: #6ee7b7;
+  color: var(--brand-ink);
 }
 
 .ds-hover-row:hover {
-  background: rgb(16 185 129 / 0.06);
+  background: var(--brand-soft);
 }
 
 .ds-empty-state {
@@ -891,11 +669,11 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 .ds-accent-text {
-  color: #34d399;
+  color: var(--brand-ink);
 }
 
 .ds-link:hover {
-  color: #34d399;
+  color: var(--brand-ink);
 }
 
 .toc-link {
@@ -904,13 +682,13 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 .toc-link:hover {
-  color: #34d399;
+  color: var(--brand-ink);
 }
 
 .toc-link-active {
-  border-color: rgb(16 185 129);
+  border-color: var(--brand);
   font-weight: 600;
-  color: #6ee7b7;
+  color: var(--brand-ink);
 }
 
 [data-theme="light"] .api-card {
@@ -970,15 +748,15 @@ html[data-theme="dark"] .site-logo-dark {
 
 [data-theme="light"] .docs-nav-active,
 [data-theme="light"] .nav-active {
-  background: rgb(16 185 129 / 0.09);
+  background: var(--brand-soft);
   color: var(--text-main);
 }
 
 [data-theme="light"] .docs-nav-item:hover,
 [data-theme="light"] .nav-item:hover,
 [data-theme="light"] .nav-item-muted:hover {
-  background: rgb(16 185 129 / 0.08);
-  color: #047857;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
 }
 
 [data-theme="light"] .ds-badge,
@@ -992,8 +770,8 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 [data-theme="light"] .ds-tab-active-accent {
-  background: rgb(16 185 129 / 0.12);
-  color: #047857;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
 }
 
 [data-theme="light"] .ds-inline-code {
@@ -1035,15 +813,15 @@ html[data-theme="dark"] .site-logo-dark {
 }
 
 [data-theme="light"] .ds-accent-text {
-  color: #047857;
+  color: var(--brand-ink);
 }
 
 [data-theme="light"] .toc-link:hover {
-  color: #047857;
+  color: var(--brand-ink);
 }
 
 [data-theme="light"] .toc-link-active {
-  color: #047857;
+  color: var(--brand-ink);
 }
 
 
@@ -1296,7 +1074,7 @@ html[data-theme="dark"] .shiki span {
 
 .search-mark {
   border-radius: 2px;
-  background: rgb(16 185 129 / 0.22);
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
   color: inherit;
   padding: 0 1px;
 }
@@ -1397,21 +1175,7 @@ html[data-theme="dark"] .shiki span {
   color: currentColor;
 }
 
-/* Home: breathing room under "Common tasks", and a visible card edge in dark. */
-.doc-prose .product-guide-section > h2 {
-  margin-bottom: 1.25rem !important;
-}
-
-html[data-theme="dark"] .ds-card,
-html[data-theme="dark"] .doc-prose [data-product-guide-index] a.rounded-2xl {
-  border-color: var(--panel-border);
-}
-
-html[data-theme="dark"] .doc-prose [data-product-guide-index] a.rounded-2xl:hover {
-  border-color: rgb(16 185 129 / 0.35);
-}
-
-/* Short viewports (landscape phones): one compact preferences row so the navigation keeps its height. */
+/* Short viewports (landscape phones): one compact row so the navigation keeps its height. */
 @media (max-height: 500px) {
   .drawer-footer {
     display: flex;
@@ -1420,22 +1184,13 @@ html[data-theme="dark"] .doc-prose [data-product-guide-index] a.rounded-2xl:hove
     padding: 0.375rem 0.75rem;
   }
 
-  .drawer-footer > * {
-    margin: 0;
-  }
-
-  .drawer-footer .theme-segmented {
-    flex: 0 0 auto;
-    width: auto;
-    padding: 2px;
-  }
-
-  .drawer-footer .theme-segmented-label {
-    display: none;
-  }
-
-  .drawer-footer-row {
+  .drawer-footer .mnav-prefs {
     flex: 1 1 auto;
-    justify-content: flex-end;
+  }
+
+  .drawer-footer .mnav-cta {
+    width: auto;
+    height: 2.25rem;
+    padding-inline: 1rem;
   }
 }

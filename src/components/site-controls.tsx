@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Bot,
-  Globe2,
+  ChevronDown,
   Send,
   X,
 } from "lucide-react";
@@ -14,36 +14,31 @@ import { locales, type Locale } from "@/lib/i18n";
 
 export function LanguageSelector({
   variant,
-  compact = false,
+  className = "",
 }: {
   variant?: "drawer";
+  /** Kept for existing call sites; the select has a single size. */
   compact?: boolean;
+  className?: string;
 }) {
   const { locale, setLocale, t } = useI18n();
-  const visibility =
-    variant === "drawer" ? "inline-flex" : "hidden md:inline-flex";
-  const size = compact ? "h-11" : variant === "drawer" ? "h-12" : "h-9";
-  const spacing = compact ? "gap-1.5 px-1.5" : "gap-2 px-2";
-  const radius = compact ? "rounded-md" : "rounded-lg";
+  const display = variant === "drawer" ? "inline-block" : "hidden md:inline-block";
 
   return (
-    <label
-      className={`ds-control shrink-0 items-center text-xs font-medium ${visibility} ${size} ${spacing} ${radius}`}
-    >
-      <Globe2 className="h-4 w-4" aria-hidden />
+    <label className={`pref-select relative shrink-0 ${display} ${className}`}>
       <select
         aria-label={t("language.label")}
         title={t("language.uiOnlyHint")}
         value={locale}
         onChange={(event) => setLocale(event.target.value as Locale)}
-        className="h-full min-w-11 bg-transparent outline-none"
       >
         {locales.map((item) => (
-          <option key={item.code} value={item.code} className="bg-[var(--panel-bg)]">
+          <option key={item.code} value={item.code}>
             {item.label}
           </option>
         ))}
       </select>
+      <ChevronDown className="pref-select-icon" aria-hidden />
     </label>
   );
 }
@@ -79,19 +74,19 @@ export function AssistantLauncher() {
               aria-label={t("assistant.title")}
             >
               <div className="flex shrink-0 items-center gap-3 border-b border-[var(--panel-border)] px-4 py-3">
-                <Bot className="h-5 w-5 text-emerald-400" aria-hidden />
+                <Bot className="h-5 w-5 text-[var(--brand-ink)]" aria-hidden />
                 <p className="font-semibold text-[var(--text-main)]">{t("assistant.title")}</p>
                 <button
                   type="button"
                   aria-label={t("assistant.close")}
                   onClick={closeDialog}
-                  className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+                  className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--text-main)]"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
               <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-8 text-center text-sm leading-relaxed text-[var(--text-muted)]">
-                <Bot className="mb-3 h-8 w-8 text-emerald-500/60" aria-hidden />
+                <Bot className="mb-3 h-8 w-8 text-[var(--brand)] opacity-60" aria-hidden />
                 <p className="font-medium text-[var(--text-main)]">{t("assistant.comingSoon")}</p>
                 <p className="mt-2 max-w-xs">{t("assistant.body")}</p>
               </div>
@@ -110,7 +105,7 @@ export function AssistantLauncher() {
                     type="submit"
                     disabled
                     aria-label={t("assistant.send")}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-emerald-700/40 text-white"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--btn)] text-[var(--on-btn)] opacity-40"
                   >
                     <Send className="h-4 w-4" />
                   </button>

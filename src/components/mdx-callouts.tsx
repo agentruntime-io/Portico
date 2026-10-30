@@ -30,12 +30,16 @@ function Callout({
   const Icon = icons[kind];
 
   return (
-    <div className={styles[kind]}>
-      <p className="mb-2 flex items-center gap-2 font-semibold">
-        <Icon className="h-4 w-4 shrink-0" aria-hidden />
-        {t(labelKeys[kind])}
-      </p>
-      <div className="[&>p:first-child]:mt-0 [&>p:last-child]:mb-0">{children}</div>
+    <div className={styles[kind]} role="note">
+      <div className="ds-callout-row">
+        <span className="ds-callout-icon" aria-hidden>
+          <Icon />
+        </span>
+        <div className="ds-callout-main">
+          <div className="ds-callout-title">{t(labelKeys[kind])}</div>
+          <div className="ds-callout-content">{children}</div>
+        </div>
+      </div>
     </div>
   );
 }

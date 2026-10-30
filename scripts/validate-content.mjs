@@ -45,8 +45,12 @@ const KNOWN_COMPONENTS = new Set([
   "Icon",
   "Hero",
   "HeroAction",
+  "HeroAside",
   "HomePage",
   "Section",
+  "Band",
+  "TaskList",
+  "Task",
 ]);
 
 /** Route prefixes rendered by the app rather than from an MDX file. */

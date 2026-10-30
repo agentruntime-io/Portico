@@ -1,11 +1,15 @@
 "use client";
 
 import {
+  useEffect,
   useId,
+  useRef,
   useState,
+  type KeyboardEvent,
   type ReactNode,
 } from "react";
 import { ChevronDown } from "lucide-react";
+import { CodeCopyButton } from "@/components/code-copy-button";
 import { collectTabPanels } from "@/components/doc-prose";
 
 export function Tab({
@@ -23,43 +27,85 @@ export function Tab({
   );
 }
 
-export function Tabs({
+/**
+ * Tabs with roving tabindex: Left/Right (and Home/End) move focus and select.
+ * `variant="code"` renders a code-block shell: tab strip, language label and Copy.
+ */
+function TabsView({
   children,
+  variant,
 }: {
   children: ReactNode;
+  variant: "default" | "code";
 }) {
   const baseId = useId();
   const panels = collectTabPanels(children);
   const [active, setActive] = useState(0);
+  const [lang, setLang] = useState("");
+  const panelsRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const isCode = variant === "code";
+
+  useEffect(() => {
+    if (!isCode) return;
+    const pre = panelsRef.current?.querySelector<HTMLElement>(
+      '[role="tabpanel"]:not([hidden]) pre[data-language]',
+    );
+    setLang(pre?.getAttribute("data-language") ?? "");
+  }, [isCode, active]);
 
   if (!panels.length) return <>{children}</>;
 
-  return (
-    <div className="ds-tabs my-6">
-      <div
-        role="tablist"
-        aria-label="Content tabs"
-        className="flex flex-wrap gap-1 border-b border-[var(--panel-border)]"
-      >
-        {panels.map((panel, index) => (
-          <button
-            key={panel.title}
-            type="button"
-            role="tab"
-            id={`${baseId}-tab-${index}`}
-            aria-selected={active === index}
-            aria-controls={`${baseId}-panel-${index}`}
-            onClick={() => setActive(index)}
-            className={`rounded-t-md px-3 py-2 text-sm font-medium transition ${
-              active === index
-                ? "border-b-2 border-emerald-500 text-[var(--text-main)]"
-                : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
-            }`}
-          >
-            {panel.title}
-          </button>
-        ))}
-      </div>
+  function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const last = panels.length - 1;
+    let next = active;
+    if (event.key === "ArrowRight") next = active === last ? 0 : active + 1;
+    else if (event.key === "ArrowLeft") next = active === 0 ? last : active - 1;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = last;
+    else return;
+    event.preventDefault();
+    setActive(next);
+    tabRefs.current[next]?.focus();
+  }
+
+  function activeCode() {
+    const pre = panelsRef.current?.querySelector<HTMLElement>(
+      '[role="tabpanel"]:not([hidden]) pre',
+    );
+    return pre?.querySelector("code")?.textContent ?? pre?.textContent ?? "";
+  }
+
+  const tablist = (
+    <div
+      role="tablist"
+      aria-label="Content tabs"
+      className="doc-tablist"
+      onKeyDown={onKeyDown}
+    >
+      {panels.map((panel, index) => (
+        <button
+          key={panel.title}
+          ref={(el) => {
+            tabRefs.current[index] = el;
+          }}
+          type="button"
+          role="tab"
+          id={`${baseId}-tab-${index}`}
+          aria-selected={active === index}
+          aria-controls={`${baseId}-panel-${index}`}
+          tabIndex={active === index ? 0 : -1}
+          onClick={() => setActive(index)}
+          className="doc-tab"
+        >
+          {panel.title}
+        </button>
+      ))}
+    </div>
+  );
+
+  const panelEls = (
+    <div ref={panelsRef} className="doc-tabpanels">
       {panels.map((panel, index) => (
         <div
           key={panel.title}
@@ -67,17 +113,43 @@ export function Tabs({
           id={`${baseId}-panel-${index}`}
           aria-labelledby={`${baseId}-tab-${index}`}
           hidden={active !== index}
-          className="pt-4"
+          className="doc-tabpanel"
         >
           {panel.body}
         </div>
       ))}
     </div>
   );
+
+  if (isCode) {
+    return (
+      <div className="ds-tabs doc-code-group" data-code-group>
+        <div className="code-head">
+          {tablist}
+          <div className="code-head-end">
+            {lang ? <span className="code-lang">{lang}</span> : null}
+            <CodeCopyButton code={activeCode} />
+          </div>
+        </div>
+        {panelEls}
+      </div>
+    );
+  }
+
+  return (
+    <div className="ds-tabs doc-tabs">
+      {tablist}
+      {panelEls}
+    </div>
+  );
+}
+
+export function Tabs({ children }: { children: ReactNode }) {
+  return <TabsView variant="default">{children}</TabsView>;
 }
 
 export function CodeGroup({ children }: { children: ReactNode }) {
-  return <Tabs>{children}</Tabs>;
+  return <TabsView variant="code">{children}</TabsView>;
 }
 
 export function Accordion({

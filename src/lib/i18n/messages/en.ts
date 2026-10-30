@@ -28,6 +28,7 @@ export const en = {
     showConnectors: "Show connectors",
     hideConnectors: "Hide connectors",
     editPage: "Edit this page",
+    breadcrumb: "Breadcrumb",
   },
   search: {
     label: "Search documentation",
@@ -38,6 +39,7 @@ export const en = {
     loading: "Loading search index…",
     suggested: "Suggested",
     shortcut: "Ctrl K",
+    try: "Try",
     sectionApiReference: "API reference",
     sectionChangelog: "Changelog",
     sectionHome: "Home",
@@ -69,8 +71,10 @@ export const en = {
   },
   fontScale: {
     group: "Text size",
-    decrease: "Decrease text size",
-    increase: "Increase text size",
+    smaller: "Smaller",
+    default: "Default",
+    larger: "Larger",
+    largest: "Largest",
   },
   settings: {
     label: "Display settings",

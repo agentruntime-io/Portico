@@ -30,6 +30,7 @@ export const ja: Messages = {
     showConnectors: "コネクターを表示",
     hideConnectors: "コネクターを非表示",
     editPage: "このページを編集",
+    breadcrumb: "パンくずリスト",
   },
   search: {
     label: "ドキュメントを検索",
@@ -40,6 +41,7 @@ export const ja: Messages = {
     loading: "検索インデックスを読み込み中…",
     suggested: "おすすめ",
     shortcut: "Ctrl K",
+    try: "例",
     sectionApiReference: "API リファレンス",
     sectionChangelog: "変更履歴",
     sectionHome: "ホーム",
@@ -71,8 +73,10 @@ export const ja: Messages = {
   },
   fontScale: {
     group: "文字サイズ",
-    decrease: "文字サイズを小さく",
-    increase: "文字サイズを大きく",
+    smaller: "小",
+    default: "標準",
+    larger: "大",
+    largest: "特大",
   },
   settings: {
     label: "表示設定",

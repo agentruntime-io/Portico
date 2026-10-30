@@ -37,7 +37,7 @@ export function ChangelogReleaseView({
     <article className="changelog-release mx-auto max-w-3xl">
       <Link
         href="/changelog"
-        className="changelog-back inline-flex items-center gap-2 text-sm font-medium text-[var(--text-muted)] hover:text-emerald-600 dark:hover:text-emerald-400"
+        className="changelog-back inline-flex items-center gap-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--brand-ink)]"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden />
         {labels.back}
@@ -56,7 +56,7 @@ export function ChangelogReleaseView({
           {release.areas.map((area) => (
             <span
               key={area}
-              className="changelog-area rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300"
+              className="changelog-area rounded-full bg-[var(--brand-soft)] px-2 py-0.5 text-xs font-medium text-[var(--brand-ink)]"
             >
               {formatArea(area)}
             </span>
@@ -85,7 +85,7 @@ export function ChangelogReleaseView({
                 <ul className="mt-3 space-y-2 text-sm leading-relaxed text-[var(--text-main)] sm:text-base">
                   {items.map((item) => (
                     <li key={item} className="flex gap-3">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" aria-hidden />
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--brand)]" aria-hidden />
                       <MarkdownText text={item} inline />
                     </li>
                   ))}
@@ -109,13 +109,13 @@ export function ChangelogReleaseView({
         {prev ? (
           <Link
             href={prev.href}
-            className="changelog-pager-link group flex flex-col gap-1 rounded-lg border border-[var(--panel-border)] p-4 transition hover:border-emerald-500/40"
+            className="changelog-pager-link group flex flex-col gap-1 rounded-lg border border-[var(--panel-border)] p-4 transition hover:border-[var(--brand-line)]"
           >
             <span className="flex items-center gap-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">
               <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
               {labels.previous}
             </span>
-            <span className="font-medium text-[var(--text-main)] group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+            <span className="font-medium text-[var(--text-main)] group-hover:text-[var(--brand-ink)]">
               {prev.title}
             </span>
           </Link>
@@ -125,13 +125,13 @@ export function ChangelogReleaseView({
         {next ? (
           <Link
             href={next.href}
-            className="changelog-pager-link group flex flex-col gap-1 rounded-lg border border-[var(--panel-border)] p-4 text-right transition hover:border-emerald-500/40 sm:ml-auto"
+            className="changelog-pager-link group flex flex-col gap-1 rounded-lg border border-[var(--panel-border)] p-4 text-right transition hover:border-[var(--brand-line)] sm:ml-auto"
           >
             <span className="flex items-center justify-end gap-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">
               {labels.next}
               <ArrowRight className="h-3.5 w-3.5" aria-hidden />
             </span>
-            <span className="font-medium text-[var(--text-main)] group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+            <span className="font-medium text-[var(--text-main)] group-hover:text-[var(--brand-ink)]">
               {next.title}
             </span>
           </Link>

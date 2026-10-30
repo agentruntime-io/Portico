@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ListFilter } from "lucide-react";
+import { List } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 import type { PageHeading } from "@/lib/headings";
 
+/** Desktop "On this page" rail: micro-label plus a guide-line list with scroll-spy. */
 export function OnThisPage({ headings }: { headings: PageHeading[] }) {
   const { t } = useI18n();
   const [active, setActive] = useState(headings[0]?.id ?? "");
@@ -30,35 +31,29 @@ export function OnThisPage({ headings }: { headings: PageHeading[] }) {
   }, [headings]);
 
   return (
-    <nav
-      aria-label={t("toc.title")}
-      className="sticky top-28 border-l border-[var(--panel-border)] pl-5 text-[13px]"
-    >
-      <p className="mb-4 flex items-center gap-2 font-semibold text-[var(--text-main)]">
-        <ListFilter className="h-3.5 w-3.5" aria-hidden />
+    <nav aria-label={t("toc.title")} className="doc-toc">
+      <p className="doc-toc-label" aria-hidden>
+        <List />
         {t("toc.title")}
       </p>
-      <div className="space-y-1">
-        {headings.length ? (
-          headings.map((heading, index) => (
-            <a
-              key={`${heading.id}-${index}`}
-              href={`#${heading.id}`}
-              className={`toc-link block border-l py-1.5 leading-5 ${
-                heading.depth === 3 ? "-ml-[21px] pl-10" : "-ml-[21px] pl-5"
-              } ${
-                active === heading.id
-                  ? "toc-link-active"
-                  : "border-transparent"
-              }`}
-            >
-              {heading.text}
-            </a>
-          ))
-        ) : (
-          <span className="text-[var(--text-muted)]">{t("toc.empty")}</span>
-        )}
-      </div>
+      {headings.length ? (
+        <ul className="doc-toc-list">
+          {headings.map((heading, index) => (
+            <li key={`${heading.id}-${index}`}>
+              <a
+                href={`#${heading.id}`}
+                data-depth={heading.depth}
+                aria-current={active === heading.id ? "location" : undefined}
+                className="doc-toc-link"
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <span className="doc-toc-empty">{t("toc.empty")}</span>
+      )}
     </nav>
   );
 }

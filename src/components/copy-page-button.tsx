@@ -7,6 +7,7 @@ import { useI18n } from "@/components/i18n-provider";
 export function CopyPageButton() {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
+  const label = copied ? t("copy.copiedLink") : t("copy.copyLink");
 
   return (
     <button
@@ -29,10 +30,15 @@ export function CopyPageButton() {
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1500);
       }}
-      className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-2 text-[13px] font-medium text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text-main)] sm:min-h-8"
+      aria-label={label}
+      className="doc-ghost-btn"
     >
-      {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" aria-hidden /> : <Copy className="h-3.5 w-3.5" aria-hidden />}
-      {copied ? t("copy.copiedLink") : t("copy.copyLink")}
+      {copied ? (
+        <Check className="doc-ghost-btn-icon doc-ghost-btn-done" aria-hidden />
+      ) : (
+        <Copy className="doc-ghost-btn-icon" aria-hidden />
+      )}
+      <span className="doc-ghost-btn-label">{label}</span>
     </button>
   );
 }

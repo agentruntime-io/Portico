@@ -30,6 +30,7 @@ export const fr: Messages = {
     showConnectors: "Afficher les connecteurs",
     hideConnectors: "Masquer les connecteurs",
     editPage: "Modifier cette page",
+    breadcrumb: "Fil d'Ariane",
   },
   search: {
     label: "Rechercher dans la documentation",
@@ -40,6 +41,7 @@ export const fr: Messages = {
     loading: "Chargement de l’index de recherche…",
     suggested: "Suggestions",
     shortcut: "Ctrl K",
+    try: "Essayez",
     sectionApiReference: "Référence API",
     sectionChangelog: "Journal des modifications",
     sectionHome: "Accueil",
@@ -71,8 +73,10 @@ export const fr: Messages = {
   },
   fontScale: {
     group: "Taille du texte",
-    decrease: "Réduire la taille du texte",
-    increase: "Augmenter la taille du texte",
+    smaller: "Plus petit",
+    default: "Par défaut",
+    larger: "Plus grand",
+    largest: "Le plus grand",
   },
   settings: {
     label: "Paramètres d'affichage",
