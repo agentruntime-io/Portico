@@ -75,6 +75,26 @@ export function DrawerSearchTrigger({
   );
 }
 
+/** Large search field for the home hero; opens the same dialog as the header button. */
+export function HeroSearchTrigger() {
+  const { t } = useI18n();
+
+  return (
+    <button
+      type="button"
+      aria-label={t("search.label")}
+      onClick={() => window.dispatchEvent(new Event(OPEN_SEARCH_EVENT))}
+      className="docs-home-search flex min-h-13 w-full items-center gap-3 rounded-xl px-4 text-left text-[15px] text-[var(--text-muted)]"
+    >
+      <Search className="h-[18px] w-[18px] shrink-0" aria-hidden />
+      <span className="flex-1 truncate">{t("search.placeholder")}</span>
+      <kbd className="hidden shrink-0 rounded-md border border-[var(--panel-border)] px-1.5 py-0.5 font-sans text-xs sm:inline">
+        {t("search.shortcut")}
+      </kbd>
+    </button>
+  );
+}
+
 export function SearchControl() {
   const { t, locale } = useI18n();
   const dialogId = useId();

@@ -43,6 +43,10 @@ const KNOWN_COMPONENTS = new Set([
   "Card",
   "CardGroup",
   "Icon",
+  "Hero",
+  "HeroAction",
+  "HomePage",
+  "Section",
 ]);
 
 /** Route prefixes rendered by the app rather than from an MDX file. */

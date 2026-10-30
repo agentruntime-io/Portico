@@ -3,19 +3,16 @@
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import { useI18n } from "@/components/i18n-provider";
+import { useSiteLogo } from "@/components/site-name-provider";
 import { CircleHelp, FileClock, Home } from "lucide-react";
 import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
 import { localizeHref } from "@/lib/locale-routing";
-import { FontScaleControls } from "@/components/font-scale-controls";
+import { DisplaySettings } from "@/components/display-settings";
 import { MobileNavButton } from "@/components/mobile-nav";
 import { SearchControl } from "@/components/search-control";
 import { NavbarLinks, NavbarPrimaryCta } from "@/components/navbar-cta";
-import {
-  AssistantLauncher,
-  LanguageSelector,
-} from "@/components/site-controls";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { AssistantLauncher } from "@/components/site-controls";
 import type { SiteConfig } from "@/lib/site";
 import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";
@@ -41,17 +38,33 @@ export function DocsBrand({
   badgeClassName?: string;
 }) {
   const { t, locale } = useI18n();
+  const logo = useSiteLogo();
+  const badge = (
+    <span className={`shrink-0 rounded-md border border-[var(--panel-border)] bg-[var(--surface-muted)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)] ${badgeClassName}`}>
+      {t("nav.docsBadge")}
+    </span>
+  );
   return (
     <Link prefetch={false}
       href={localizeHref("/", locale)}
       className={`flex min-h-11 min-w-0 items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--text-main)] ${className}`}
     >
-      <span className={`shrink-0 rounded-lg border border-[var(--panel-border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)] ${badgeClassName}`}>
-        {t("nav.docsBadge")}
-      </span>
-      <span className={`truncate text-[15px] ${nameClassName}`}>
-        {siteName}
-      </span>
+      {logo ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element -- inline data URI */}
+          <img src={logo.light} alt={siteName} className="site-logo-light h-5 w-auto min-w-0 max-w-[32vw] object-contain object-left sm:h-6 sm:max-w-[200px]" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- inline data URI */}
+          <img src={logo.dark} alt={siteName} className="site-logo-dark h-5 w-auto min-w-0 max-w-[32vw] object-contain object-left sm:h-6 sm:max-w-[200px]" />
+          {badge}
+        </>
+      ) : (
+        <>
+          {badge}
+          <span className={`truncate text-[15px] ${nameClassName}`}>
+            {siteName}
+          </span>
+        </>
+      )}
     </Link>
   );
 }
@@ -109,14 +122,8 @@ export function DocsHeader({
           <NavbarPrimaryCta navbar={navbar} />
           <SearchControl />
           <div className="hidden items-center gap-2 xl:flex">
-            <FontScaleControls />
-            <LanguageSelector />
-          </div>
-          <div className="hidden xl:block">
             <AssistantLauncher />
-          </div>
-          <div className="hidden xl:block">
-            <ThemeToggle />
+            <DisplaySettings />
           </div>
           <MobileNavButton
             nav={nav}

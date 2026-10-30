@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { createCalloutComponents } from "@/components/mdx-callouts-server";
 import { Card, CardGroup, Icon } from "@/components/mdx-cards";
+import { Hero, HeroAction, HomePage, Section } from "@/components/mdx-home";
 import {
   Accordion,
   AccordionGroup,
@@ -54,6 +55,12 @@ export function createRscMdxComponents(locale: Locale) {
     ),
     CardGroup,
     Icon,
+    Hero,
+    HeroAction: (props: ComponentProps<typeof HeroAction>) => (
+      <HeroAction {...props} locale={locale} />
+    ),
+    HomePage,
+    Section,
     a: (props: ComponentProps<typeof LocalizedLink>) => (
       <LocalizedLink {...props} locale={locale} />
     ),
