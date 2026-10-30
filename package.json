@@ -42,6 +42,7 @@
     "@apidevtools/swagger-parser": "^12.1.0",
     "@mdx-js/mdx": "^3.1.1",
     "@tailwindcss/typography": "^0.5.20",
+    "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "hast-util-to-text": "^4.0.2",
     "js-yaml": "^4.3.2",

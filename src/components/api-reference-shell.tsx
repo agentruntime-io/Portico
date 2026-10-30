@@ -20,6 +20,7 @@ import {
   stripApiPrefix,
 } from "@/lib/openapi/core";
 import { ApiSectionNav } from "@/components/api-section-nav";
+import type { ApiDescriptionSection } from "@/lib/openapi/core";
 import { ApiSpecSwitcher } from "@/components/api-spec-switcher";
 import type { MainNavTargets } from "@/lib/main-nav";
 import { openApiDownloadUrl } from "@/lib/main-nav";
@@ -28,6 +29,7 @@ import { PorticoAttribution } from "@/components/portico-attribution";
 function ApiSidebar({
   specId,
   operations,
+  sections,
   apiSpecs,
   openApiFile,
   activeTag,
@@ -35,6 +37,7 @@ function ApiSidebar({
 }: {
   specId: string;
   operations: ResolvedOperation[];
+  sections: ApiDescriptionSection[];
   apiSpecs: MainNavTargets["apiSpecs"];
   openApiFile: string;
   activeTag?: string;
@@ -52,7 +55,7 @@ function ApiSidebar({
       <div className="flex min-h-0 flex-1 flex-col px-3 py-4">
         <ApiSpecSwitcher specs={apiSpecs} activeSpecId={specId} />
         <div className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
-          <ApiSectionNav specId={specId} />
+          <ApiSectionNav specId={specId} sections={sections} />
           <div className="mt-6 space-y-2">
             {[...grouped.entries()].map(([tag, tagOps]) => {
               const tagSlug = slugifyTag(tag);
@@ -178,26 +181,45 @@ export function ApiRightRail({
   const securityScheme = security?.[1];
   const path = operation ? `${server?.url ?? ""}${operation.path}` : server?.url;
 
+  const contact = doc.info?.contact;
+  const license = doc.info?.license;
+  const contactHref = contact?.email ? `mailto:${contact.email}` : contact?.url;
+
   return (
     <aside className="hidden w-[380px] shrink-0 xl:block">
       <div className="sticky top-24 space-y-4">
-        <div className="api-muted flex justify-end gap-4 pr-1">
-          <a
-            href="mailto:hello@agentruntime.io"
-            aria-label={t("api.email")}
-            className="ds-link nav-item-muted rounded-md p-1"
-          >
-            <Mail className="h-4 w-4" />
-          </a>
-          <span className="api-divider h-5 border-l" />
-          <a
-            href="https://www.agentruntime.io/legal"
-            className="ds-link nav-item-muted inline-flex items-center gap-2 rounded-md px-1 text-sm font-semibold"
-          >
-            <KeyRound className="h-4 w-4" />
-            {t("api.proprietary")}
-          </a>
-        </div>
+        {contactHref || license?.name ? (
+          <div className="api-muted flex items-center justify-end gap-4 pr-1">
+            {contactHref ? (
+              <a
+                href={contactHref}
+                aria-label={contact?.name ?? t("api.contact")}
+                className="ds-link nav-item-muted rounded-md p-1"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
+            ) : null}
+            {contactHref && license?.name ? (
+              <span className="api-divider h-5 border-l" />
+            ) : null}
+            {license?.name ? (
+              license.url ? (
+                <a
+                  href={license.url}
+                  className="ds-link nav-item-muted inline-flex items-center gap-2 rounded-md px-1 text-sm font-semibold"
+                >
+                  <KeyRound className="h-4 w-4" />
+                  {license.name}
+                </a>
+              ) : (
+                <span className="inline-flex items-center gap-2 px-1 text-sm font-semibold">
+                  <KeyRound className="h-4 w-4" />
+                  {license.name}
+                </span>
+              )
+            ) : null}
+          </div>
+        ) : null}
         <div className="api-card overflow-hidden rounded-lg border">
           <div className="api-card-header border-b px-4 py-2 text-sm font-semibold">
             {t("api.server")}
@@ -228,6 +250,7 @@ export function ApiReferenceShell({
   mainNav,
   openApiFile,
   operations,
+  sections,
   activeTag,
   activeSlug,
   children,
@@ -240,6 +263,7 @@ export function ApiReferenceShell({
   mainNav: MainNavTargets;
   openApiFile: string;
   operations: ResolvedOperation[];
+  sections: ApiDescriptionSection[];
   activeTag?: string;
   activeSlug?: string;
   children: React.ReactNode;
@@ -264,6 +288,7 @@ export function ApiReferenceShell({
       <ApiSidebar
         specId={specId}
         operations={operations}
+        sections={sections}
         apiSpecs={mainNav.apiSpecs}
         openApiFile={openApiFile}
         activeTag={activeTag}
@@ -279,6 +304,7 @@ export function ApiReferenceShell({
           path: op.path,
           tags: op.tags,
         }))}
+        sections={sections}
         activeTag={activeTag}
         activeSlug={activeSlug}
       />

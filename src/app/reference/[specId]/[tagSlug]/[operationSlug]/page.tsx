@@ -19,6 +19,7 @@ import {
   flattenOperations,
   groupOperationsByTag,
   tagSlugForOperation,
+  getDescriptionSections,
 } from "@/lib/openapi/core";
 import { loadBundledSpec } from "@/lib/openapi/load";
 import { buildPageMetadata, webPageJsonLd } from "@/lib/seo";
@@ -130,6 +131,7 @@ export default async function ApiOperationPage({ params }: Props) {
         mainNav={mainNav}
         openApiFile={spec.file}
         operations={operations}
+        sections={getDescriptionSections(doc.info?.description)}
         activeTag={tagSlug}
         activeSlug={operation.slug}
         rightRail={<ApiRightRail doc={doc} operation={operation} />}
