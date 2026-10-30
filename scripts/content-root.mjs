@@ -44,23 +44,7 @@ export function getContentRoot(cwd = portalRoot) {
     }
   }
 
-  const sibling = path.resolve(
-    cwd,
-    "..",
-    "..",
-    "agentruntime",
-    "agentruntime-docs",
-  );
-  if (fs.existsSync(path.join(sibling, "docs.json"))) {
-    return sibling;
-  }
-
-  const demo = path.join(cwd, "examples", "demo-docs");
-  if (fs.existsSync(path.join(demo, "docs.json"))) {
-    return demo;
-  }
-
-  return sibling;
+  return path.join(cwd, "examples", "demo-docs");
 }
 
 export function assertContentRoot(cwd = portalRoot) {
@@ -69,7 +53,7 @@ export function assertContentRoot(cwd = portalRoot) {
   if (!fs.existsSync(marker)) {
     throw new Error(
       `Content root not found or missing docs.json: ${root}\n` +
-        "Set CONTENT_ROOT, CONTENT_GIT_REPO, or add examples/demo-docs.",
+        "Set CONTENT_ROOT to a folder containing docs.json, set CONTENT_GIT_REPO to clone one at build time, or restore examples/demo-docs.",
     );
   }
   return root;
