@@ -10,9 +10,9 @@ import {
   apiOperationHref,
   flattenOperations,
   groupOperationsByTag,
-  loadBundledSpec,
   slugifyTag,
 } from "@/lib/openapi/core";
+import { loadBundledSpec } from "@/lib/openapi/load";
 
 async function isIndexablePage(
   pagePath: string,

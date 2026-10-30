@@ -5,9 +5,14 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import matter from "gray-matter";
-import yaml from "js-yaml";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { assertContentRoot } from "./content-root.mjs";
+import {
+  loadOpenApiSpecs,
+  loadSiteYaml,
+  resolveContentFile,
+  resolveSiteUrl,
+} from "./content-config.mjs";
 import { stripMarkdown, textEntry } from "./search-text.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -158,12 +163,9 @@ async function main() {
     await fs.readFile(path.join(contentRoot, "docs.json"), "utf8"),
   );
 
-  const siteRaw = await fs.readFile(
-    path.join(root, "content", "site.yaml"),
-    "utf8",
-  );
-  const site = yaml.load(siteRaw);
-  const origin = (process.env.SITE_URL ?? site.url).replace(/\/$/, "");
+  const siteYaml = loadSiteYaml(contentRoot);
+  const origin = resolveSiteUrl(siteYaml);
+  const specs = loadOpenApiSpecs(siteYaml, contentRoot);
 
   const all = [];
 
@@ -205,10 +207,11 @@ async function main() {
     /* no changelog directory */
   }
 
-  if (site.openapi?.specs?.length) {
+  if (specs.length) {
     all.push(textEntry(`${origin}/reference`, "API reference", "OpenAPI reference overview"));
-    for (const spec of site.openapi.specs) {
-      const full = path.join(root, "content", spec.file);
+    for (const spec of specs) {
+      const full = resolveContentFile(spec.file, contentRoot);
+      if (!full) throw new Error(`OpenAPI file is outside the content root: ${spec.file}`);
       const doc = await SwaggerParser.validate(full);
       all.push(
         textEntry(

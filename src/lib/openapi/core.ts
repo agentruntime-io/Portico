@@ -1,5 +1,3 @@
-import SwaggerParser from "@apidevtools/swagger-parser";
-import path from "path";
 
 export const HTTP_METHODS = [
   "get",
@@ -73,13 +71,6 @@ export function operationSlug(
 ): string {
   if (operationId) return slugifyOperationId(operationId);
   return fallbackSlug(method, pathKey);
-}
-
-export async function loadBundledSpec(
-  specFile: string,
-): Promise<OpenApiDocument> {
-  const full = path.join(process.cwd(), "content", specFile);
-  return SwaggerParser.validate(full) as Promise<OpenApiDocument>;
 }
 
 export function flattenOperations(
