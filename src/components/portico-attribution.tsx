@@ -21,9 +21,13 @@ export function PorticoAttribution({
     >
       <a
         href={AGENTRUNTIME_URL}
-        className="font-medium text-[var(--text-main)] underline-offset-2 hover:underline"
+        className="inline-flex items-center gap-1.5 align-bottom font-medium text-[var(--text-main)] underline-offset-2 hover:underline"
         rel="noopener noreferrer"
       >
+        {/* eslint-disable-next-line @next/next/no-img-element -- static brand SVG */}
+        <img src="/brand/portico-mark-light.svg" alt="" className="site-logo-light h-3 w-auto" />
+        {/* eslint-disable-next-line @next/next/no-img-element -- static brand SVG */}
+        <img src="/brand/portico-mark-dark.svg" alt="" className="site-logo-dark h-3 w-auto" />
         {t("attribution.portico")}
       </a>{" "}
       {t("attribution.openSourceFrom")}{" "}
