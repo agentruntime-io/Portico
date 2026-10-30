@@ -135,7 +135,7 @@ Use these anywhere a component is not API-specific. API-only surfaces still use 
 | Dialogs | `useDialog()` — trap, Escape, focus restore, scroll lock |
 | Motion | `@media (prefers-reduced-motion: reduce)` in `globals.css` |
 | UI i18n | `I18nProvider` + `useI18n()` + `src/lib/i18n/messages/{en,es,fr,ja}.ts` |
-| Content i18n | Not in portal — author localized MDX in agentruntime-docs |
+| Content i18n | Not in portal — author localized MDX in your content repo |
 
 Add new UI strings to **all four** message files, then use `t("dotted.key")` in client components.
 
