@@ -14,8 +14,8 @@ import { NavbarLinks, NavbarPrimaryCta } from "@/components/navbar-cta";
 import {
   AssistantLauncher,
   LanguageSelector,
-  ThemeToggle,
 } from "@/components/site-controls";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { SiteConfig } from "@/lib/site";
 import { PorticoAttribution } from "@/components/portico-attribution";
 import { GlobalNavAnchors } from "@/components/global-nav-anchors";
@@ -33,18 +33,20 @@ export function DocsBrand({
   siteName,
   className = "",
   nameClassName = "",
+  badgeClassName = "",
 }: {
   siteName: string;
   className?: string;
   nameClassName?: string;
+  badgeClassName?: string;
 }) {
   const { t, locale } = useI18n();
   return (
-    <Link
+    <Link prefetch={false}
       href={localizeHref("/", locale)}
       className={`flex min-h-11 min-w-0 items-center gap-2.5 text-sm font-semibold tracking-tight text-[var(--text-main)] ${className}`}
     >
-      <span className="shrink-0 rounded-lg border border-[var(--panel-border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)]">
+      <span className={`shrink-0 rounded-lg border border-[var(--panel-border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--accent-strong)] ${badgeClassName}`}>
         {t("nav.docsBadge")}
       </span>
       <span className={`truncate text-[15px] ${nameClassName}`}>
@@ -73,13 +75,15 @@ export function DocsHeader({
     desktopSidebar === "docs"
       ? "xl:ml-[280px]"
       : desktopSidebar === "api"
-        ? "lg:ml-[340px]"
+        ? "lg:ml-[280px]"
         : "";
-  const brandVisibility =
+  // The logo stays in the header DOM (first tab stop after the skip link) but is
+  // pinned over the sidebar column where it visually belongs.
+  const brandPlacement =
     desktopSidebar === "docs"
-      ? "xl:hidden"
+      ? "xl:fixed xl:left-5 xl:top-0 xl:z-50 xl:h-16"
       : desktopSidebar === "api"
-        ? "lg:hidden"
+        ? "lg:fixed lg:left-4 lg:top-0 lg:z-50 lg:h-16"
         : "";
   const innerWidth = desktopSidebar
     ? "flex h-16 w-full items-center gap-4 px-4 sm:px-6"
@@ -92,8 +96,9 @@ export function DocsHeader({
       <div className={innerWidth}>
         <DocsBrand
           siteName={siteName}
-          className={`shrink ${brandVisibility}`}
-          nameClassName="hidden min-[420px]:inline"
+          className={`shrink ${brandPlacement}`}
+          // Below 420px the wordmark is more useful than the DOCS chip, and it fits.
+          badgeClassName="hidden min-[420px]:inline"
         />
         <MainNavTabs activePath={activePath} mainNav={mainNav} />
         <div className="flex min-w-0 flex-1 items-center justify-end gap-1 sm:gap-2">
@@ -127,11 +132,9 @@ export function DocsHeader({
 }
 
 export function DocsSidebar({
-  siteName,
   nav,
   activePath,
 }: {
-  siteName: string;
   nav: NavFile;
   activePath: string;
 }) {
@@ -170,9 +173,8 @@ export function DocsSidebar({
     <aside
       className="docs-sidebar fixed inset-y-0 left-0 z-30 hidden w-[280px] flex-col overflow-hidden bg-[var(--sidebar-bg)] xl:flex"
     >
-      <div className="flex h-16 shrink-0 items-center px-5">
-        <DocsBrand siteName={siteName} />
-      </div>
+      {/* Spacer: the logo itself lives in the header (tab order) and overlays this area. */}
+      <div className="h-16 shrink-0" aria-hidden />
       <div
         ref={sidebarRef}
         className="docs-sidebar-scroll min-h-0 flex-1 overflow-y-auto px-5 pb-14"
@@ -203,7 +205,7 @@ export function DocsSidebar({
                         {content}
                       </a>
                     ) : (
-                      <Link
+                      <Link prefetch={false}
                         href={href}
                         aria-current={active ? "page" : undefined}
                         className={className}
@@ -265,7 +267,7 @@ export function DocsShell({
         desktopSidebar="docs"
       />
       <div className="flex w-full flex-1 xl:pl-[280px]">
-        <DocsSidebar siteName={siteName} nav={nav} activePath={activePath} />
+        <DocsSidebar nav={nav} activePath={activePath} />
         <main
           id="main-content"
           tabIndex={-1}

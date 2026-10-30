@@ -13,9 +13,9 @@ import { GlobalNavAnchors } from "@/components/global-nav-anchors";
 import { MainNavTabs } from "@/components/main-nav-tabs";
 import { DrawerSearchTrigger } from "@/components/search-control";
 import { SidebarNavGroup } from "@/components/sidebar-nav-group";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   LanguageSelector,
-  ThemeToggle,
 } from "@/components/site-controls";
 import { isActiveNavItem } from "@/lib/nav-active";
 import type { NavFile } from "@/lib/nav";
@@ -80,18 +80,28 @@ export function MobileNavButton({
 
       const scrollerRect = scroller.getBoundingClientRect();
       const activeRect = activeItem.getBoundingClientRect();
-      const isVisible =
+      const activeGroup = activeItem.closest<HTMLElement>("[data-nav-group]");
+      const groupHeader = activeGroup?.firstElementChild as HTMLElement | null;
+      const groupHeaderRect = groupHeader?.getBoundingClientRect();
+      const itemIsVisible =
         activeRect.top >= scrollerRect.top + 16 &&
         activeRect.bottom <= scrollerRect.bottom - 16;
-      if (isVisible) return;
+      const groupContextIsPositioned =
+        !groupHeaderRect ||
+        (groupHeaderRect.top >= scrollerRect.top + 8 &&
+          groupHeaderRect.top <= scrollerRect.top + 32);
+      if (itemIsVisible && groupContextIsPositioned) return;
 
-      scroller.scrollTop = Math.max(
-        0,
-        scroller.scrollTop +
-          activeRect.top -
+      const groupAndItemFit =
+        groupHeaderRect &&
+        activeRect.bottom - groupHeaderRect.top <= scroller.clientHeight - 32;
+      const targetOffset = groupAndItemFit
+        ? groupHeaderRect.top - scrollerRect.top - 8
+        : activeRect.top -
           scrollerRect.top -
-          (scroller.clientHeight - activeItem.offsetHeight) / 2,
-      );
+          (scroller.clientHeight - activeItem.offsetHeight) / 2;
+
+      scroller.scrollTop = Math.max(0, scroller.scrollTop + targetOffset);
     });
     return () => window.cancelAnimationFrame(frame);
   }, [activePath, open]);
@@ -122,8 +132,8 @@ export function MobileNavButton({
               id={panelId}
               inert={!open}
               data-state={open ? "open" : "closed"}
-              className={`absolute inset-y-0 left-0 flex w-[min(20rem,100vw)] flex-col bg-[var(--sidebar-bg)] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none sm:rounded-r-2xl ${
-                open ? "translate-x-0" : "-translate-x-full"
+              className={`absolute inset-y-0 left-0 flex w-[min(20rem,100vw)] flex-col bg-[var(--sidebar-bg)] transition-[transform,box-shadow]  duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:transition-none sm:rounded-r-2xl ${
+                open ? "translate-x-0 shadow-2xl" : "-translate-x-full shadow-none"
               }`}
               role="dialog"
               aria-modal="true"
@@ -184,7 +194,7 @@ export function MobileNavButton({
                             {content}
                           </a>
                         ) : (
-                          <Link
+                          <Link prefetch={false}
                             href={href}
                             onClick={closeDialog}
                             aria-current={active ? "page" : undefined}
@@ -233,9 +243,9 @@ export function MobileNavButton({
                   <PorticoAttribution compact />
                 </div>
               </nav>
-              <footer className="flex h-14 shrink-0 items-center bg-[var(--sidebar-bg)] px-4">
-                <div className="flex w-full items-center justify-end gap-1.5">
-                  <ThemeToggle compact />
+              <footer className="drawer-footer shrink-0 space-y-2 border-t border-[var(--panel-border)] bg-[var(--sidebar-bg)] p-3">
+                <ThemeToggle variant="segmented" />
+                <div className="drawer-footer-row flex items-center justify-between gap-2">
                   <FontScaleControls compact />
                   <LanguageSelector variant="drawer" compact />
                 </div>

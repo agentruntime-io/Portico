@@ -30,7 +30,7 @@ export function FontScaleControls({
 
   const current = Math.round((fontScaleLevels[index] ?? 1) * 100);
   const buttonClass = compact
-    ? "min-h-10 min-w-10 px-2 py-1.5"
+    ? "min-h-11 min-w-11 px-2 py-1.5"
     : "min-h-11 min-w-11 px-2.5 py-2 xl:min-h-9 xl:min-w-9 xl:px-2 xl:py-1.5";
 
   return (

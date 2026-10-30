@@ -124,7 +124,7 @@ export function ApiMobileNav({
                 <ul className="mb-4 space-y-0.5">
                   {sectionKeys.map(([key, href]) => (
                     <li key={href}>
-                      <Link
+                      <Link prefetch={false}
                         href={`/reference/${specId}${href}`}
                         onClick={closeDialog}
                         className="nav-item-muted flex min-h-11 items-center rounded-md px-2 py-2 text-sm"
@@ -152,7 +152,7 @@ export function ApiMobileNav({
                         </summary>
                         <ul className="mt-1 space-y-0.5 border-l border-[var(--panel-border)] pl-3">
                           <li>
-                            <Link
+                            <Link prefetch={false}
                               href={`/reference/${specId}/${tagSlug}`}
                               onClick={closeDialog}
                               className="nav-item-muted flex min-h-11 items-center rounded-md px-2 py-2 text-sm"
@@ -164,7 +164,7 @@ export function ApiMobileNav({
                             const active = activeSlug === op.slug;
                             return (
                               <li key={op.slug}>
-                                <Link
+                                <Link prefetch={false}
                                   href={`/reference/${specId}/${tagSlugForOperation(op)}/${op.slug}`}
                                   onClick={closeDialog}
                                   className={`flex min-h-11 items-center gap-2 rounded-md px-2 py-2 text-sm ${
@@ -193,7 +193,7 @@ export function ApiMobileNav({
 
   return (
     <>
-      <div className="sticky top-16 z-30 border-b border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-4 py-2 lg:hidden">
+      <div className="sticky top-16 z-30 border-b border-[var(--panel-border)] bg-[var(--sidebar-bg)] px-4 py-2 sm:px-6 lg:hidden">
         <button
           type="button"
           aria-label={t("nav.apiEndpoints")}

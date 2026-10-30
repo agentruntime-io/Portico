@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Git worktrees live under .claude/; never lint their copies.
+    ".claude/**",
   ]),
 ]);
 
