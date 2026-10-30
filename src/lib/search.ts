@@ -6,6 +6,8 @@ export type SearchEntry = {
   body?: string;
   /** Fenced code text: searchable but low-weight, never shown in snippets. */
   code?: string;
+  /** docs.json navigation group the page sits under ("Get started", "Platform"…). */
+  group?: string;
 };
 
 export type PreparedEntry = SearchEntry & {
