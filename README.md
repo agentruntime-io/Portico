@@ -1,4 +1,11 @@
-# Portico
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/brand/portico-logo-stacked-dark.svg">
+    <img src="public/brand/portico-logo-stacked-light.svg" alt="Portico by AgentRuntime" width="160">
+  </picture>
+</p>
+
+<h1 align="center">Portico</h1>
 
 [![CI](https://github.com/agentruntime-io/Portico/actions/workflows/portico-ci.yml/badge.svg)](https://github.com/agentruntime-io/Portico/actions/workflows/portico-ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)

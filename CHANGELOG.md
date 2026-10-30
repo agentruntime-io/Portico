@@ -13,9 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Branded `not-found` and `error` pages inside the docs shell
 - Mermaid diagrams render at natural size with horizontal scroll and an expand dialog
 - Theme preference now includes **System** (follows `prefers-color-scheme`, the default)
+- Home page components `HomePage`, `Hero` (with a large search field), `HeroAction` and `Section`
+- `docs.json` `logo` (one file or `{ light, dark }`) shown in the header, per theme
+- Portico logo set in `public/brand/` (mark, horizontal and stacked logos, light and dark, plus a theme-aware `portico-icon.svg`); the favicon replaces Next.js's default icon, and the attribution line shows the mark
 
 ### Changed
 
+- Header: theme, text size and language move into one **Display settings** popover
+- Copy link / Edit this page are quiet text buttons; less space between the page header and the article
+- Mintlify-style home pages render with Portico card styling instead of green link-coloured outlines and titles
 - `npm run validate` loads `.env.local`, prints the content root, compiles every MDX page, flags unknown components, broken internal links and tables split by blank lines
 - Search indexes headings and full stripped body text, matches every term (hyphen = space) and highlights hits; the index is regenerated on `npm run dev` and no longer committed
 - API reference descriptions render Markdown
