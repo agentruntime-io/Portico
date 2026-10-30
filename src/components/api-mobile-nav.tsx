@@ -9,6 +9,7 @@ import { ApiSpecSwitcher } from "@/components/api-spec-switcher";
 import { useI18n } from "@/components/i18n-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
 import type { ApiSpecNavEntry } from "@/lib/main-nav";
+import type { ApiDescriptionSection } from "@/lib/openapi/core";
 
 type ApiOp = {
   slug: string;
@@ -31,28 +32,18 @@ function tagSlugForOperation(op: ApiOp): string {
   return slugifyTag(tag);
 }
 
-const sectionKeys = [
-  ["api.sections.overview", "#overview"],
-  ["api.sections.authentication", "#authentication"],
-  ["api.sections.baseUrl", "#base-url"],
-  ["api.sections.requestResponse", "#request--response-format"],
-  ["api.sections.asyncModel", "#async-execution-model"],
-  ["api.sections.stepTypes", "#step-types"],
-  ["api.sections.templateVars", "#template-variables"],
-  ["api.sections.errorHandling", "#error-handling"],
-  ["api.sections.rateLimits", "#rate-limits"],
-] as const;
-
 export function ApiMobileNav({
   specId,
   apiSpecs,
   operations,
+  sections,
   activeTag,
   activeSlug,
 }: {
   specId: string;
   apiSpecs: ApiSpecNavEntry[];
   operations: ApiOp[];
+  sections: ApiDescriptionSection[];
   activeTag?: string;
   activeSlug?: string;
 }) {
@@ -122,17 +113,28 @@ export function ApiMobileNav({
                   {t("nav.guideSections")}
                 </p>
                 <ul className="mb-4 space-y-0.5">
-                  {sectionKeys.map(([key, href]) => (
-                    <li key={href}>
-                      <Link prefetch={false}
-                        href={`/reference/${specId}${href}`}
-                        onClick={closeDialog}
-                        className="nav-item-muted flex min-h-11 items-center rounded-md px-2 py-2 text-sm"
-                      >
-                        {t(key)}
-                      </Link>
-                    </li>
-                  ))}
+                  <li>
+                    <Link prefetch={false}
+                      href={`/reference/${specId}`}
+                      onClick={closeDialog}
+                      className="nav-item-muted flex min-h-11 items-center rounded-md px-2 py-2 text-sm"
+                    >
+                      {t("api.sections.overview")}
+                    </Link>
+                  </li>
+                  {sections
+                    .filter((section) => section.id !== "overview")
+                    .map((section) => (
+                      <li key={section.id}>
+                        <Link prefetch={false}
+                          href={`/reference/${specId}#${section.id}`}
+                          onClick={closeDialog}
+                          className="nav-item-muted flex min-h-11 items-center rounded-md px-2 py-2 text-sm"
+                        >
+                          {section.title}
+                        </Link>
+                      </li>
+                    ))}
                 </ul>
                 <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                   {t("nav.operations")}

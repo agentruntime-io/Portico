@@ -14,7 +14,7 @@ import { getNavigation } from "@/lib/nav";
 import { resolveMainNav } from "@/lib/main-nav";
 import { markdownToHtml } from "@/lib/markdown";
 import { buildPageMetadata, excerptFromBody, webPageJsonLd } from "@/lib/seo";
-import { flattenOperations } from "@/lib/openapi/core";
+import { flattenOperations, getDescriptionSections } from "@/lib/openapi/core";
 import { loadBundledSpec } from "@/lib/openapi/load";
 import { openApiDownloadUrl } from "@/lib/main-nav";
 
@@ -77,6 +77,7 @@ export default async function SpecOverviewPage({ params }: Props) {
         mainNav={mainNav}
         openApiFile={meta.file}
         operations={ops}
+        sections={getDescriptionSections(doc.info?.description)}
         rightRail={<ApiRightRail doc={doc} />}
       >
         <article key="api-overview" className="max-w-3xl">
