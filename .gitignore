@@ -36,6 +36,8 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+# Written by the Vercel CLI (`vercel env pull`); holds short-lived tokens
+.env.vercel
 !.env.example
 
 # vercel
