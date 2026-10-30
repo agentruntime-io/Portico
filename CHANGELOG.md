@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `npm run validate` no longer reports two adjacent tables (separated by a blank line) as one table split by a blank line
+
 ## [0.2.0] - 2026-10-30
 
 ### Added

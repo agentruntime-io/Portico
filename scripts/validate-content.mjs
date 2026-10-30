@@ -113,13 +113,20 @@ function findSplitTables(body) {
   const lines = proseLines(body);
   const hits = [];
   const isRow = (t) => /^\s*\|.*\|\s*$/.test(t);
+  const isSeparator = (t) => /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(t);
   for (let i = 1; i + 1 < lines.length; i++) {
+    // A row followed by a |---| separator is the header of a new table, not a split one.
+    const startsNewTable =
+      i + 2 < lines.length &&
+      lines[i + 2].line === lines[i + 1].line + 1 &&
+      isSeparator(lines[i + 2].text);
     if (
       lines[i].text.trim() === "" &&
       lines[i].line === lines[i - 1].line + 1 &&
       lines[i + 1].line === lines[i].line + 1 &&
       isRow(lines[i - 1].text) &&
-      isRow(lines[i + 1].text)
+      isRow(lines[i + 1].text) &&
+      !startsNewTable
     ) {
       hits.push(lines[i].line);
     }
