@@ -1,0 +1,32 @@
+# Portico — renderer config for this content repo. Lives next to docs.json.
+# Prose/MDX, navigation, branding, favicon, footer and appearance come from docs.json.
+
+# Public site URL. SITE_URL in the environment wins; without either, Portico
+# falls back to http://localhost:3004.
+# url: https://docs.example.com
+
+# Social preview image (absolute URL or site-relative path)
+ogImage: /opengraph-image
+
+# Help link shown in the header and menus (an email address or a URL).
+# When unset, Portico looks for a Support/Help/Contact link in docs.json.
+# support: docs@example.com
+
+# Google Search Console — paste the content value from the HTML tag method,
+# or set GOOGLE_SITE_VERIFICATION in Vercel / .env.local (env wins over yaml).
+verification:
+  google: ""
+
+# "Edit this page" base. Without it, the link is derived from CONTENT_REPO_URL
+# or CONTENT_GIT_REPO (+ CONTENT_GIT_BRANCH); with none of them there is no link.
+# githubEditBase: https://github.com/your-org/your-docs/blob/main
+
+# OpenAPI specs for /reference/*. Omit this block to pick up every file in openapi/.
+openapi:
+  specs:
+    - id: agentruntime
+      title: AgentRuntime API
+      file: openapi/agentruntime.yaml
+    # - id: integrations
+    #   title: Integrations API
+    #   file: openapi/integrations.yaml

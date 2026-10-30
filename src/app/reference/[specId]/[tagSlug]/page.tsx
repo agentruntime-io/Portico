@@ -16,9 +16,9 @@ import {
   flattenOperations,
   getTagDescription,
   groupOperationsByTag,
-  loadBundledSpec,
   slugifyTag,
 } from "@/lib/openapi/core";
+import { loadBundledSpec } from "@/lib/openapi/load";
 import { buildPageMetadata, webPageJsonLd } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site";
 

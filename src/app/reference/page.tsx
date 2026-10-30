@@ -6,7 +6,7 @@ import { getNavigation } from "@/lib/nav";
 import { resolveMainNav } from "@/lib/main-nav";
 import { excerptFromBody, buildPageMetadata } from "@/lib/seo";
 import { getMessages } from "@/lib/i18n";
-import { loadBundledSpec } from "@/lib/openapi/core";
+import { loadBundledSpec } from "@/lib/openapi/load";
 import { getSiteConfig } from "@/lib/site";
 
 export async function generateMetadata(): Promise<Metadata> {

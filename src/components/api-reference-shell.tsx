@@ -105,7 +105,7 @@ function ApiSidebar({
         </div>
         <div className="api-divider mt-3 space-y-3 border-t pt-3 text-sm">
           <a
-            href={openApiDownloadUrl(openApiFile)}
+            href={openApiDownloadUrl(specId, openApiFile)}
             className="api-control flex items-center justify-center gap-2 rounded-md border px-3 py-2 font-medium"
           >
             <ExternalLink className="h-3.5 w-3.5" />
