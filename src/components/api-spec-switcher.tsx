@@ -46,8 +46,8 @@ export function ApiSpecSwitcher({
                   onClick={onNavigate}
                   className={`block px-3 py-2 text-sm transition-colors ${
                     isActive
-                      ? "bg-emerald-500/15 font-medium text-[var(--text-main)]"
-                      : "text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+                      ? "bg-[var(--brand-soft)] font-medium text-[var(--text-main)]"
+                      : "text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--text-main)]"
                   }`}
                 >
                   {spec.title}

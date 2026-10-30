@@ -55,7 +55,6 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {site.theme.fontStylesheet ? (
-          // eslint-disable-next-line @next/next/no-page-custom-font -- per-site fonts from docs.json
           <link rel="stylesheet" href={site.theme.fontStylesheet} />
         ) : null}
         {site.theme.css ? <style dangerouslySetInnerHTML={{ __html: site.theme.css }} /> : null}

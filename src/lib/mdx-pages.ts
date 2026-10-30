@@ -68,7 +68,7 @@ export type LoadedMdxPage = {
 
 
 const MDX_COMPONENT_PATTERN =
-  /<(Card|CardGroup|Icon|Note|Warning|Info|Tip|Check|Danger|Steps|Step|Tab|Tabs|CodeGroup|Accordion|AccordionGroup|Frame|Expandable|Hero|HeroAction|HomePage|Section)\b/;
+  /<(Card|CardGroup|Icon|Note|Warning|Info|Tip|Check|Danger|Steps|Step|Tab|Tabs|CodeGroup|Accordion|AccordionGroup|Frame|Expandable|Hero|HeroAction|HeroAside|HomePage|Section|Band|TaskList|Task)\b/;
 
 /** Pages containing JSX components that require the RSC MDX compiler. */
 export function bodyUsesMdxComponents(body: string): boolean {

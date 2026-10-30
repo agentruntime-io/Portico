@@ -47,7 +47,7 @@ export function StatusPage({
       <div className="flex flex-wrap gap-3">
         <Link
           href={localizeHref("/", locale)}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white hover:bg-emerald-500"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[var(--btn)] px-4 text-sm font-semibold text-[var(--on-btn)] hover:bg-[var(--btn-hover)]"
         >
           <Home className="h-4 w-4" aria-hidden />
           {t("errors.backHome")}

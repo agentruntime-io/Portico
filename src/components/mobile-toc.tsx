@@ -1,9 +1,10 @@
 "use client";
 
+import { ChevronDown, List } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 import type { PageHeading } from "@/lib/headings";
-import { ListFilter } from "lucide-react";
 
+/** Inline "On this page" disclosure, shown under 1180px where the desktop rail is hidden. */
 export function MobileTableOfContents({
   headings,
 }: {
@@ -13,21 +14,24 @@ export function MobileTableOfContents({
   if (headings.length < 2) return null;
 
   return (
-    <details className="rounded-xl border border-[var(--panel-border)] bg-[var(--surface-muted)] xl:hidden">
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium text-[var(--text-main)] [&::-webkit-details-marker]:hidden">
-        <ListFilter className="h-4 w-4 text-[var(--text-muted)]" aria-hidden />
+    <details className="doc-toc-m">
+      <summary>
+        <List className="doc-toc-m-icon" aria-hidden />
         {t("toc.title")}
+        <ChevronDown className="doc-toc-m-chevron" aria-hidden />
       </summary>
-      <nav className="border-t border-[var(--panel-border)] px-2 py-2" aria-label={t("toc.title")}>
-        <ul className="space-y-0.5">
+      <nav
+        aria-label={t("toc.title")}
+        onClick={(event) => {
+          if ((event.target as HTMLElement).closest("a")) {
+            event.currentTarget.closest("details")?.removeAttribute("open");
+          }
+        }}
+      >
+        <ul>
           {headings.map((heading, index) => (
             <li key={`${heading.id}-${index}`}>
-              <a
-                href={`#${heading.id}`}
-                className={`block rounded-md py-2 text-sm text-[var(--text-muted)] transition-colors hover:bg-emerald-500/10 hover:text-emerald-600 ${
-                  heading.depth === 3 ? "pl-6 pr-2" : "px-2"
-                }`}
-              >
+              <a href={`#${heading.id}`} data-depth={heading.depth}>
                 {heading.text}
               </a>
             </li>

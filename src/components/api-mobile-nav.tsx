@@ -106,7 +106,7 @@ export function ApiMobileNav({
                   type="button"
                   aria-label={t("nav.closeMenu")}
                   onClick={closeDialog}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-emerald-500/10"
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--brand-soft)]"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -200,7 +200,7 @@ export function ApiMobileNav({
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen(true)}
-          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 py-2.5 text-sm font-medium text-[var(--text-main)] hover:bg-emerald-500/10"
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[var(--panel-border)] bg-[var(--panel-bg)] px-3 py-2.5 text-sm font-medium text-[var(--text-main)] hover:bg-[var(--brand-soft)]"
         >
           <ListTree className="h-4 w-4 shrink-0" aria-hidden />
           {t("nav.apiEndpoints")}

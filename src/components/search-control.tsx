@@ -75,23 +75,46 @@ export function DrawerSearchTrigger({
   );
 }
 
-/** Large search field for the home hero; opens the same dialog as the header button. */
-export function HeroSearchTrigger() {
+/** Ask the search dialog to open, optionally prefilled with a query. */
+function requestSearch(query?: string) {
+  window.dispatchEvent(
+    new CustomEvent<{ query?: string }>(OPEN_SEARCH_EVENT, { detail: { query } }),
+  );
+}
+
+/**
+ * Search card for the home hero: opens the same dialog as the header button.
+ * Each suggestion renders as a "Try" chip that opens the dialog prefilled with it.
+ */
+export function HeroSearchTrigger({ suggestions }: { suggestions?: string[] }) {
   const { t } = useI18n();
+  const chips = (suggestions ?? []).filter((s) => s.trim().length > 0);
 
   return (
-    <button
-      type="button"
-      aria-label={t("search.label")}
-      onClick={() => window.dispatchEvent(new Event(OPEN_SEARCH_EVENT))}
-      className="docs-home-search flex min-h-13 w-full items-center gap-3 rounded-xl px-4 text-left text-[15px] text-[var(--text-muted)]"
-    >
-      <Search className="h-[18px] w-[18px] shrink-0" aria-hidden />
-      <span className="flex-1 truncate">{t("search.placeholder")}</span>
-      <kbd className="hidden shrink-0 rounded-md border border-[var(--panel-border)] px-1.5 py-0.5 font-sans text-xs sm:inline">
-        {t("search.shortcut")}
-      </kbd>
-    </button>
+    <div className="hm-sbox">
+      <div className="hm-sbox-card">
+        <button
+          type="button"
+          aria-label={t("search.label")}
+          onClick={() => requestSearch()}
+          className="hm-sbox-row"
+        >
+          <Search aria-hidden />
+          <span className="hm-sbox-text">{t("search.placeholder")}</span>
+          <kbd className="hm-kbd">{t("search.shortcut")}</kbd>
+        </button>
+        {chips.length ? (
+          <div className="hm-sbox-hints">
+            <span>{t("search.try")}</span>
+            {chips.map((chip) => (
+              <button key={chip} type="button" onClick={() => requestSearch(chip)}>
+                {chip}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
@@ -125,7 +148,12 @@ export function SearchControl() {
         setOpen(true);
       }
     };
-    const onOpenRequest = () => setOpen(true);
+    // The open-search event may carry `detail.query` to prefill the input.
+    const onOpenRequest = (e: Event) => {
+      const query = (e as CustomEvent<{ query?: string } | undefined>).detail?.query;
+      if (typeof query === "string") setQ(query);
+      setOpen(true);
+    };
     window.addEventListener("keydown", onKey);
     window.addEventListener(OPEN_SEARCH_EVENT, onOpenRequest);
     return () => {

@@ -81,7 +81,7 @@ export function SchemaView({
     const r = resolveRef(doc, s.$ref);
     if (r) {
       return (
-        <div className={level > 0 ? "border-l-2 border-emerald-500/40 pl-3" : ""}>
+        <div className={level > 0 ? "border-l-2 border-[var(--brand-line)] pl-3" : ""}>
           <p className="ds-accent-text font-mono text-xs">
             {s.$ref}
           </p>
