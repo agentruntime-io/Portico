@@ -23,6 +23,9 @@ import { localizeHref } from "@/lib/locale-routing";
 import type { MainNavTargets } from "@/lib/main-nav";
 import type { SiteConfig } from "@/lib/site";
 
+/** Dispatched by the docs bottom bar to open this drawer. */
+export const OPEN_NAV_EVENT = "docs:open-nav";
+
 const utilityLinks = [
   { titleKey: "nav.home" as const, href: "/", icon: Home },
   { titleKey: "nav.changelog" as const, href: "/changelog", icon: FileClock },
@@ -34,13 +37,14 @@ export function MobileNavButton({
   activePath,
   navbar,
   mainNav,
-  hideAt = "xl",
+  hideAt = "docs",
 }: {
   nav: NavFile;
   activePath: string;
   navbar?: SiteConfig["navbar"];
   mainNav: MainNavTargets;
-  hideAt?: "lg" | "xl";
+  /** "docs": button under 640px (the bottom bar opens the drawer up to 820px); "lg": API reference. */
+  hideAt?: "lg" | "docs";
 }) {
   const { t, locale } = useI18n();
   const [open, setOpen] = useState(false);
@@ -50,17 +54,20 @@ export function MobileNavButton({
   const navScrollRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const closeDialog = useCallback(() => setOpen(false), []);
-  const desktopVisibility = hideAt === "lg" ? "lg:hidden" : "xl:hidden";
+  const desktopVisibility = hideAt === "lg" ? "lg:hidden" : "min-[640px]:hidden";
 
   useDialog(open, closeDialog, dialogRef, closeRef);
 
   useEffect(() => {
     setMounted(true);
+    const openNav = () => setOpen(true);
+    window.addEventListener(OPEN_NAV_EVENT, openNav);
+    return () => window.removeEventListener(OPEN_NAV_EVENT, openNav);
   }, []);
 
   useEffect(() => {
     const desktopQuery = window.matchMedia(
-      hideAt === "lg" ? "(min-width: 1024px)" : "(min-width: 1280px)",
+      hideAt === "lg" ? "(min-width: 1024px)" : "(min-width: 820px)",
     );
     const closeAtDesktop = (event: MediaQueryListEvent) => {
       if (event.matches) closeDialog();

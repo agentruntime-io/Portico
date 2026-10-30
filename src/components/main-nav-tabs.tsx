@@ -12,11 +12,12 @@ import {
 } from "@/lib/main-nav";
 import { localizeHref } from "@/lib/locale-routing";
 
+// Header tabs: full-height links with a 2px brand underline on the active one.
 function tabClass(active: boolean) {
-  return `toolbar-nav-item inline-flex min-h-11 items-center rounded-lg px-2.5 py-1.5 font-medium transition-colors xl:min-h-9 ${
+  return `relative inline-flex h-full min-h-11 items-center px-3 text-sm font-medium transition-colors ${
     active
-      ? "bg-[var(--surface-muted)] text-[var(--text-main)]"
-      : "text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-main)]"
+      ? "text-[var(--ink)] after:absolute after:inset-x-3 after:-bottom-px after:h-0.5 after:rounded-sm after:bg-[var(--brand)]"
+      : "text-[var(--ink-2)] hover:text-[var(--ink)]"
   }`;
 }
 
@@ -98,7 +99,7 @@ function ApiReferenceNav({
                 close();
                 onNavigate?.();
               }}
-              className="flex min-h-11 items-center px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+              className="flex min-h-11 items-center px-3 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--text-main)]"
             >
               {t("nav.allApiReferences")}
             </Link>
@@ -118,8 +119,8 @@ function ApiReferenceNav({
                   }}
                   className={`flex min-h-11 items-center px-3 py-2 text-sm transition-colors ${
                     isActive
-                      ? "bg-emerald-500/15 font-medium text-[var(--text-main)]"
-                      : "text-[var(--text-muted)] hover:bg-emerald-500/10 hover:text-[var(--text-main)]"
+                      ? "bg-[var(--brand-soft)] font-medium text-[var(--text-main)]"
+                      : "text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--text-main)]"
                   }`}
                 >
                   {spec.title}
@@ -151,7 +152,7 @@ export function MainNavTabs({
 
   return (
     <nav
-      className={className ?? "hidden min-w-0 items-center gap-1 lg:flex"}
+      className={className ?? "ml-4 hidden h-full min-w-0 items-stretch gap-1 lg:flex"}
       aria-label={t("nav.mainNav")}
     >
       <Link prefetch={false}

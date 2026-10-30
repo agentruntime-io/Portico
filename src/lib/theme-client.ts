@@ -2,7 +2,6 @@
 
 import {
   isThemePreference,
-  themeTokens,
   type ThemeName,
   type ThemePreference,
 } from "@/lib/theme-tokens";
@@ -32,7 +31,4 @@ export function applyTheme(pref: ThemePreference) {
   const root = document.documentElement;
   root.dataset.theme = theme;
   root.dataset.themePref = pref;
-  for (const [name, value] of Object.entries(themeTokens[theme])) {
-    root.style.setProperty(name, value);
-  }
 }

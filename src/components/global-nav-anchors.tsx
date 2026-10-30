@@ -26,9 +26,8 @@ export function GlobalNavAnchors({
   className?: string;
   variant?: "sidebar" | "drawer";
 }) {
-  const anchors = nav.globalAnchors?.filter(
-    (a) => a.href !== "/" && a.href !== "/changelog",
-  );
+  // The brand already links home; every other anchor comes from docs.json.
+  const anchors = nav.globalAnchors?.filter((a) => a.href !== "/");
   if (!anchors?.length) return null;
 
   return (
