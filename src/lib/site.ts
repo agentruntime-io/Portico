@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
 import yaml from "js-yaml";
-import { loadDocsJson } from "@/lib/docs-config";
+import { assertContentRoot } from "@/lib/content-root";
+import { loadDocsJson, type DocsJsonConfig } from "@/lib/docs-config";
 
 export type OpenApiSpecEntry = {
   id: string;
@@ -16,8 +17,12 @@ export type SiteVerification = {
   other?: { name: string; content: string }[];
 };
 
+/** Logo images as data URIs, so content-repo files need no asset route. */
+export type SiteLogo = { light: string; dark: string };
+
 export type SiteConfig = {
   name: string;
+  logo?: SiteLogo;
   description: string;
   url: string;
   ogImage?: string;
@@ -61,6 +66,38 @@ export function buildGithubEditBase(repoUrl: string, branch: string): string {
   return `${base}/blob/${cleanBranch}`;
 }
 
+const LOGO_TYPES: Record<string, string> = {
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".webp": "image/webp",
+};
+const MAX_LOGO_BYTES = 200 * 1024;
+
+async function readLogoFile(file?: string): Promise<string | undefined> {
+  if (!file) return undefined;
+  const root = assertContentRoot();
+  const full = path.resolve(root, file.replace(/^\/+/, ""));
+  const type = LOGO_TYPES[path.extname(full).toLowerCase()];
+  if (!type || !full.startsWith(path.resolve(root) + path.sep)) return undefined;
+  try {
+    const data = await fs.readFile(full);
+    if (data.byteLength > MAX_LOGO_BYTES) return undefined;
+    return `data:${type};base64,${data.toString("base64")}`;
+  } catch {
+    return undefined;
+  }
+}
+
+async function loadLogo(logo: DocsJsonConfig["logo"]): Promise<SiteLogo | undefined> {
+  const files = typeof logo === "string" ? { light: logo, dark: logo } : logo;
+  if (!files) return undefined;
+  const [light, dark] = await Promise.all([
+    readLogoFile(files.light ?? files.dark),
+    readLogoFile(files.dark ?? files.light),
+  ]);
+  return light && dark ? { light, dark } : undefined;
+}
+
 async function loadPortalOverrides(): Promise<Partial<SiteConfig>> {
   try {
     const raw = await fs.readFile(
@@ -102,12 +139,14 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     loadDocsJson(),
     loadPortalOverrides(),
   ]);
+  const logo = await loadLogo(docsJson.logo);
 
   const contentRepo = resolveContentRepoUrl();
   const contentBranch = resolveContentGitBranch();
 
   cached = {
     name: docsJson.name,
+    logo,
     description:
       docsJson.description ??
       "Documentation for AgentRuntime.",

@@ -29,6 +29,8 @@ export type DocsJsonConfig = {
     primary?: { type: string; label: string; href: string };
   };
   colors?: { primary?: string; light?: string; dark?: string };
+  /** Mintlify-style logo: one file, or one per theme. Paths are relative to the content root. */
+  logo?: string | { light?: string; dark?: string };
 };
 
 let cached: DocsJsonConfig | null = null;

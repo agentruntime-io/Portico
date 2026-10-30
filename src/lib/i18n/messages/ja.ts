@@ -74,6 +74,10 @@ export const ja: Messages = {
     decrease: "文字サイズを小さく",
     increase: "文字サイズを大きく",
   },
+  settings: {
+    label: "表示設定",
+    language: "言語",
+  },
   assistant: {
     open: "AI アシスタントを開く",
     close: "アシスタントを閉じる",

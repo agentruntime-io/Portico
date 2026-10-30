@@ -72,6 +72,10 @@ export const en = {
     decrease: "Decrease text size",
     increase: "Increase text size",
   },
+  settings: {
+    label: "Display settings",
+    language: "Language",
+  },
   assistant: {
     open: "Open AI assistant",
     close: "Close assistant",

@@ -84,13 +84,13 @@ export function ProsePageLayout({
                 {description}
               </p>
             ) : null}
-            <div className="mt-6 flex flex-col gap-5 sm:mt-7 sm:gap-6">
+            <div className="mt-5 flex flex-col gap-4 sm:mt-6">
               <PageActions editUrl={editUrl} />
               <MobileTableOfContents headings={headings} />
             </div>
           </>
         )}
-        <div className={hideChrome ? undefined : "mt-10 sm:mt-14"}>
+        <div className={hideChrome ? undefined : "mt-8 sm:mt-10"}>
           {mdx ? renderMdxBody() : html ? <MarkdownBody html={html} /> : null}
         </div>
         <DocPager prev={prev} next={next} />

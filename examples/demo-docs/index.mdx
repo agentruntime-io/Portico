@@ -3,50 +3,22 @@ title: AgentRuntime Docs
 description: Design, run, and observe production AI agent workflows with MCP integrations, human approvals, and real-time observability.
 ---
 
-<div data-product-guide-index className="flex w-full flex-col gap-14 py-6 sm:py-8 lg:gap-20 lg:py-10">
-  <section className="docs-home-hero rounded-2xl px-6 py-9 sm:px-9 sm:py-12 lg:px-12 lg:py-14">
-    <div className="max-w-3xl">
-      <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent-strong)]">
-        AgentRuntime documentation
-      </div>
-      <h1 className="mt-4 max-w-3xl text-3xl font-semibold leading-[1.12] tracking-[-0.04em] text-[var(--text-main)] sm:text-4xl lg:text-5xl">
-        Build reliable AI workflows, from first run to production.
-      </h1>
-      <div className="mt-5 max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg sm:leading-8">
-        Learn the platform, connect your tools, and ship workflows with approvals,
-        observability, and recovery built in.
-      </div>
-      <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <a
-          href="/platform/quickstart"
-          className="docs-home-primary inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold"
-        >
-          Start the quickstart
-          <span aria-hidden="true">→</span>
-        </a>
-        <a
-          href="/introduction/what-is-agentruntime"
-          className="docs-home-secondary inline-flex min-h-11 items-center justify-center rounded-lg px-5 py-2.5 text-sm font-semibold"
-        >
-          Learn the platform
-        </a>
-      </div>
-    </div>
-  </section>
+<HomePage>
+  <Hero
+    eyebrow="AgentRuntime documentation"
+    title="Build reliable AI workflows, from first run to production."
+    description="Learn the platform, connect your tools, and ship workflows with approvals, observability, and recovery built in."
+  >
+    <HeroAction href="/platform/quickstart" primary>Start the quickstart</HeroAction>
+    <HeroAction href="/introduction/what-is-agentruntime">Learn the platform</HeroAction>
+  </Hero>
 
-  <section aria-labelledby="start-here">
-    <div className="max-w-2xl">
-      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-strong)]">
-        Start here
-      </div>
-      <h2 id="start-here" className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-[var(--text-main)] sm:text-3xl">
-        Choose the path that matches your goal
-      </h2>
-      <div className="mt-3 text-base leading-7 text-[var(--text-muted)]">
-        Get oriented, create your first run, or jump directly into workflow authoring.
-      </div>
-    </div>
-
+  <Section
+    id="start-here"
+    eyebrow="Start here"
+    title="Choose the path that matches your goal"
+    description="Get oriented, create your first run, or jump directly into workflow authoring."
+  >
     <CardGroup cols={3}>
       <Card title="Run your first workflow" icon="rocket" href="/platform/quickstart">
         Create a workspace, connect a tool, and complete a production-shaped run.
@@ -64,18 +36,9 @@ description: Design, run, and observe production AI agent workflows with MCP int
         Build and validate DAG workflows, then follow live run events.
       </Card>
     </CardGroup>
-  </section>
+  </Section>
 
-  <section aria-labelledby="explore" className="border-t border-[var(--panel-border)] pt-12 lg:pt-16">
-    <div className="max-w-2xl">
-      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-strong)]">
-        Explore by goal
-      </div>
-      <h2 id="explore" className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-[var(--text-main)] sm:text-3xl">
-        Find the guide you need
-      </h2>
-    </div>
-
+  <Section id="explore" eyebrow="Explore by goal" title="Find the guide you need">
     <CardGroup cols={2}>
       <Card title="Browse connectors" icon="plug" href="/integrations/connector-catalog">
         Find MCP adapters for Google Workspace, databases, commerce, and more.
@@ -93,18 +56,13 @@ description: Design, run, and observe production AI agent workflows with MCP int
         Control workflows and runs from Cursor through the Platform MCP server.
       </Card>
     </CardGroup>
-  </section>
+  </Section>
 
-  <section aria-labelledby="common-tasks" className="border-t border-[var(--panel-border)] pt-12 lg:pt-16">
-    <div className="max-w-2xl">
-      <h2 id="common-tasks" className="text-2xl font-semibold tracking-[-0.025em] text-[var(--text-main)] sm:text-3xl">
-        Common tasks
-      </h2>
-      <div className="mt-3 text-base leading-7 text-[var(--text-muted)]">
-        Direct routes to the setup and operational work you will do most often.
-      </div>
-    </div>
-
+  <Section
+    id="common-tasks"
+    title="Common tasks"
+    description="Direct routes to the setup and operational work you will do most often."
+  >
     <CardGroup cols={3}>
       <Card title="Connect Google or WhatsApp" icon="cable" href="/integrations/connections">
         Save OAuth credentials and bind them to MCP instances.
@@ -130,5 +88,5 @@ description: Design, run, and observe production AI agent workflows with MCP int
         Review permissions, controls, and compliance practices.
       </Card>
     </CardGroup>
-  </section>
-</div>
+  </Section>
+</HomePage>

@@ -74,6 +74,10 @@ export const es: Messages = {
     decrease: "Reducir tamaño del texto",
     increase: "Aumentar tamaño del texto",
   },
+  settings: {
+    label: "Ajustes de visualización",
+    language: "Idioma",
+  },
   assistant: {
     open: "Abrir asistente de IA",
     close: "Cerrar asistente",

@@ -423,6 +423,97 @@ html[data-theme="light"] :focus-visible {
   text-decoration: none;
 }
 
+/*
+ * Mintlify-authored home pages. Their Tailwind utilities (text-gray-*, bg-gray-50,
+ * font-serif, max-w-[540px]) are not generated for content repos, and a bare
+ * `border` falls back to the green link colour. Map the patterns they rely on
+ * onto Portico tokens so the page matches <Card> and the docs theme.
+ */
+.doc-prose [data-product-guide-index] h1 {
+  margin: 0 !important;
+  font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  color: var(--text-main) !important;
+}
+
+.doc-prose [data-product-guide-index] .text-center {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+.doc-prose [data-product-guide-index] :where(.text-gray-600, .text-gray-500) {
+  color: var(--text-muted);
+}
+
+.doc-prose [data-product-guide-index] .text-center .text-gray-600 {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  text-wrap: balance;
+}
+
+.doc-prose [data-product-guide-index] .text-center .text-gray-600 > p {
+  margin: 0.5rem 0 0;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-color: transparent;
+  border-radius: 0.75rem;
+  background: var(--surface-muted);
+  color: var(--text-main);
+  box-shadow: none;
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl:hover {
+  border-color: rgb(16 185 129 / 0.35);
+  background: var(--sidebar-bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+/* Same 40px icon tile as <Card>. */
+.doc-prose [data-product-guide-index] a.rounded-2xl > svg:first-child {
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  padding: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 0.5rem;
+  background: var(--panel-bg);
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl p {
+  margin: 0;
+}
+
+.doc-prose [data-product-guide-index] .font-serif {
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.doc-prose [data-product-guide-index] a.rounded-2xl .font-serif {
+  font-size: 15px;
+  line-height: 1.5rem;
+}
+
+.doc-prose [data-product-guide-index] h2.font-serif {
+  margin: 0 !important;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+.doc-prose [data-product-guide-index] hr {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--panel-border);
+}
+
 .doc-prose a.ds-card {
   color: inherit;
   text-decoration: none;
@@ -471,6 +562,42 @@ html[data-theme="light"] :focus-visible {
 .docs-home-secondary:hover {
   border-color: rgb(16 185 129 / 0.45);
   background: var(--surface-muted);
+}
+
+/* Theme-specific images (docs.json logo, Portico mark): one per theme. */
+.site-logo-dark {
+  display: none;
+}
+
+html[data-theme="dark"] .site-logo-light {
+  display: none;
+}
+
+html[data-theme="dark"] .site-logo-dark {
+  display: block;
+}
+
+.docs-home-search {
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 32px -20px rgb(4 120 87 / 0.45);
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+.docs-home-search:hover {
+  border-color: rgb(16 185 129 / 0.45);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 14px 36px -18px rgb(4 120 87 / 0.55);
+}
+
+.docs-home-search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Cards inside a home section sit under the section heading, not a prose block. */
+.docs-home-section > .ds-card-group {
+  margin-top: 1.75rem;
+  margin-bottom: 0;
 }
 
 .docs-sidebar-scroll {
@@ -1221,8 +1348,13 @@ html[data-theme="dark"] .shiki span {
   margin-bottom: 1.25rem !important;
 }
 
-html[data-theme="dark"] .ds-card {
+html[data-theme="dark"] .ds-card,
+html[data-theme="dark"] .doc-prose [data-product-guide-index] a.rounded-2xl {
   border-color: var(--panel-border);
+}
+
+html[data-theme="dark"] .doc-prose [data-product-guide-index] a.rounded-2xl:hover {
+  border-color: rgb(16 185 129 / 0.35);
 }
 
 /* Short viewports (landscape phones): one compact preferences row so the navigation keeps its height. */

@@ -53,7 +53,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col bg-[var(--background)] text-[var(--foreground)]">
-        <AppProviders locale={lang} siteName={site.name}>{children}</AppProviders>
+        <AppProviders locale={lang} siteName={site.name} logo={site.logo}>{children}</AppProviders>
       </body>
     </html>
   );
