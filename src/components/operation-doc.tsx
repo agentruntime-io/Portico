@@ -1,6 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { UrlText } from "@/components/url-text";
+import { MarkdownText } from "@/components/markdown-text";
 import type { OpenApiDocument, ResolvedOperation } from "@/lib/openapi/core";
 import { CopyButton } from "@/components/api-reference-controls";
 import { useI18n } from "@/components/i18n-provider";
@@ -9,11 +11,11 @@ import { SchemaView } from "@/components/schema-view";
 function JsonBlock({ value }: { value: unknown }) {
   const body = JSON.stringify(value, null, 2);
   return (
-    <div className="api-code overflow-hidden rounded-lg">
-      <div className="api-divider flex justify-end border-b px-3 py-2">
-        <CopyButton value={body} />
+    <div className="api-code relative overflow-hidden rounded-lg">
+      <div className="absolute right-2 top-2 z-10">
+        <CopyButton value={body} compact />
       </div>
-      <pre className="overflow-x-auto p-4 text-xs leading-relaxed">{body}</pre>
+      <pre className="api-scroll overflow-x-auto p-4 pr-24 text-xs leading-relaxed">{body}</pre>
     </div>
   );
 }
@@ -33,20 +35,6 @@ function MethodBadge({ method }: { method: string }) {
     >
       {method}
     </span>
-  );
-}
-
-function CurlSample({ op, baseUrl }: { op: ResolvedOperation; baseUrl: string }) {
-  const url = `${baseUrl.replace(/\/$/, "")}${op.path}`;
-  const lines = [`curl -sS -X ${op.method.toUpperCase()} \\`, `  '${url}'`];
-  const sample = lines.join("\n");
-  return (
-    <div className="api-code overflow-hidden rounded-lg">
-      <div className="api-divider flex justify-end border-b px-3 py-2">
-        <CopyButton value={sample} />
-      </div>
-      <pre className="overflow-x-auto p-4 text-xs leading-relaxed">{sample}</pre>
-    </div>
   );
 }
 
@@ -78,7 +66,9 @@ function ParamsTable({ params }: { params: any[] }) {
               <td className="font-mono text-xs text-[var(--text-main)]">
                 {(p.schema as { type?: string })?.type ?? "-"}
               </td>
-              <td className="api-muted">{p.description ?? "-"}</td>
+              <td className="api-muted">
+                {p.description ? <MarkdownText text={p.description} inline /> : "-"}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -99,7 +89,6 @@ export function OperationDocView({
   mobileTester?: ReactNode;
 }) {
   const { t } = useI18n();
-  const base = doc.servers?.[0]?.url ?? "https://example.com";
   const parameters = (op.operation.parameters as unknown[]) ?? [];
   const requestBody = op.operation.requestBody as
     | Record<string, unknown>
@@ -117,8 +106,8 @@ export function OperationDocView({
       <header className="space-y-5">
         <div className="api-divider flex flex-wrap items-center gap-3 border-b pb-6">
           <MethodBadge method={op.method} />
-          <code className="break-all font-mono text-xs text-[var(--text-main)] sm:text-sm">
-            {op.path}
+          <code className="break-words font-mono text-xs text-[var(--text-main)] sm:text-sm">
+            <UrlText url={op.path} />
           </code>
         </div>
         <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-main)] sm:text-4xl">
@@ -126,17 +115,12 @@ export function OperationDocView({
         </h1>
         {op.description ? (
           <div className="doc-prose prose prose-zinc max-w-none">
-            <p>{op.description}</p>
+            <MarkdownText text={op.description} />
           </div>
         ) : null}
       </header>
 
       {mobileTester}
-
-      <section>
-        <h2 className="ds-section-label">{t("api.operation.sampleRequest")}</h2>
-        <CurlSample op={op} baseUrl={base} />
-      </section>
 
       {parameters.length ? (
         <section>
@@ -182,7 +166,9 @@ export function OperationDocView({
             <li key={code} className="api-card rounded-lg border">
               <div className="api-card-header flex items-center border-b px-4 py-2">
                 <span className="ds-status-code">{code}</span>
-                <span className="api-muted ml-3 text-sm">{res.description}</span>
+                <span className="api-muted ml-3 text-sm">
+                  <MarkdownText text={res.description} inline />
+                </span>
               </div>
               <div className="p-4">
                 {res.content

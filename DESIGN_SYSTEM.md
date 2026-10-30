@@ -299,6 +299,7 @@ Below `xl`, header shows: logo → primary navigation where space allows → `Na
 - Primary CTA is visible on all breakpoints and keeps a 44px touch target.
 - The mobile menu is a full-height edge drawer rather than a popup: it remains mounted off-canvas, slides in from the left over 300ms, and pairs with a fading backdrop. It uses a fixed header, persistent search and Docs/API switcher, independently scrolling navigation auto-centered on the active page, and a compact fixed footer.
 - Drawer navigation keeps 44px link targets but uses compact vertical rhythm: 8px between groups, no added gap between item rows, and 8–12px between secondary utility sections.
+- Drawer hierarchy uses strong section labels, 24px-indented muted child links, and an accent-colored active section. Opening the drawer positions the active section header near the top so its page links never appear without context.
 - Open Console and site links such as GitHub appear as quiet utility links near the end of the scrollable navigation.
 - The fixed footer is a single 56px, shadow-free preferences row containing theme, text size, and language. Its controls use compact 40px sizing with 6px separation; navigation rows remain 44px. The inactive assistant launcher remains outside the navigation drawer.
 

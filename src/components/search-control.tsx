@@ -6,8 +6,17 @@ import { createPortal } from "react-dom";
 import { useI18n } from "@/components/i18n-provider";
 import { useDialog } from "@/lib/a11y/use-dialog";
 import type { MessageKey } from "@/lib/i18n";
+import {
+  highlightParts,
+  prepareIndex,
+  searchIndex,
+  tokenize,
+  type PreparedEntry,
+  type SearchEntry,
+  type SearchResult,
+} from "@/lib/search";
 
-type Entry = { url: string; title: string; excerpt: string };
+type Entry = SearchEntry;
 const OPEN_SEARCH_EVENT = "docs:open-search";
 
 function sectionKey(url: string): MessageKey {
@@ -23,6 +32,22 @@ function sectionKey(url: string): MessageKey {
   if (normalized.startsWith("/connectors")) return "search.sectionConnectors";
   if (normalized.startsWith("/api")) return "search.sectionApi";
   return "search.sectionDocs";
+}
+
+function Highlighted({ text, tokens }: { text: string; tokens: string[] }) {
+  return (
+    <>
+      {highlightParts(text, tokens).map((part, i) =>
+        part.match ? (
+          <mark key={i} className="search-mark">
+            {part.text}
+          </mark>
+        ) : (
+          <span key={i}>{part.text}</span>
+        ),
+      )}
+    </>
+  );
 }
 
 export function DrawerSearchTrigger({
@@ -93,67 +118,75 @@ export function SearchControl() {
     if (!open || data) return;
     void fetch("/search-index.json")
       .then((r) => r.json())
-      .then(setData)
+      .then((entries: Entry[]) => setData(entries))
       .catch(() => setData([]));
   }, [open, data]);
 
-  const localeMatches = useCallback(
-    (url: string) => {
-      if (url.startsWith("/reference") || url.startsWith("/changelog")) {
-        return true;
-      }
-      const first = url.split("/").filter(Boolean)[0];
-      if (locale === "en") {
-        return !first || !["es", "fr", "ja"].includes(first);
-      }
-      return url === `/${locale}` || url.startsWith(`/${locale}/`);
-    },
-    [locale],
+  // Locale-scoped index. Where a locale has no translated page, fall back to the
+  // English entry and link to the URL the visitor would actually land on
+  // (/fr/<slug> serves the English content with a fallback banner).
+  const scopedData = useMemo<PreparedEntry[] | null>(() => {
+    if (!data) return null;
+    const prefixed = /^\/(es|fr|ja)(\/|$)/;
+    const isShared = (url: string) =>
+      url.startsWith("/reference") || url.startsWith("/changelog");
+    if (locale === "en") {
+      return prepareIndex(data.filter((e) => isShared(e.url) || !prefixed.test(e.url)));
+    }
+    const own = data.filter((e) => e.url === `/${locale}` || e.url.startsWith(`/${locale}/`));
+    const ownSlugs = new Set(own.map((e) => e.url.slice(locale.length + 1) || "/"));
+    const fallback = data.filter(
+      (e) => !isShared(e.url) && !prefixed.test(e.url) && !ownSlugs.has(e.url),
+    );
+    const shared = data.filter((e) => isShared(e.url));
+    const entries = [...own, ...fallback, ...shared];
+    return prepareIndex(entries, (e) =>
+      own.includes(e) || isShared(e.url)
+        ? e.url
+        : e.url === "/"
+          ? `/${locale}`
+          : `/${locale}${e.url}`,
+    );
+  }, [data, locale]);
+
+  const queryTokens = useMemo(() => tokenize(q), [q]);
+
+  const hasQueryEarly = queryTokens.length > 0;
+
+  const suggestions = useMemo<SearchResult[]>(
+    () =>
+      (scopedData ?? [])
+        .slice(0, 8)
+        .map((d) => ({ ...d, score: 0, snippet: d.excerpt })),
+    [scopedData],
   );
 
-  const scopedData = useMemo(
-    () => data?.filter((entry) => localeMatches(entry.url)) ?? null,
-    [data, localeMatches],
-  );
+  const results = useMemo<SearchResult[]>(() => {
+    if (!scopedData) return [];
+    if (!queryTokens.length) return suggestions;
+    return searchIndex(scopedData, q);
+  }, [scopedData, q, queryTokens, suggestions]);
 
-  const results = useMemo(() => {
-    if (!scopedData || !q.trim()) return scopedData?.slice(0, 8) ?? [];
-
-    const qq = q.toLowerCase();
-    return scopedData
-      .map((d) => {
-        const title = d.title.toLowerCase();
-        const url = d.url.toLowerCase();
-        const excerpt = d.excerpt.toLowerCase();
-        const score =
-          (title.includes(qq) ? 8 : 0) +
-          (url.includes(qq) ? 4 : 0) +
-          (excerpt.includes(qq) ? 2 : 0) +
-          (title.startsWith(qq) ? 4 : 0);
-        return { ...d, score };
-      })
-      .filter((d) => d.score > 0)
-      .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
-      .slice(0, 24);
-  }, [scopedData, q]);
+  // With no match, offer the same suggested pages as the empty query.
+  const shown = results.length || !hasQueryEarly ? results : suggestions;
 
   useEffect(() => {
     setActiveIndex(0);
-  }, [q, results.length]);
+  }, [q, shown.length]);
 
   const isLoading = open && data === null;
   const hasQuery = q.trim().length > 0;
   const indexEmpty =
     !isLoading && data !== null && (scopedData?.length ?? 0) === 0;
   const showNoResults = !isLoading && hasQuery && results.length === 0;
-  const showResults = !isLoading && results.length > 0;
+  const showResults = !isLoading && shown.length > 0;
   const showBody = isLoading || indexEmpty || showNoResults || showResults;
 
   const modal =
     open && mounted
       ? createPortal(
           <div
-            className="fixed inset-0 z-[var(--z-modal)] flex items-start justify-center bg-black/50 p-3 pt-[12vh] sm:p-4 sm:pt-[10vh]"
+            className="search-backdrop fixed inset-0 z-[var(--z-modal)] flex items-start justify-center bg-black/55 p-3 pt-[12vh] sm:p-4 sm:pt-[10vh]"
             onClick={onClose}
           >
             <div
@@ -182,28 +215,28 @@ export function SearchControl() {
                   aria-expanded={open}
                   aria-controls={showResults ? "search-results" : undefined}
                   aria-activedescendant={
-                    showResults && results[activeIndex]
+                    showResults && shown[activeIndex]
                       ? `search-result-${activeIndex}`
                       : undefined
                   }
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   onKeyDown={(e) => {
-                    if (!results.length) return;
+                    if (!shown.length) return;
                     if (e.key === "ArrowDown") {
                       e.preventDefault();
-                      setActiveIndex((i) => Math.min(i + 1, results.length - 1));
+                      setActiveIndex((i) => Math.min(i + 1, shown.length - 1));
                     } else if (e.key === "ArrowUp") {
                       e.preventDefault();
                       setActiveIndex((i) => Math.max(i - 1, 0));
-                    } else if (e.key === "Enter" && results[activeIndex]) {
+                    } else if (e.key === "Enter" && shown[activeIndex]) {
                       e.preventDefault();
-                      window.location.href = results[activeIndex].url;
+                      window.location.href = shown[activeIndex].href;
                       onClose();
                     }
                   }}
                   placeholder={t("search.placeholder")}
-                  className="min-h-11 min-w-0 flex-1 border-0 bg-transparent py-2.5 text-sm text-[var(--text-main)] shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:text-[var(--text-muted)]"
+                  className="min-h-11 min-w-0 flex-1 border-0 bg-transparent py-2.5 text-base text-[var(--text-main)] md:text-sm shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:text-[var(--text-muted)]"
                 />
                 <button
                   type="button"
@@ -239,7 +272,7 @@ export function SearchControl() {
 
               {showResults ? (
                 <>
-                  {!hasQuery ? (
+                  {!hasQuery || results.length === 0 ? (
                     <p className="border-b border-[var(--panel-border)] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">
                       {t("search.suggested")}
                     </p>
@@ -248,17 +281,18 @@ export function SearchControl() {
                     id="search-results"
                     role="listbox"
                     aria-label={t("search.label")}
-                    className="max-h-[min(20rem,50vh)] overflow-y-auto py-1"
+                    className="docs-sidebar-scroll max-h-[min(20rem,50vh)] overflow-y-auto py-1 [scrollbar-width:thin]"
                   >
-                    {results.map((r, index) => (
-                      <li key={r.url} role="presentation">
+                    {shown.map((r, index) => (
+                      <li key={r.href} role="presentation">
                         <a
                           id={`search-result-${index}`}
                           role="option"
                           aria-selected={index === activeIndex}
-                          href={r.url}
+                          href={r.href}
                           onClick={onClose}
-                          onMouseEnter={() => setActiveIndex(index)}
+                          // mousemove, not mouseenter: keyboard scrolling must not be hijacked by a still pointer
+                          onMouseMove={() => setActiveIndex((i) => (i === index ? i : index))}
                           className={`block px-4 py-2.5 transition-colors ${
                             index === activeIndex
                               ? "bg-emerald-500/10"
@@ -266,16 +300,16 @@ export function SearchControl() {
                           }`}
                         >
                           <div className="flex items-center gap-2">
-                            <span className="rounded bg-[var(--sidebar-bg)] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[var(--text-muted)]">
+                            <span className="shrink-0 whitespace-nowrap rounded bg-[var(--sidebar-bg)] px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[var(--text-muted)]">
                               {t(sectionKey(r.url))}
                             </span>
-                            <span className="text-sm font-medium text-[var(--text-main)]">
-                              {r.title}
+                            <span className="min-w-0 truncate text-sm font-medium text-[var(--text-main)]">
+                              <Highlighted text={r.title} tokens={queryTokens} />
                             </span>
                           </div>
-                          {hasQuery ? (
+                          {hasQuery && r.snippet ? (
                             <p className="mt-1 line-clamp-2 text-xs text-[var(--text-muted)]">
-                              {r.excerpt}
+                              <Highlighted text={r.snippet} tokens={queryTokens} />
                             </p>
                           ) : null}
                         </a>

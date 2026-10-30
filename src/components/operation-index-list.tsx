@@ -17,7 +17,7 @@ export function OperationIndexList({
     <ul className="api-card divide-y divide-[var(--panel-border)] overflow-hidden rounded-xl border">
       {operations.map((operation) => (
         <li key={operation.slug}>
-          <Link
+          <Link prefetch={false}
             href={apiOperationHref(specId, operation)}
             className="group flex items-start gap-4 px-4 py-4 transition-colors hover:bg-emerald-500/5 sm:px-5"
           >

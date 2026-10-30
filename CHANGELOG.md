@@ -5,6 +5,23 @@ All notable changes to Portico are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `Tip`, `Check` and `Danger` callouts; `## Heading {#custom-id}` heading ids
+- Branded `not-found` and `error` pages inside the docs shell
+- Mermaid diagrams render at natural size with horizontal scroll and an expand dialog
+- Theme preference now includes **System** (follows `prefers-color-scheme`, the default)
+
+### Changed
+
+- `npm run validate` loads `.env.local`, prints the content root, compiles every MDX page, flags unknown components, broken internal links and tables split by blank lines
+- Search indexes headings and full stripped body text, matches every term (hyphen = space) and highlights hits; the index is regenerated on `npm run dev` and no longer committed
+- API reference descriptions render Markdown
+- MDX compiles with `blockJS: false` (JSX-expression props such as `Card title={<span/>}` work; `blockDangerousJS` stays on)
+- SSR chrome uses the URL locale; untranslated fallback pages canonicalise to the English URL and are `noindex`
+
 ## [0.1.1] - 2026-06-17
 
 ### Fixed
