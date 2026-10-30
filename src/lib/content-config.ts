@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
-import { assertContentRoot } from "@/lib/content-root";
+// Relative import: next.config.ts loads this file without the @/ alias.
+import { assertContentRoot } from "./content-root";
 
 /**
  * Renderer config that lives in the content repository.
@@ -35,13 +36,12 @@ function readText(file: string): string | null {
 }
 
 export function loadSiteYaml(root = assertContentRoot()): SiteYaml {
-  for (const name of ["site.yaml", "site.yml"]) {
-    const raw = readText(path.join(root, name));
-    if (raw === null) continue;
-    const parsed = yaml.load(raw);
-    return parsed && typeof parsed === "object" ? (parsed as SiteYaml) : {};
-  }
-  return {};
+  const raw =
+    readText(path.join(root, "site.yaml")) ??
+    readText(path.join(root, "site.yml"));
+  if (raw === null) return {};
+  const parsed = yaml.load(raw);
+  return parsed && typeof parsed === "object" ? (parsed as SiteYaml) : {};
 }
 
 /** Site origin: SITE_URL env, then site.yaml `url`, then a local-dev fallback. */
@@ -49,6 +49,59 @@ export function resolveSiteUrl(siteYaml: SiteYaml = loadSiteYaml()): string {
   const fromEnv = process.env.SITE_URL?.trim();
   const fromYaml = typeof siteYaml.url === "string" ? siteYaml.url.trim() : "";
   return (fromEnv || fromYaml || "http://localhost:3004").replace(/\/$/, "");
+}
+
+export type Redirect = {
+  source: string;
+  destination: string;
+  permanent: boolean;
+};
+
+function normalizeRedirect(
+  entry: unknown,
+  defaultPermanent: boolean,
+): Redirect | null {
+  if (!entry || typeof entry !== "object") return null;
+  const e = entry as Record<string, unknown>;
+  const source = e.source ?? e.from;
+  const destination = e.destination ?? e.to;
+  if (typeof source !== "string" || typeof destination !== "string") return null;
+  if (!source || !destination) return null;
+  return {
+    source,
+    destination,
+    permanent: typeof e.permanent === "boolean" ? e.permanent : defaultPermanent,
+  };
+}
+
+/** Redirects from redirects.yaml and docs.json (`permanent` defaults to true there, as in Mintlify). */
+export function loadRedirects(root = assertContentRoot()): Redirect[] {
+  const out: Redirect[] = [];
+  const rawYaml =
+    readText(path.join(root, "redirects.yaml")) ??
+    readText(path.join(root, "redirects.yml"));
+  const yamlList = rawYaml === null ? null : yaml.load(rawYaml);
+  if (Array.isArray(yamlList)) {
+    for (const entry of yamlList) {
+      const r = normalizeRedirect(entry, false);
+      if (r) out.push(r);
+    }
+  }
+  const rawDocs = readText(path.join(root, "docs.json"));
+  if (rawDocs !== null) {
+    try {
+      const list = (JSON.parse(rawDocs) as { redirects?: unknown }).redirects;
+      if (Array.isArray(list)) {
+        for (const entry of list) {
+          const r = normalizeRedirect(entry, true);
+          if (r) out.push(r);
+        }
+      }
+    } catch {
+      /* docs.json errors surface elsewhere */
+    }
+  }
+  return out;
 }
 
 const SPEC_EXT = /\.(ya?ml|json)$/i;

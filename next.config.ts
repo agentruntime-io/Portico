@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { loadRedirects } from "./scripts/content-config.mjs";
+import { loadRedirects } from "./src/lib/content-config";
 
 function loadContentRedirects() {
   try {

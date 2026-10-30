@@ -22,13 +22,12 @@ function readText(file) {
 }
 
 export function loadSiteYaml(root = assertContentRoot()) {
-  for (const name of ["site.yaml", "site.yml"]) {
-    const raw = readText(path.join(root, name));
-    if (raw === null) continue;
-    const parsed = yaml.load(raw);
-    return parsed && typeof parsed === "object" ? parsed : {};
-  }
-  return {};
+  const raw =
+    readText(path.join(root, "site.yaml")) ??
+    readText(path.join(root, "site.yml"));
+  if (raw === null) return {};
+  const parsed = yaml.load(raw);
+  return parsed && typeof parsed === "object" ? parsed : {};
 }
 
 /** Site origin: SITE_URL env, then site.yaml `url`, then a local-dev fallback. */
@@ -55,17 +54,15 @@ function normalizeRedirect(entry, defaultPermanent) {
 /** Redirects from redirects.yaml and docs.json (`permanent` defaults to true there, as in Mintlify). */
 export function loadRedirects(root = assertContentRoot()) {
   const out = [];
-  for (const name of ["redirects.yaml", "redirects.yml"]) {
-    const raw = readText(path.join(root, name));
-    if (raw === null) continue;
-    const list = yaml.load(raw);
-    if (Array.isArray(list)) {
-      for (const entry of list) {
-        const r = normalizeRedirect(entry, false);
-        if (r) out.push(r);
-      }
+  const rawYaml =
+    readText(path.join(root, "redirects.yaml")) ??
+    readText(path.join(root, "redirects.yml"));
+  const yamlList = rawYaml === null ? null : yaml.load(rawYaml);
+  if (Array.isArray(yamlList)) {
+    for (const entry of yamlList) {
+      const r = normalizeRedirect(entry, false);
+      if (r) out.push(r);
     }
-    break;
   }
   const rawDocs = readText(path.join(root, "docs.json"));
   if (rawDocs !== null) {
