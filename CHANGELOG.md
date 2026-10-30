@@ -16,9 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Home page components `HomePage`, `Hero` (with a large search field), `HeroAction` and `Section`
 - `docs.json` `logo` (one file or `{ light, dark }`) shown in the header, per theme
 - Portico logo set in `public/brand/` (mark, horizontal and stacked logos, light and dark, plus a theme-aware `portico-icon.svg`); the favicon replaces Next.js's default icon, and the attribution line shows the mark
+- Home page components `Band`, `TaskList` and `Task`, and `HeroAside` (right-hand column of a `Hero`); `Hero` gains `highlight` and `suggestions` ("Try" chips under the search card); `Section` gains `description` and a heading link (`href` + `linkLabel`)
+- `docs.json` `colors` (`primary`, `light`, `dark`) override the brand tokens, and `docs.json` `fonts` replace the heading and body fonts (Google Fonts by family name, or a self-hosted `source`); tints derive from the brand colour
 
 ### Changed
 
+- Visual redesign: one palette (`--canvas`, `--surface`, `--ink`, `--brand`, …) keyed on `data-theme`, with the previous token names kept as aliases; Instrument Sans, Bricolage Grotesque and JetBrains Mono replace Geist
+- Header is full width with underlined Documentation / API tabs, a search field and a primary CTA; under 640px those move into the drawer, and a "Group · Page" bottom bar opens it under 820px
+- Sidebar is a tree with page counts and a brand rule on the current page; the right "On this page" rail starts at 1180px, with an inline disclosure below it
+- Doc page: breadcrumb row with Copy link, display-font title, restyled prose, callouts, tables, code blocks and steps; the pager now carries the Edit this page row
+- Home page: `Hero` search card, `Section` headers, four-column `CardGroup` and `Card` styling (Mintlify-style home markup gets the same look)
+- Shiki dual-theme colours apply to every highlighted code block
+- Removed the Help and Home utility links; site links come from `docs.json` (`anchors`, `navbar`)
 - Header: theme, text size and language move into one **Display settings** popover
 - Copy link / Edit this page are quiet text buttons; less space between the page header and the article
 - Mintlify-style home pages render with Portico card styling instead of green link-coloured outlines and titles
