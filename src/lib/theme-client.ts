@@ -26,9 +26,13 @@ export function resolveTheme(pref: ThemePreference): ThemeName {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
+/** Fired on window after the theme changes, so every theme control can follow. */
+export const THEME_CHANGE_EVENT = "docs:theme-change";
+
 export function applyTheme(pref: ThemePreference) {
   const theme = resolveTheme(pref);
   const root = document.documentElement;
   root.dataset.theme = theme;
   root.dataset.themePref = pref;
+  window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
 }

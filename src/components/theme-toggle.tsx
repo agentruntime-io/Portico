@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Check, Monitor, Moon, Sun, type LucideIcon } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
-import { applyTheme, readPreferenceFromDom } from "@/lib/theme-client";
+import { applyTheme, readPreferenceFromDom, THEME_CHANGE_EVENT } from "@/lib/theme-client";
 import type { MessageKey } from "@/lib/i18n";
 import type { ThemePreference } from "@/lib/theme-tokens";
 
@@ -16,8 +16,13 @@ const OPTIONS: { value: ThemePreference; icon: LucideIcon; labelKey: MessageKey 
 function useThemePreference() {
   const [pref, setPrefState] = useState<ThemePreference>("system");
 
+  // Several toggles can be mounted at once (header popover, mobile drawer):
+  // follow changes made by any of them.
   useEffect(() => {
-    setPrefState(readPreferenceFromDom());
+    const sync = () => setPrefState(readPreferenceFromDom());
+    sync();
+    window.addEventListener(THEME_CHANGE_EVENT, sync);
+    return () => window.removeEventListener(THEME_CHANGE_EVENT, sync);
   }, []);
 
   const setPref = useCallback((next: ThemePreference) => {

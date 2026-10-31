@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Theme controls stay in sync: changing the theme in the header popover now also updates the mobile drawer's switch (and vice versa)
 - Images and other static files in the content repo (for example `/images/x.png`) are published with the site; previously they returned 404. They are copied to `public/_content` before `dev` and `build` and served from their repo paths, after Portico's own routes and files
 - `npm run validate` no longer reports two adjacent tables (separated by a blank line) as one table split by a blank line
 
