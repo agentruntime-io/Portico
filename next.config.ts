@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/*": contentTrace,
     "/[...slug]": contentTrace,
+    "/portico-md/[...slug]": contentTrace,
     "/changelog": contentTrace,
     "/reference": contentTrace,
     "/reference/[specId]": contentTrace,
@@ -35,13 +36,19 @@ const nextConfig: NextConfig = {
   async rewrites() {
     // Content repo assets (scripts/sync-content-assets.mjs) keep their repo paths,
     // e.g. /images/x.png. afterFiles runs after Portico's pages and public files,
-    // so content can't shadow them.
+    // so content can't shadow them. `/<page>.md` is the Markdown view of a docs page;
+    // it is rewritten to a route handler (src/app/portico-md) because the catch-all
+    // [...slug] page would otherwise treat "studio.md" as a page name.
     return {
       beforeFiles: [],
       afterFiles: [
         {
           source: `/:asset((?!_content/).+\\.(?:${CONTENT_ASSET_EXT}))`,
           destination: "/_content/:asset",
+        },
+        {
+          source: "/:doc((?!portico-md/).+\\.md)",
+          destination: "/portico-md/:doc",
         },
       ],
       fallback: [],

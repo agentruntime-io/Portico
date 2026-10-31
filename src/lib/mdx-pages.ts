@@ -47,6 +47,10 @@ export type LoadedMdxPage = {
 
   description?: string;
 
+  /** Description from frontmatter only (`description` above falls back to a body excerpt). */
+
+  frontmatterDescription?: string;
+
   draft: boolean;
 
   noindex: boolean;
@@ -262,6 +266,10 @@ export async function loadMdxPage(
     description: data.description
       ? String(data.description)
       : excerptFromBody(content) || undefined,
+
+    frontmatterDescription: data.description
+      ? String(data.description)
+      : undefined,
 
     draft,
 
