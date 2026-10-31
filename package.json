@@ -29,8 +29,8 @@
     "agentruntime"
   ],
   "scripts": {
-    "predev": "node scripts/generate-search.mjs",
-    "prebuild": "node scripts/generate-search.mjs",
+    "predev": "node scripts/sync-content-assets.mjs && node scripts/generate-search.mjs",
+    "prebuild": "node scripts/sync-content-assets.mjs && node scripts/generate-search.mjs",
     "dev": "next dev -p 3004",
     "build": "next build",
     "start": "next start -p 3004",
