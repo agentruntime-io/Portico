@@ -18,6 +18,7 @@ export async function GET() {
     ``,
     `Every page is also available as Markdown by adding .md to its URL.`,
     `The full documentation as one file: ${base}/llms-full.txt`,
+    ...(site.mcp ? [`Docs MCP server (Streamable HTTP): ${base}/mcp`] : []),
     ``,
     `## Pages`,
     ``,

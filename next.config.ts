@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
     "/[...slug]": contentTrace,
     "/portico-md/[...slug]": contentTrace,
     "/llms-full.txt": contentTrace,
+    "/mcp": contentTrace,
     "/changelog": contentTrace,
     "/reference": contentTrace,
     "/reference/[specId]": contentTrace,

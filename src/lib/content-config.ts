@@ -23,6 +23,8 @@ export type SiteYaml = {
     other?: { name: string; content: string }[];
   };
   openapi?: { specs?: { id: string; title?: string; file: string }[] };
+  /** Set to `false` to turn off the read-only docs MCP server at `/mcp`. */
+  mcp?: boolean;
 };
 
 export type OpenApiSpecEntry = { id: string; title: string; file: string };
