@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-02
+
 ### Added
 
 - Every docs page is also served as Markdown at `/<page>.md` (for example `/workflows/studio.md`, `/index.md`, `/es/...`), as `text/markdown` with the title, description and MDX body. Draft and `noindex` pages return 404
@@ -100,6 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Post-deploy hardening and CI license-check adjustments for Next.js `sharp` transitive deps.
 
+[0.3.0]: https://github.com/agentruntime-io/Portico/releases/tag/v0.3.0
 [0.2.0]: https://github.com/agentruntime-io/Portico/releases/tag/v0.2.0
 [0.1.1]: https://github.com/agentruntime-io/Portico/releases/tag/v0.1.1
 
