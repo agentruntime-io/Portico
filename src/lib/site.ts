@@ -69,6 +69,8 @@ export type SiteConfig = {
   openapi: {
     specs: OpenApiSpecEntry[];
   };
+  /** Docs MCP server at `/mcp` is on unless `site.yaml` sets `mcp: false`. */
+  mcp: boolean;
   navbar?: {
     links?: { label: string; href: string }[];
     primary?: { type: "button" | "github"; label: string; href: string };
@@ -295,6 +297,7 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     appearance: normalizeAppearance(docsJson.appearance),
     verification: mergeVerification(siteYaml.verification),
     openapi: { specs: loadOpenApiSpecs(siteYaml) },
+    mcp: siteYaml.mcp !== false,
     navbar: docsJson.navbar
       ? {
           links: docsJson.navbar.links,

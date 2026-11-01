@@ -72,6 +72,7 @@ npm run start
 - **Search** across docs and API operations (build-time index)
 - **i18n** via `i18n/{locale}/…` content paths
 - **Changelog** route with RSS
+- **LLM and agent access**: a Markdown view of every page (`/<page>.md`), `/llms.txt`, `/llms-full.txt` and a read-only docs MCP server at `/mcp` ([setup](./SELF_HOSTING.md#llm-and-agent-access))
 - **OpenAPI** reference UI from specs in your content repo (`openapi/`, or listed in `site.yaml`)
 
 ## Configuration

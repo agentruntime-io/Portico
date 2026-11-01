@@ -148,6 +148,44 @@ docker build \
 
 ---
 
+## LLM and agent access
+
+Every Portico site exposes its docs to LLMs and coding agents. Nothing to configure; replace `https://<your-docs>` with your `SITE_URL`.
+
+| URL | What it returns |
+|-----|-----------------|
+| `https://<your-docs>/<page>.md` | One page as Markdown (`/workflows/studio.md`, `/index.md` for the home page, `/es/...` for a locale): `# Title`, the description, then the MDX body. Components such as `<Steps>` stay in the text. Unknown, `draft` and `noindex` pages return 404 |
+| `https://<your-docs>/llms.txt` | Index of pages and navigation |
+| `https://<your-docs>/llms-full.txt` | Every page in `docs.json` navigation order, each with its title and `Source:` URL |
+| `https://<your-docs>/mcp` | Docs MCP server (below) |
+
+### Docs MCP server
+
+`/mcp` is a read-only [MCP](https://modelcontextprotocol.io) server over Streamable HTTP. It is stateless and answers each `POST` with JSON; `GET` returns 405. It offers three tools:
+
+- `search_docs` (`query`, optional `limit`): title, URL, navigation group and a snippet per match
+- `get_page` (`path`): a page as Markdown; takes `/workflows/studio`, `workflows/studio` or a full URL
+- `list_pages`: the navigation as groups of pages (title and path)
+
+Connect a client that supports remote HTTP servers. For example, in a `.mcp.json` (Claude Code) or a similar client config:
+
+```json
+{
+  "mcpServers": {
+    "my-docs": {
+      "type": "http",
+      "url": "https://<your-docs>/mcp"
+    }
+  }
+}
+```
+
+Claude Code can also add it from the command line: `claude mcp add --transport http my-docs https://<your-docs>/mcp`. Clients that only speak stdio can use a bridge such as `npx mcp-remote https://<your-docs>/mcp`.
+
+The server name is `<site name> docs`. Search runs on an index built from your content when the first request arrives, so it needs no extra build step. To turn the endpoint off, add `mcp: false` to `site.yaml` in your content repo; `/mcp` then returns 404.
+
+---
+
 ## Content repository layout
 
 ```
