@@ -45,7 +45,7 @@
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "hast-util-to-text": "^4.0.2",
-    "js-yaml": "^4.3.2",
+    "js-yaml": "^5.5.0",
     "lucide-react": "^1.18.0",
     "mermaid": "^12.2.0",
     "next": "16.4.3",
