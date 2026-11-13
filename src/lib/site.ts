@@ -9,7 +9,7 @@ import {
   type SiteYaml,
 } from "@/lib/content-config";
 import { loadDocsJson, type DocsJsonConfig } from "@/lib/docs-config";
-import { siteTheme, type SiteTheme } from "@/lib/site-theme";
+import { siteColors, siteTheme, type SiteColors, type SiteTheme } from "@/lib/site-theme";
 
 export type { OpenApiSpecEntry };
 
@@ -57,6 +57,8 @@ export type SiteConfig = {
   logo?: SiteLogo;
   /** docs.json `colors` and `fonts` as CSS overrides. */
   theme: SiteTheme;
+  /** Validated docs.json `colors` (for images such as the OG card); unset when there is no valid primary. */
+  colors?: SiteColors;
   favicon?: SiteFavicon;
   description: string;
   url: string;
@@ -282,6 +284,7 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     name: docsJson.name,
     logo,
     theme: siteTheme(docsJson.colors, docsJson.fonts),
+    colors: siteColors(docsJson.colors),
     favicon,
     description: docsJson.description ?? `Documentation for ${docsJson.name}.`,
     url: resolveSiteUrl(siteYaml),

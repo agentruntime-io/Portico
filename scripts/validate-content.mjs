@@ -3,7 +3,8 @@
  *
  * Checks: docs.json nav, every MDX page compiles (same remark plugins as the app),
  * only registered JSX components are used, internal links resolve, GFM tables are
- * not split by blank lines, OpenAPI specs parse, changelog frontmatter.
+ * not split by blank lines, MDX expressions that reference undefined names (a bare `{id}` throws
+ * at render time), OpenAPI specs parse, changelog frontmatter.
  */
 import fs from "fs/promises";
 import path from "path";
@@ -23,6 +24,7 @@ import {
   loadSiteYaml,
   resolveContentFile,
 } from "./content-config.mjs";
+import { findUndefinedExpressions } from "./mdx-expressions.mjs";
 import { transformHeadingIds } from "../src/lib/mdx-heading-ids.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -210,6 +212,12 @@ async function main() {
       const reason = String(error.reason ?? error.message).split("\n")[0];
       problems.push(`${line ? at(line) : label}: MDX compile error — ${reason}`);
       continue;
+    }
+
+    for (const hit of findUndefinedExpressions(tree)) {
+      problems.push(
+        `${at(hit.line)}: MDX expression ${hit.expression} uses undefined ${hit.names.map((n) => `"${n}"`).join(", ")} and will throw at render (HTTP 500) — wrap it in backticks (\`{id}\`) or escape the braces (\\{id\\}) to show it as text`,
+      );
     }
 
     visit(tree, (node) => {

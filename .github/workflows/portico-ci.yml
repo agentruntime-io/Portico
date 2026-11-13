@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm
@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Cache Next.js build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**', 'scripts/**', 'examples/demo-docs/**') }}
@@ -44,8 +44,8 @@ jobs:
       - name: License compliance (production dependencies)
         run: >
           npx --yes license-checker@25 --production --summary
-          --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;BlueOak-1.0.0;Unlicense;Python-2.0;CC-BY-4.0;MPL-2.0;LGPL-3.0-or-later;LGPL-2.1-or-later;EPL-2.0"
-          --excludePackages "portico@0.3.0"
+          --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;CC0-1.0;BlueOak-1.0.0;Unlicense;Python-2.0;PSF-2.0;CC-BY-4.0;MPL-2.0;LGPL-3.0-or-later;LGPL-2.1-or-later;EPL-2.0"
+          --excludePackages "portico@0.4.0"
 
       - name: Validate bundled demo content
         run: npm run validate

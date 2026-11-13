@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import yaml from "js-yaml";
+import { load as yamlLoad } from "js-yaml";
 // Relative import: next.config.ts loads this file without the @/ alias.
 import { assertContentRoot } from "./content-root";
 
@@ -42,7 +42,7 @@ export function loadSiteYaml(root = assertContentRoot()): SiteYaml {
     readText(path.join(root, "site.yaml")) ??
     readText(path.join(root, "site.yml"));
   if (raw === null) return {};
-  const parsed = yaml.load(raw);
+  const parsed = yamlLoad(raw);
   return parsed && typeof parsed === "object" ? (parsed as SiteYaml) : {};
 }
 
@@ -82,7 +82,7 @@ export function loadRedirects(root = assertContentRoot()): Redirect[] {
   const rawYaml =
     readText(path.join(root, "redirects.yaml")) ??
     readText(path.join(root, "redirects.yml"));
-  const yamlList = rawYaml === null ? null : yaml.load(rawYaml);
+  const yamlList = rawYaml === null ? null : yamlLoad(rawYaml);
   if (Array.isArray(yamlList)) {
     for (const entry of yamlList) {
       const r = normalizeRedirect(entry, false);
@@ -148,7 +148,7 @@ export function loadOpenApiSpecs(
     const id = slugifyId(name.replace(SPEC_EXT, "")) || "api";
     let title = id;
     try {
-      const doc = yaml.load(fs.readFileSync(path.join(dir, name), "utf8")) as {
+      const doc = yamlLoad(fs.readFileSync(path.join(dir, name), "utf8")) as {
         info?: { title?: unknown };
       } | null;
       if (typeof doc?.info?.title === "string") title = doc.info.title;
