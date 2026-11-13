@@ -75,7 +75,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "16.4.6",
     "tailwindcss": "^4.3.5",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "overrides": {
     "@babel/core": "7.29.6",
