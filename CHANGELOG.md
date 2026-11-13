@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The Open Graph image (`/opengraph-image`) now uses the site's `docs.json` `colors` (primary, light) and its dark logo instead of a fixed teal palette. Colours are validated as hex, and the neutral teal default applies when none are set
+
 ### Added
 
 - `npm run validate` now fails on MDX expressions that reference undefined names, such as a bare `{id}` in prose or a table cell. They compile but throw at render time and return HTTP 500. The error names the file, line and expression and suggests backticks or `\{id\}`
