@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Dependency updates: next and eslint-config-next 16.4.6, shiki 4.6.0, tailwindcss 4.3.5, rehype-pretty-code 0.14.6, lucide-react 1.72.0, mermaid 12.3.0, TypeScript 6.0.3, js-yaml 5.5.0 (named `load` import; its own types replace `@types/js-yaml`)
+- CI workflow actions: checkout 7, setup-node 7, cache 6. The license check now also allows `PSF-2.0` (used by `argparse` 3, a js-yaml 5 dependency)
+
+### Security
+
+- Clears the minimatch denial-of-service advisory (GHSA-g3hv-75wg-m249) in the dev toolchain: `@typescript-eslint/typescript-estree` is overridden to minimatch 11.0.8. `npm audit` reports no findings
+
 ## [0.3.0] - 2026-11-02
 
 ### Added
