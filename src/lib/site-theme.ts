@@ -24,13 +24,35 @@ function hex(value?: string): string | undefined {
 }
 
 /** Near-black or white, whichever reads better on `color`. */
-function onColor(color: string): string {
+export function onColor(color: string): string {
   const full = color.length === 4 ? color.replace(/[0-9a-f]/gi, (c) => c + c).slice(1) : color.slice(1);
   const [r, g, b] = [0, 2, 4].map((i) => {
     const c = parseInt(full.slice(i, i + 2), 16) / 255;
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#0b0f0e" : "#ffffff";
+}
+
+export type SiteColors = { primary: string; light: string; dark?: string };
+
+/** docs.json `colors`, validated: undefined when no valid primary is set. `light` falls back to primary. */
+export function siteColors(colors: DocsJsonConfig["colors"]): SiteColors | undefined {
+  const primary = hex(colors?.primary);
+  if (!primary) return undefined;
+  return { primary, light: hex(colors?.light) ?? primary, dark: hex(colors?.dark) };
+}
+
+/** Blend `color` over `base` (both validated hex) by `amount` (0 to 1), as #rrggbb. */
+export function mixHex(base: string, color: string, amount: number): string {
+  const rgb = (c: string) => {
+    const full = c.length === 4 ? c.replace(/[0-9a-f]/gi, (d) => d + d).slice(1) : c.slice(1);
+    return [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+  };
+  const [b, c] = [rgb(base), rgb(color)];
+  return (
+    "#" +
+    b.map((v, i) => Math.round(v + (c[i] - v) * amount).toString(16).padStart(2, "0")).join("")
+  );
 }
 
 function brandCss(colors: DocsJsonConfig["colors"]): string {

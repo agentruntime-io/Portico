@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-13
+
+### Added
+
+- `npm run validate` now fails on MDX expressions that reference undefined names, such as a bare `{id}` in prose or a table cell. They compile but throw at render time and return HTTP 500. The error names the file, line and expression and suggests backticks or `\{id\}`
+
 ### Changed
 
 - Dependency updates: next and eslint-config-next 16.4.6, shiki 4.6.0, tailwindcss 4.3.5, rehype-pretty-code 0.14.6, lucide-react 1.72.0, mermaid 12.3.0, TypeScript 6.0.3, js-yaml 5.5.0 (named `load` import; its own types replace `@types/js-yaml`)
@@ -15,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - Clears the minimatch denial-of-service advisory (GHSA-g3hv-75wg-m249) in the dev toolchain: `@typescript-eslint/typescript-estree` is overridden to minimatch 11.0.8. `npm audit` reports no findings
+
+### Fixed
+
+- The Open Graph image (`/opengraph-image`) now uses the site's `docs.json` `colors` (primary, light) and its dark logo instead of a fixed teal palette. Colours are validated as hex, and the neutral teal default applies when none are set
 
 ## [0.3.0] - 2026-11-02
 
@@ -111,6 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Post-deploy hardening and CI license-check adjustments for Next.js `sharp` transitive deps.
 
+[0.4.0]: https://github.com/agentruntime-io/Portico/releases/tag/v0.4.0
 [0.3.0]: https://github.com/agentruntime-io/Portico/releases/tag/v0.3.0
 [0.2.0]: https://github.com/agentruntime-io/Portico/releases/tag/v0.2.0
 [0.1.1]: https://github.com/agentruntime-io/Portico/releases/tag/v0.1.1
