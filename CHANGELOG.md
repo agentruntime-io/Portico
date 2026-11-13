@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `npm run validate` now fails on MDX expressions that reference undefined names, such as a bare `{id}` in prose or a table cell. They compile but throw at render time and return HTTP 500. The error names the file, line and expression and suggests backticks or `\{id\}`
+
 ## [0.3.0] - 2026-11-02
 
 ### Added

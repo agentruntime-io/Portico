@@ -46,6 +46,8 @@ npm run build
 npm run start
 ```
 
+`npm run validate` checks the content before you build: `docs.json` navigation, that every MDX page compiles, only registered components are used, internal links resolve, tables are not split by blank lines, OpenAPI specs parse, and **MDX expressions only reference names that exist**. A bare `{id}` in prose or a table cell (for example `/team/{id}/task`) is a JavaScript expression that throws at render time and returns HTTP 500; the validator reports the file and line. Wrap it in backticks (`` `{id}` ``) or write `\{id\}` to show it as text. Comments, string and number literals, object and array literals, arrow-function parameters, built-ins such as `Math` or `Date`, and names the page declares with `export const` or `import` are fine.
+
 Build **reads MDX from disk** and emits static pages. Visitors never hit GitHub at request time.
 
 ---
