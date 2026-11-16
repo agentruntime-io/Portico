@@ -39,7 +39,7 @@
     "validate": "node scripts/validate-content.mjs"
   },
   "dependencies": {
-    "@apidevtools/swagger-parser": "^12.1.0",
+    "@apidevtools/swagger-parser": "^13.1.0",
     "@mdx-js/mdx": "^3.1.1",
     "@tailwindcss/typography": "^0.5.20",
     "github-slugger": "^2.0.0",
